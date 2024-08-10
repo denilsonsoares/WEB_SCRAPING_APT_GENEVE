@@ -38,7 +38,6 @@ container = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "ResultLis
 # Lista para armazenar os dados dos apartamentos
 dados_apartamentos = []
 
-
 # Função para coletar dados da página
 def coletar_dados_apartamentos():
     # Encontre todos os apartamentos dentro do contêiner
@@ -101,16 +100,29 @@ while True:
         next_button = driver.find_element(By.CSS_SELECTOR, "a[aria-label='Go to next page']")
 
         # Verifique se o botão não está desabilitado
-        if 'HgPaginationSelector_disabledButton_zA1Ku' not in next_button.get_attribute('class'):
-            next_button.click()
-            # Esperar a próxima página carregar
-            time.sleep(5)
+        if next_button:
+            next_button_href = next_button.get_attribute('href')
+            print(f"Mudando para a próxima página: {next_button_href}")
 
-            # Recarregar o container para a nova página
-            container = wait.until(
-                EC.presence_of_element_located((By.CLASS_NAME, "ResultListPage_resultListPage_iq_V2")))
+            # Use cloudscraper para acessar a próxima página
+            response = scraper.get(next_button_href, cookies=cookies, headers={'User-Agent': user_agent})
+
+            if response.status_code == 200:
+                # Parsear a nova página com BeautifulSoup
+                soup = BeautifulSoup(response.text, 'html.parser')
+
+                # Atualizar o container com a nova página
+                container_html = soup.find('div', {'class': 'ResultListPage_resultListPage_iq_V2'})
+                if container_html:
+                    driver.execute_script("arguments[0].innerHTML = arguments[1];", container, container_html.prettify())
+                else:
+                    print("Não foi possível atualizar o container para a nova página.")
+                    break
+            else:
+                print(f"Falha ao acessar a próxima página: Status Code {response.status_code}")
+                break
         else:
-            print("Botão 'Próxima página' está desabilitado.")
+            print("Botão 'Próxima página' está desabilitado ou não encontrado.")
             break
     except Exception as e:
         print(f"Não há mais páginas para processar ou ocorreu um erro: {str(e)}")
