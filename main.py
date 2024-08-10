@@ -54,13 +54,27 @@ for apto in apartamentos:
         detalhes = soup.find('section', {'class': 'hg-listing-details'})
 
         if detalhes:
-            titulo = detalhes.find('h1', {'class': 'ListingTitle_spotlightTitle_ENVSi'}).text
-            aluguel = detalhes.find('div', {'class': 'SpotlightAttributesPrice_value_TqKGz'}).text
-            quartos = detalhes.find('div', {'class': 'SpotlightAttributesNumberOfRooms_value_TUMrd'}).text
-            espaco = detalhes.find('div', {'class': 'SpotlightAttributesUsableSpace_value_cpfrh'}).text
-            endereco = detalhes.find('address', {'class': 'AddressDetails_address_i3koO'}).text
+            # Verificar e obter o título
+            titulo_element = detalhes.find('h1', {'class': 'ListingTitle_spotlightTitle_ENVSi'})
+            titulo = titulo_element.text if titulo_element else 'N/A'
 
-            # Adiciona os dados do apartamento na lista
+            # Verificar e obter o aluguel
+            aluguel_element = detalhes.find('div', {'class': 'SpotlightAttributesPrice_value_TqKGz'})
+            aluguel = aluguel_element.text if aluguel_element else 'N/A'
+
+            # Verificar e obter o número de quartos
+            quartos_element = detalhes.find('div', {'class': 'SpotlightAttributesNumberOfRooms_value_TUMrd'})
+            quartos = quartos_element.text if quartos_element else 'N/A'
+
+            # Verificar e obter o espaço
+            espaco_element = detalhes.find('div', {'class': 'SpotlightAttributesUsableSpace_value_cpfrh'})
+            espaco = espaco_element.text if espaco_element else 'N/A'
+
+            # Verificar e obter o endereço
+            endereco_element = detalhes.find('address', {'class': 'AddressDetails_address_i3koO'})
+            endereco = endereco_element.text if endereco_element else 'N/A'
+
+            # Adicionar os dados do apartamento na lista
             dados_apartamentos.append({
                 'Título': titulo,
                 'Aluguel': aluguel,
