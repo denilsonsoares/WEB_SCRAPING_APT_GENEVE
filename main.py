@@ -1,28 +1,36 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-import time
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
+import time
 
-driver = webdriver.Chrome()  # Use o caminho correto para o seu driver
-driver.get("https://www.homegate.ch/rent/apartment/canton-geneva/matching-list")
+chrome_options = Options()
+chrome_options.add_argument(
+    "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+driver = webdriver.Chrome(options=chrome_options)
+driver.maximize_window()
 
-# Encontre o contêiner que possui todos os apartamentos
-container = driver.find_element(By.CLASS_NAME, "ResultListPage_resultListPage_iq_V2")
+# Navegar até a página desejada
+driver.get("https://www.homegate.ch/rent/apartment/canton-geneva/matching-list")  # Substitua pelo URL real
+
+# Esperar até que o container com os resultados esteja presente
+wait = WebDriverWait(driver, 10)
+container = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "ResultListPage_resultListPage_iq_V2")))
 
 # Encontre todos os apartamentos dentro do contêiner
 apartamentos = container.find_elements(By.CLASS_NAME, "ResultList_listItem_j5Td_")
 
 for apto in apartamentos:
-    # Abra o link do apartamento em uma nova aba
+    # Abra o link do apartamento na aba atual
     apto_link = apto.find_element(By.TAG_NAME, 'a').get_attribute('href')
-    driver.execute_script(f"window.open('{apto_link}', '_blank');")
+    driver.get(apto_link)
 
-    # Mude para a nova aba
-    driver.switch_to.window(driver.window_handles[-1])
-    time.sleep(2)  # Espere a página carregar
+    # Esperar até que a seção de detalhes esteja carregada
+    detalhes = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "hg-listing-details")))
 
-    # Raspe os dados da seção desejada
+    # Raspar os dados da seção desejada
     page_source = driver.page_source
     soup = BeautifulSoup(page_source, 'html.parser')
     detalhes = soup.find('section', {'class': 'hg-listing-details'})
@@ -38,9 +46,8 @@ for apto in apartamentos:
         # Imprima ou salve os dados
         print(f"Título: {titulo}, Aluguel: {aluguel}, Quartos: {quartos}, Espaço: {espaco}, Endereço: {endereco}")
 
-    # Feche a aba e volte para a aba original
-    driver.close()
-    driver.switch_to.window(driver.window_handles[0])
+    # Voltar para a página de resultados
+    driver.back()
+    time.sleep(2)  # Pequena pausa para evitar problemas de carregamento
 
 driver.quit()
-
