@@ -104,23 +104,29 @@ while True:
             next_button_href = next_button.get_attribute('href')
             print(f"Mudando para a próxima página: {next_button_href}")
 
-            # Use cloudscraper para acessar a próxima página
-            response = scraper.get(next_button_href, cookies=cookies, headers={'User-Agent': user_agent})
+            # Tentar acessar a próxima página, com tratamento para erro 429
+            for attempt in range(5):  # Tentar até 5 vezes
+                response = scraper.get(next_button_href, cookies=cookies, headers={'User-Agent': user_agent})
 
-            if response.status_code == 200:
-                # Parsear a nova página com BeautifulSoup
-                soup = BeautifulSoup(response.text, 'html.parser')
+                if response.status_code == 200:
+                    # Parsear a nova página com BeautifulSoup
+                    soup = BeautifulSoup(response.text, 'html.parser')
 
-                # Atualizar o container com a nova página
-                container_html = soup.find('div', {'class': 'ResultListPage_resultListPage_iq_V2'})
-                if container_html:
-                    driver.execute_script("arguments[0].innerHTML = arguments[1];", container, container_html.prettify())
+                    # Atualizar o container com a nova página
+                    container_html = soup.find('div', {'class': 'ResultListPage_resultListPage_iq_V2'})
+                    if container_html:
+                        driver.execute_script("arguments[0].innerHTML = arguments[1];", container, container_html.prettify())
+                    else:
+                        print("Não foi possível atualizar o container para a nova página.")
+                        break
+                    break  # Sair do loop de tentativa
+                elif response.status_code == 429:
+                    retry_after = int(response.headers.get("Retry-After", 120))  # Tempo de espera sugerido ou padrão de 60 segundos
+                    print(f"Erro 429 recebido. Aguardando {retry_after} segundos antes de tentar novamente.")
+                    time.sleep(retry_after)
                 else:
-                    print("Não foi possível atualizar o container para a nova página.")
+                    print(f"Falha ao acessar a próxima página: Status Code {response.status_code}")
                     break
-            else:
-                print(f"Falha ao acessar a próxima página: Status Code {response.status_code}")
-                break
         else:
             print("Botão 'Próxima página' está desabilitado ou não encontrado.")
             break
