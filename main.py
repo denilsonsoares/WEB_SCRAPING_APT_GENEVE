@@ -1,44 +1,46 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
 import time
+from bs4 import BeautifulSoup
 
-# Inicializando o WebDriver (use o caminho correto para o WebDriver)
-driver = webdriver.Chrome(executable_path='/path/to/chromedriver')
+driver = webdriver.Chrome()  # Use o caminho correto para o seu driver
+driver.get("https://www.homegate.ch/rent/apartment/canton-geneva/matching-list")
 
-# Acesse a página principal
-driver.get('https://www.homegate.ch/rent/apartment/canton-geneva/matching-list')
+# Encontre o contêiner que possui todos os apartamentos
+container = driver.find_element(By.CLASS_NAME, "ResultListPage_resultListPage_iq_V2")
 
-# Encontrar todos os apartamentos listados
-apartments = driver.find_elements(By.CSS_SELECTOR, 'div[data-test="result-list-item"]')
+# Encontre todos os apartamentos dentro do contêiner
+apartamentos = container.find_elements(By.CLASS_NAME, "ResultList_listItem_j5Td_")
 
-# Iterar sobre os apartamentos
-for apt in apartments:
-    # Abrir o apartamento em uma nova aba
-    apt_link = apt.find_element(By.TAG_NAME, 'a')
-    apt_link.send_keys(Keys.CONTROL + Keys.RETURN)
+for apto in apartamentos:
+    # Abra o link do apartamento em uma nova aba
+    apto_link = apto.find_element(By.TAG_NAME, 'a').get_attribute('href')
+    driver.execute_script(f"window.open('{apto_link}', '_blank');")
+
+    # Mude para a nova aba
     driver.switch_to.window(driver.window_handles[-1])
+    time.sleep(2)  # Espere a página carregar
 
-    # Esperar a página carregar
-    time.sleep(3)
+    # Raspe os dados da seção desejada
+    page_source = driver.page_source
+    soup = BeautifulSoup(page_source, 'html.parser')
+    detalhes = soup.find('section', {'class': 'hg-listing-details'})
 
-    # Raspar as informações relevantes da página de detalhes
-    try:
-        title = driver.find_element(By.CSS_SELECTOR, 'h1.ListingTitle_spotlightTitle_ENVSi').text
-        rent = driver.find_element(By.CSS_SELECTOR, 'div.SpotlightAttributesPrice_value_TqKGz span').text
-        rooms = driver.find_element(By.CSS_SELECTOR, 'div.SpotlightAttributesNumberOfRooms_value_TUMrd').text
-        living_space = driver.find_element(By.CSS_SELECTOR, 'div.SpotlightAttributesUsableSpace_value_cpfrh').text
-        address = driver.find_element(By.CSS_SELECTOR, 'address.AddressDetails_address_i3koO').text
+    # Extraia as informações relevantes
+    if detalhes:
+        titulo = detalhes.find('h1', {'class': 'ListingTitle_spotlightTitle_ENVSi'}).text
+        aluguel = detalhes.find('div', {'class': 'SpotlightAttributesPrice_value_TqKGz'}).text
+        quartos = detalhes.find('div', {'class': 'SpotlightAttributesNumberOfRooms_value_TUMrd'}).text
+        espaco = detalhes.find('div', {'class': 'SpotlightAttributesUsableSpace_value_cpfrh'}).text
+        endereco = detalhes.find('address', {'class': 'AddressDetails_address_i3koO'}).text
 
-        # Exibir os dados coletados (ou salvar em um arquivo)
-        print(f"Title: {title}, Rent: {rent}, Rooms: {rooms}, Living Space: {living_space}, Address: {address}")
-    except Exception as e:
-        print("Error scraping apartment details:", e)
+        # Imprima ou salve os dados
+        print(f"Título: {titulo}, Aluguel: {aluguel}, Quartos: {quartos}, Espaço: {espaco}, Endereço: {endereco}")
 
-    # Fechar a aba atual e voltar para a lista de apartamentos
+    # Feche a aba e volte para a aba original
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
 
-# Fechar o WebDriver
 driver.quit()
+
