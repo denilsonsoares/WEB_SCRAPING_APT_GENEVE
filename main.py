@@ -38,55 +38,83 @@ container = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "ResultLis
 # Lista para armazenar os dados dos apartamentos
 dados_apartamentos = []
 
-# Encontre todos os apartamentos dentro do contêiner
-apartamentos = container.find_elements(By.CLASS_NAME, "ResultList_listItem_j5Td_")
 
-for apto in apartamentos:
-    # Obter o link do apartamento
-    apto_link = apto.find_element(By.TAG_NAME, 'a').get_attribute('href')
+# Função para coletar dados da página
+def coletar_dados_apartamentos():
+    # Encontre todos os apartamentos dentro do contêiner
+    apartamentos = container.find_elements(By.CLASS_NAME, "ResultList_listItem_j5Td_")
 
-    # Use cloudscraper para obter a página do apartamento
-    response = scraper.get(apto_link)
+    for apto in apartamentos:
+        # Obter o link do apartamento
+        apto_link = apto.find_element(By.TAG_NAME, 'a').get_attribute('href')
 
-    if response.status_code == 200:
-        # Parsear a página com BeautifulSoup
-        soup = BeautifulSoup(response.text, 'html.parser')
-        detalhes = soup.find('section', {'class': 'hg-listing-details'})
+        # Use cloudscraper para obter a página do apartamento
+        response = scraper.get(apto_link)
 
-        if detalhes:
-            # Verificar e obter o título
-            titulo_element = detalhes.find('h1', {'class': 'ListingTitle_spotlightTitle_ENVSi'})
-            titulo = titulo_element.text if titulo_element else 'N/A'
+        if response.status_code == 200:
+            # Parsear a página com BeautifulSoup
+            soup = BeautifulSoup(response.text, 'html.parser')
+            detalhes = soup.find('section', {'class': 'hg-listing-details'})
 
-            # Verificar e obter o aluguel
-            aluguel_element = detalhes.find('div', {'class': 'SpotlightAttributesPrice_value_TqKGz'})
-            aluguel = aluguel_element.text if aluguel_element else 'N/A'
+            if detalhes:
+                # Verificar e obter o título
+                titulo_element = detalhes.find('h1', {'class': 'ListingTitle_spotlightTitle_ENVSi'})
+                titulo = titulo_element.text if titulo_element else 'N/A'
 
-            # Verificar e obter o número de quartos
-            quartos_element = detalhes.find('div', {'class': 'SpotlightAttributesNumberOfRooms_value_TUMrd'})
-            quartos = quartos_element.text if quartos_element else 'N/A'
+                # Verificar e obter o aluguel
+                aluguel_element = detalhes.find('div', {'class': 'SpotlightAttributesPrice_value_TqKGz'})
+                aluguel = aluguel_element.text if aluguel_element else 'N/A'
 
-            # Verificar e obter o espaço
-            espaco_element = detalhes.find('div', {'class': 'SpotlightAttributesUsableSpace_value_cpfrh'})
-            espaco = espaco_element.text if espaco_element else 'N/A'
+                # Verificar e obter o número de quartos
+                quartos_element = detalhes.find('div', {'class': 'SpotlightAttributesNumberOfRooms_value_TUMrd'})
+                quartos = quartos_element.text if quartos_element else 'N/A'
 
-            # Verificar e obter o endereço
-            endereco_element = detalhes.find('address', {'class': 'AddressDetails_address_i3koO'})
-            endereco = endereco_element.text if endereco_element else 'N/A'
+                # Verificar e obter o espaço
+                espaco_element = detalhes.find('div', {'class': 'SpotlightAttributesUsableSpace_value_cpfrh'})
+                espaco = espaco_element.text if espaco_element else 'N/A'
 
-            # Adicionar os dados do apartamento na lista
-            dados_apartamentos.append({
-                'Título': titulo,
-                'Aluguel': aluguel,
-                'Quartos': quartos,
-                'Espaço': espaco,
-                'Endereço': endereco,
-                'Link': apto_link
-            })
-    else:
-        print(f"Falha ao acessar {apto_link}: Status Code {response.status_code}")
+                # Verificar e obter o endereço
+                endereco_element = detalhes.find('address', {'class': 'AddressDetails_address_i3koO'})
+                endereco = endereco_element.text if endereco_element else 'N/A'
 
-    time.sleep(2)  # Pequena pausa para evitar problemas de carregamento
+                # Adicionar os dados do apartamento na lista
+                dados_apartamentos.append({
+                    'Título': titulo,
+                    'Aluguel': aluguel,
+                    'Quartos': quartos,
+                    'Espaço': espaco,
+                    'Endereço': endereco,
+                    'Link': apto_link
+                })
+        else:
+            print(f"Falha ao acessar {apto_link}: Status Code {response.status_code}")
+
+        time.sleep(2)  # Pequena pausa para evitar problemas de carregamento
+
+
+# Loop para navegar pelas páginas
+while True:
+    coletar_dados_apartamentos()
+
+    try:
+        # Tente encontrar o botão "Próxima página"
+        next_button = driver.find_element(By.CSS_SELECTOR, "a[aria-label='Go to next page']")
+
+        # Verifique se o botão não está desabilitado
+        if 'HgPaginationSelector_disabledButton_zA1Ku' not in next_button.get_attribute('class'):
+            next_button.click()
+            # Esperar a próxima página carregar
+            time.sleep(5)
+
+            # Recarregar o container para a nova página
+            container = wait.until(
+                EC.presence_of_element_located((By.CLASS_NAME, "ResultListPage_resultListPage_iq_V2")))
+        else:
+            print("Botão 'Próxima página' está desabilitado.")
+            break
+    except Exception as e:
+        print(f"Não há mais páginas para processar ou ocorreu um erro: {str(e)}")
+        break
 
 driver.quit()
 
