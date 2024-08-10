@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
+import pandas as pd
 import time
 
 # Inicializando o cloudscraper
@@ -31,8 +32,11 @@ for name, value in cookies.items():
 driver.get("https://www.homegate.ch/rent/apartment/canton-geneva/matching-list")
 
 # Esperar até que o container com os resultados esteja presente
-wait = WebDriverWait(driver, 3)
+wait = WebDriverWait(driver, 20)
 container = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "ResultListPage_resultListPage_iq_V2")))
+
+# Lista para armazenar os dados dos apartamentos
+dados_apartamentos = []
 
 # Encontre todos os apartamentos dentro do contêiner
 apartamentos = container.find_elements(By.CLASS_NAME, "ResultList_listItem_j5Td_")
@@ -56,11 +60,26 @@ for apto in apartamentos:
             espaco = detalhes.find('div', {'class': 'SpotlightAttributesUsableSpace_value_cpfrh'}).text
             endereco = detalhes.find('address', {'class': 'AddressDetails_address_i3koO'}).text
 
-            # Imprima ou salve os dados
-            print(f"Título: {titulo}, Aluguel: {aluguel}, Quartos: {quartos}, Espaço: {espaco}, Endereço: {endereco}")
+            # Adiciona os dados do apartamento na lista
+            dados_apartamentos.append({
+                'Título': titulo,
+                'Aluguel': aluguel,
+                'Quartos': quartos,
+                'Espaço': espaco,
+                'Endereço': endereco,
+                'Link': apto_link
+            })
     else:
         print(f"Falha ao acessar {apto_link}: Status Code {response.status_code}")
 
     time.sleep(2)  # Pequena pausa para evitar problemas de carregamento
 
 driver.quit()
+
+# Criar um DataFrame do pandas com os dados coletados
+df = pd.DataFrame(dados_apartamentos)
+
+# Salvar o DataFrame em um arquivo Excel
+df.to_excel("apartamentos_geneva.xlsx", index=False)
+
+print("Dados salvos em 'apartamentos_geneva.xlsx'.")
