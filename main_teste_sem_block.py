@@ -7,14 +7,15 @@ from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 import pandas as pd
 import time
+from fake_useragent import UserAgent
 
-# Inicializando o cloudscraper
+# Inicializando o cloudscraper e UserAgent
 scraper = cloudscraper.create_scraper()
+ua = UserAgent()
 
-# Configurando o WebDrivers
+# Configurando o WebDriver
 chrome_options = Options()
-chrome_options.add_argument(
-    "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+chrome_options.add_argument(f"--user-agent={ua.random}")
 driver = webdriver.Chrome(options=chrome_options)
 driver.maximize_window()
 
@@ -46,6 +47,9 @@ def coletar_dados_apartamentos():
     for apto in apartamentos:
         # Obter o link do apartamento
         apto_link = apto.find_element(By.TAG_NAME, 'a').get_attribute('href')
+
+        # Gere um novo User-Agent para cada solicitação
+        scraper.headers.update({'User-Agent': ua.random})
 
         # Use cloudscraper para obter a página do apartamento
         response = scraper.get(apto_link)
@@ -90,7 +94,6 @@ def coletar_dados_apartamentos():
 
         time.sleep(2)  # Pequena pausa para evitar problemas de carregamento
 
-
 # Loop para navegar pelas páginas
 while True:
     coletar_dados_apartamentos()
@@ -106,7 +109,8 @@ while True:
 
             # Tentar acessar a próxima página, com tratamento para erro 429
             for attempt in range(5):  # Tentar até 5 vezes
-                response = scraper.get(next_button_href, cookies=cookies, headers={'User-Agent': user_agent})
+                scraper.headers.update({'User-Agent': ua.random})
+                response = scraper.get(next_button_href, cookies=cookies)
 
                 if response.status_code == 200:
                     # Parsear a nova página com BeautifulSoup
