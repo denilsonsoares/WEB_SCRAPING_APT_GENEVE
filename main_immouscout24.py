@@ -19,17 +19,17 @@ driver = webdriver.Chrome(options=chrome_options)
 driver.maximize_window()
 
 # Carregar a página inicial
-driver.get("https://www.homegate.ch/rent/apartment/canton-geneva/matching-list")
+driver.get("https://www.immoscout24.ch/en/real-estate/rent/canton-geneva")
 
 # Obter cookies e headers para o Cloudflare
-cookies, user_agent = scraper.get_tokens("https://www.homegate.ch/rent/apartment/canton-geneva/matching-list")
+cookies, user_agent = scraper.get_tokens("https://www.immoscout24.ch/en/real-estate/rent/canton-geneva")
 
 # Adicionar cookies ao driver
 for name, value in cookies.items():
-    driver.add_cookie({'name': name, 'value': value, 'domain': '.homegate.ch'})
+    driver.add_cookie({'name': name, 'value': value, 'domain': 'immoscout24.ch'})
 
 # Recarregar a página para aplicar os cookies
-driver.get("https://www.homegate.ch/rent/apartment/canton-geneva/matching-list")
+driver.get("https://www.immoscout24.ch/en/real-estate/rent/canton-geneva")
 
 # Esperar até que o container com os resultados esteja presente
 wait = WebDriverWait(driver, 20)
@@ -53,7 +53,7 @@ def coletar_dados_apartamentos():
         if response.status_code == 200:
             # Parsear a página com BeautifulSoup
             soup = BeautifulSoup(response.text, 'html.parser')
-            detalhes = soup.find('section', {'class': 'hg-listing-details'})
+            detalhes = soup.find('div', {'class': 'DetailPage_detailPage_E8Nmj'})
 
             if detalhes:
                 # Verificar e obter o título
@@ -121,7 +121,7 @@ while True:
                         break
                     break  # Sair do loop de tentativa
                 elif response.status_code == 429:
-                    retry_after = int(response.headers.get("Retry-After", 120))  # Tempo de espera sugerido ou padrão de 60 segundos
+                    retry_after = int(response.headers.get("Retry-After", 60))  # Tempo de espera sugerido ou padrão de 60 segundos
                     print(f"Erro 429 recebido. Aguardando {retry_after} segundos antes de tentar novamente.")
                     time.sleep(retry_after)
                 else:
@@ -140,6 +140,6 @@ driver.quit()
 df = pd.DataFrame(dados_apartamentos)
 
 # Salvar o DataFrame em um arquivo Excel
-df.to_excel("apartamentos_geneva.xlsx", index=False)
+df.to_excel("immouscout24_geneva.xlsx", index=False)
 
-print("Dados salvos em 'apartamentos_geneva.xlsx'.")
+print("Dados salvos em 'immouscout24_geneva.xlsx'.")
