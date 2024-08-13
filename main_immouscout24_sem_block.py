@@ -7,14 +7,16 @@ from selenium.webdriver.support import expected_conditions as EC
 from fake_useragent import UserAgent
 import pandas as pd
 import time
-import random
+
 
 # Inicializando o cloudscraper com rotação de User-Agent
 def criar_scraper():
     user_agent = UserAgent().random
     return cloudscraper.create_scraper(browser={'custom': user_agent})
 
+
 scraper = criar_scraper()
+
 
 # Configurando o WebDriver com rotação de User-Agent
 def criar_driver():
@@ -24,9 +26,10 @@ def criar_driver():
     chrome_options.add_argument("--incognito")
     return webdriver.Chrome(options=chrome_options)
 
+
 def lidar_com_privacidade(driver):
     try:
-        wait = WebDriverWait(driver, 10)  # Aumentado o tempo de espera para 10 segundos
+        wait = WebDriverWait(driver, 10)
         if WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, "onetrust-reject-all-handler"))):
             reject_button = wait.until(EC.element_to_be_clickable((By.ID, "onetrust-reject-all-handler")))
             reject_button.click()
@@ -36,37 +39,57 @@ def lidar_com_privacidade(driver):
     except Exception as e:
         print(f"Erro ao tentar fechar o banner de privacidade: {str(e)} - Prosseguindo...")
 
+
 # Função para coletar dados da lista de apartamentos diretamente
 def coletar_dados_apartamentos(driver, container, dados_apartamentos):
     wait = WebDriverWait(driver, 20)
-    wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")))
+    wait.until(
+        EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")))
     apartamentos = container.find_elements(By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")
     for apto in apartamentos:
         try:
-            aluguel_element = apto.find_element(By.CSS_SELECTOR, "span[data-test='price']")
+            # Título
+            titulo_element = apto.find_element(By.CSS_SELECTOR, "p.HgListingDescription_title_NAAxy span")
+            titulo = titulo_element.text if titulo_element else 'N/A'
+
+            # Aluguel
+            aluguel_element = apto.find_element(By.CSS_SELECTOR, "span.HgListingRoomsLivingSpacePrice_price_u9Vee")
             aluguel = aluguel_element.text if aluguel_element else 'N/A'
 
-            quartos_element = apto.find_element(By.CSS_SELECTOR, "span[data-test='rooms']")
-            quartos = quartos_element.text if quartos_element else 'N/A'
+            # Quartos e Espaço
+            detalhes_element = apto.find_element(By.CSS_SELECTOR,
+                                                 "div.HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp")
+            detalhes = detalhes_element.text if detalhes_element else 'N/A'
 
-            espaco_element = apto.find_element(By.CSS_SELECTOR, "span[data-test='surface']")
-            espaco = espaco_element.text + " m²" if espaco_element else 'N/A'
+            # Extraindo quartos e espaço
+            quartos = detalhes.split(",")[0].strip() if detalhes else 'N/A'
+            espaco = detalhes.split(",")[1].strip() if len(detalhes.split(",")) > 1 else 'N/A'
 
-            endereco_element = apto.find_element(By.CSS_SELECTOR, "span[data-test='address']")
+            # Endereço
+            endereco_element = apto.find_element(By.CSS_SELECTOR, "div.HgListingCard_secondaryTitle_uVla3 address")
             endereco = endereco_element.text if endereco_element else 'N/A'
 
             dados_apartamentos.append({
+                'Título': titulo,
                 'Aluguel': aluguel,
                 'Quartos': quartos,
                 'Espaço': espaco,
                 'Endereço': endereco
             })
+            # Printando os dados coletados para acompanhar
+            print(f"Título: {titulo}")
+            print(f"Aluguel: {aluguel}")
+            print(f"Quartos: {quartos}")
+            print(f"Espaço: {espaco}")
+            print(f"Endereço: {endereco}")
+            print("-" * 40)
 
         except Exception as e:
             print(f"Erro ao coletar dados do apartamento: {str(e)}")
             continue
 
         time.sleep(1)
+
 
 # Loop para navegar pelas páginas
 def navegar_paginas(driver, scraper, dados_apartamentos):
@@ -108,6 +131,7 @@ def navegar_paginas(driver, scraper, dados_apartamentos):
         except Exception as e:
             print(f"Não há mais páginas para processar ou ocorreu um erro: {str(e)}")
             break
+
 
 # Execução principal
 driver = criar_driver()
