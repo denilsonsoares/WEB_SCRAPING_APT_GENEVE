@@ -9,12 +9,15 @@ import pandas as pd
 import time
 import random
 
+
 # Inicializando o cloudscraper com rotação de User-Agent
 def criar_scraper():
     user_agent = UserAgent().random
     return cloudscraper.create_scraper(browser={'custom': user_agent})
 
+
 scraper = criar_scraper()
+
 
 # Configurando o WebDriver com rotação de User-Agent
 def criar_driver():
@@ -23,6 +26,7 @@ def criar_driver():
     chrome_options.add_argument(f"--user-agent={user_agent}")
     chrome_options.add_argument("--incognito")
     return webdriver.Chrome(options=chrome_options)
+
 
 def lidar_com_privacidade(driver):
     try:
@@ -36,37 +40,67 @@ def lidar_com_privacidade(driver):
     except Exception as e:
         print(f"Erro ao tentar fechar o banner de privacidade: {str(e)} - Prosseguindo...")
 
+
 # Função para coletar dados da lista de apartamentos diretamente
 def coletar_dados_apartamentos(driver, container, dados_apartamentos):
     wait = WebDriverWait(driver, 20)
-    wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")))
+    wait.until(
+        EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")))
     apartamentos = container.find_elements(By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")
+
     for apto in apartamentos:
         try:
+            # Extrair o aluguel
             aluguel_element = apto.find_element(By.CLASS_NAME, 'HgListingCard_price_JoPAs')
             aluguel = aluguel_element.text if aluguel_element else 'N/A'
 
-            quartos_element = apto.find_element(By.CSS_SELECTOR, ".HgListingRoomsLivingSpace_roomsLivingSpace_GyVgq > span:first-child > strong")
+            # Extrair o título do apartamento
+            titulo_element = apto.find_element(By.CSS_SELECTOR, '.HgListingDescription_title_NAAxy span')
+            titulo = titulo_element.text if titulo_element else 'N/A'
+
+            # Extrair a quantidade de quartos
+            quartos_element = apto.find_element(By.CSS_SELECTOR,
+                                                ".HgListingRoomsLivingSpace_roomsLivingSpace_GyVgq > span:first-child > strong")
             quartos = quartos_element.text + " room(s)" if quartos_element else 'N/A'
 
-            espaco_element = apto.find_element(By.CSS_SELECTOR, ".HgListingRoomsLivingSpace_roomsLivingSpace_GyVgq > span:last-child > strong")
+            # Extrair o espaço de vida em m²
+            espaco_element = apto.find_element(By.CSS_SELECTOR,
+                                               ".HgListingRoomsLivingSpace_roomsLivingSpace_GyVgq > span:last-child > strong")
             espaco = espaco_element.text + " m²" if espaco_element else 'N/A'
 
+            # Extrair o endereço
             endereco_element = apto.find_element(By.CLASS_NAME, 'HgListingCard_address_JGiFv')
             endereco = endereco_element.text if endereco_element else 'N/A'
 
+            # Extrair o link do apartamento
+            link_element = apto.find_element(By.CSS_SELECTOR, "a.HgCardElevated_link_EHfr7")
+            link = link_element.get_attribute('href') if link_element else 'N/A'
+
+            # Adicionar os dados ao dicionário
             dados_apartamentos.append({
+                'Título': titulo,
                 'Aluguel': aluguel,
                 'Quartos': quartos,
                 'Espaço': espaco,
-                'Endereço': endereco
+                'Endereço': endereco,
+                'Link': link
             })
+
+            # Printando os dados coletados para acompanhar
+            print(f"Título: {titulo}")
+            print(f"Aluguel: {aluguel}")
+            print(f"Quartos: {quartos}")
+            print(f"Espaço: {espaco}")
+            print(f"Endereço: {endereco}")
+            print(f"Link: {link}")
+            print("-" * 40)
 
         except Exception as e:
             print(f"Erro ao coletar dados do apartamento: {str(e)}")
             continue
 
         time.sleep(1)
+
 
 # Loop para navegar pelas páginas
 def navegar_paginas(driver, scraper, dados_apartamentos):
@@ -108,6 +142,7 @@ def navegar_paginas(driver, scraper, dados_apartamentos):
         except Exception as e:
             print(f"Não há mais páginas para processar ou ocorreu um erro: {str(e)}")
             break
+
 
 # Execução principal
 driver = criar_driver()
