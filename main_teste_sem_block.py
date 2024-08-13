@@ -14,7 +14,7 @@ scraper = cloudscraper.create_scraper()
 chrome_options = Options()
 chrome_options.add_argument(
     "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
-chrome_options.add_argument("--incognito")  # Adicionando modo incógnito
+#chrome_options.add_argument("--incognito")  # Adicionando modo incógnito
 driver = webdriver.Chrome(options=chrome_options)
 driver.maximize_window()
 
@@ -34,16 +34,6 @@ driver.get("https://www.homegate.ch/rent/apartment/canton-geneva/matching-list")
 
 # Lidar com o banner de privacidade
 lidar_com_privacidade()
-
-# Obter cookies e headers para o Cloudflare
-cookies, user_agent = scraper.get_tokens("https://www.homegate.ch/rent/apartment/canton-geneva/matching-list")
-
-# Adicionar cookies ao driver
-for name, value in cookies.items():
-    driver.add_cookie({'name': name, 'value': value, 'domain': '.homegate.ch'})
-
-# Recarregar a página para aplicar os cookies
-driver.get("https://www.homegate.ch/rent/apartment/canton-geneva/matching-list")
 
 # Esperar até que o container com os resultados esteja presente
 wait = WebDriverWait(driver, 20)
@@ -93,7 +83,6 @@ def coletar_dados_apartamentos():
 
         time.sleep(1)  # Pequena pausa para evitar problemas de carregamento
 
-
 # Loop para navegar pelas páginas
 while True:
     coletar_dados_apartamentos()
@@ -109,7 +98,7 @@ while True:
 
             # Tentar acessar a próxima página, com tratamento para erro 429
             for attempt in range(5):  # Tentar até 5 vezes
-                response = scraper.get(next_button_href, cookies=cookies, headers={'User-Agent': user_agent})
+                response = scraper.get(next_button_href)
 
                 if response.status_code == 200:
                     # Atualizar o container da nova página
