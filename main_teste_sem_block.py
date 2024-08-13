@@ -14,11 +14,26 @@ scraper = cloudscraper.create_scraper()
 chrome_options = Options()
 chrome_options.add_argument(
     "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+chrome_options.add_argument("--incognito")  # Adicionando modo incógnito
 driver = webdriver.Chrome(options=chrome_options)
 driver.maximize_window()
 
+# Função para lidar com o banner de privacidade
+def lidar_com_privacidade():
+    try:
+        # Espera o botão "Alle ablehnen" estar presente e clica nele
+        wait = WebDriverWait(driver, 10)
+        reject_button = wait.until(EC.element_to_be_clickable((By.ID, "onetrust-reject-all-handler")))
+        reject_button.click()
+        print("Banner de privacidade fechado.")
+    except Exception as e:
+        print(f"Erro ao lidar com o banner de privacidade: {str(e)}")
+
 # Carregar a página inicial
 driver.get("https://www.homegate.ch/rent/apartment/canton-geneva/matching-list")
+
+# Lidar com o banner de privacidade
+lidar_com_privacidade()
 
 # Obter cookies e headers para o Cloudflare
 cookies, user_agent = scraper.get_tokens("https://www.homegate.ch/rent/apartment/canton-geneva/matching-list")
@@ -99,6 +114,7 @@ while True:
                 if response.status_code == 200:
                     # Atualizar o container da nova página
                     driver.get(next_button_href)
+                    #lidar_com_privacidade()  # Lidar com o banner de privacidade na nova página
                     wait.until(EC.presence_of_element_located((By.CLASS_NAME, "ResultListPage_resultListPage_iq_V2")))
                     break  # Sair do loop de tentativa
                 elif response.status_code == 429:
