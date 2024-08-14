@@ -94,14 +94,14 @@ def coletar_dados_apartamentos(driver, container, dados_apartamentos):
             })
 
             # Printando os dados coletados para acompanhar
-            print(f"Título: {titulo}")
-            print(f"Aluguel: {aluguel}")
-            print(f"Quartos: {quartos}")
-            print(f"Espaço: {espaco}")
-            print(f"Endereço: {endereco}")
-            print(f"Link: {link}")
-            print(f"Data de Extração: {data_extracao}")
-            print("-" * 40)
+            #print(f"Título: {titulo}")
+            #print(f"Aluguel: {aluguel}")
+            #print(f"Quartos: {quartos}")
+            #print(f"Espaço: {espaco}")
+            #print(f"Endereço: {endereco}")
+            #print(f"Link: {link}")
+            #print(f"Data de Extração: {data_extracao}")
+            #print("-" * 40)
 
         except Exception as e:
             print(f"Erro ao coletar dados do apartamento: {str(e)}")

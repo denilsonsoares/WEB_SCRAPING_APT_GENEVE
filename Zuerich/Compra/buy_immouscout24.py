@@ -107,14 +107,14 @@ def coletar_dados_apartamentos(driver, container, dados_apartamentos):
             })
 
             # Printando os dados coletados para acompanhar
-            print(f"Título: {titulo}")
-            print(f"Aluguel: {aluguel}")
-            print(f"Quartos: {quartos}")
-            print(f"Espaço: {espaco}")
-            print(f"Endereço: {endereco}")
-            print(f"Link: {link}")
-            print(f"Data de Extração: {data_extracao}")
-            print("-" * 40)
+            #print(f"Título: {titulo}")
+            #print(f"Aluguel: {aluguel}")
+            #print(f"Quartos: {quartos}")
+            #print(f"Espaço: {espaco}")
+            #print(f"Endereço: {endereco}")
+            #print(f"Link: {link}")
+            #print(f"Data de Extração: {data_extracao}")
+            #print("-" * 40)
 
         except Exception as e:
             print(f"Erro ao coletar dados do apartamento: {str(e)}")
@@ -177,5 +177,5 @@ finally:
     driver.quit()
 
 df = pd.DataFrame(dados_apartamentos)
-df.to_excel("buy_immoscout_zurich.xlsx", index=False)
-print("Dados salvos em 'buy_immoscout_zurich.xlsx'.")
+df.to_excel("buy_immoscout24_zurich.xlsx", index=False)
+print("Dados salvos em 'buy_immoscout24_zurich.xlsx'.")
