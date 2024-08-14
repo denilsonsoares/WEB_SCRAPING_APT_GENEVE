@@ -58,17 +58,31 @@ def coletar_dados_apartamentos(driver, container, dados_apartamentos):
             titulo_element = apto.find_element(By.CSS_SELECTOR, ".HgListingDescription_title_NAAxy span")
             titulo = titulo_element.text if titulo_element else 'N/A'
 
-            # Extrair o aluguel
-            aluguel_element = apto.find_element(By.CSS_SELECTOR, "HgListingRoomsLivingSpacePrice_price_u9Vee")
-            aluguel = aluguel_element.text if aluguel_element else 'N/A'
+            try:
+                # Extrair o aluguel
+                aluguel_element = apto.find_element(By.CSS_SELECTOR, ".HgListingRoomsLivingSpacePrice_price_u9Vee")
+                aluguel = aluguel_element.text if aluguel_element else 'N/A'
+            except Exception as e:
+                aluguel = 'N/A'
+                print(f"Erro ao extrair o aluguel: {str(e)}")
 
-            # Extrair a quantidade de quartos
-            quartos_element = apto.find_element(By.CSS_SELECTOR, ".HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp > strong:first-child")
-            quartos = quartos_element.text if quartos_element else 'N/A'
+            try:
+                # Extrair a quantidade de quartos
+                quartos_element = apto.find_element(By.CSS_SELECTOR,
+                                                    ".HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp > strong:first-child")
+                quartos = quartos_element.text if quartos_element else 'N/A'
+            except Exception as e:
+                quartos = 'N/A'
+                print(f"Erro ao extrair a quantidade de quartos: {str(e)}")
 
-            # Extrair o espaço de vida em m²
-            espaco_element = apto.find_element(By.CSS_SELECTOR, ".HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp > strong[title='living space']")
-            espaco = espaco_element.text if espaco_element else 'N/A'
+            try:
+                # Tentar extrair o espaço de vida em m²
+                espaco_element = apto.find_element(By.CSS_SELECTOR,
+                                                   ".HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp > strong:nth-child(3)")
+                espaco = espaco_element.text if espaco_element else 'N/A'
+            except Exception as e:
+                espaco = 'N/A'
+                print(f"Erro ao extrair o espaço de vida: {str(e)}")
 
             # Extrair o endereço
             endereco_element = apto.find_element(By.CSS_SELECTOR, "div.HgListingCard_address_JGiFv address")
@@ -99,6 +113,7 @@ def coletar_dados_apartamentos(driver, container, dados_apartamentos):
             print(f"Espaço: {espaco}")
             print(f"Endereço: {endereco}")
             print(f"Link: {link}")
+            print(f"Data de Extração: {data_extracao}")
             print("-" * 40)
 
         except Exception as e:
@@ -162,5 +177,5 @@ finally:
     driver.quit()
 
 df = pd.DataFrame(dados_apartamentos)
-df.to_excel("rent_immoscout_geneva.xlsx", index=False)
-print("Dados salvos em 'rent_immoscout_geneva_total.xlsx'.")
+df.to_excel("rent_immoscout_geneve.xlsx", index=False)
+print("Dados salvos em 'rent_immoscout_geneve.xlsx'.")
