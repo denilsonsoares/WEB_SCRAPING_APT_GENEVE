@@ -44,44 +44,53 @@ def lidar_com_privacidade(driver):
 def coletar_dados_apartamentos(driver, container, dados_apartamentos):
     wait = WebDriverWait(driver, 20)
     wait.until(
-        EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")))
+        EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']"))
+    )
     apartamentos = container.find_elements(By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")
+
     for apto in apartamentos:
         try:
-            # Título
+            # Extrair o título do apartamento (neste caso, o nome do apartamento)
             titulo_element = apto.find_element(By.CSS_SELECTOR, "p.HgListingDescription_title_NAAxy span")
             titulo = titulo_element.text if titulo_element else 'N/A'
 
-            # Aluguel
+            # Extrair o aluguel
             aluguel_element = apto.find_element(By.CSS_SELECTOR, "span.HgListingRoomsLivingSpacePrice_price_u9Vee")
             aluguel = aluguel_element.text if aluguel_element else 'N/A'
 
-            # Quartos e Espaço
-            detalhes_element = apto.find_element(By.CSS_SELECTOR,
-                                                 "div.HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp")
-            detalhes = detalhes_element.text if detalhes_element else 'N/A'
+            # Extrair a quantidade de quartos
+            quartos_element = apto.find_element(By.CSS_SELECTOR, "div.HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp > strong:first-child")
+            quartos = quartos_element.text if quartos_element else 'N/A'
 
-            # Extraindo quartos e espaço
-            quartos = detalhes.split(",")[0].strip() if detalhes else 'N/A'
-            espaco = detalhes.split(",")[1].strip() if len(detalhes.split(",")) > 1 else 'N/A'
+            # Extrair o espaço de vida em m²
+            espaco_element = apto.find_element(By.CSS_SELECTOR, "div.HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp > strong[title='living space']")
+            espaco = espaco_element.text if espaco_element else 'N/A'
 
-            # Endereço
-            endereco_element = apto.find_element(By.CSS_SELECTOR, "div.HgListingCard_secondaryTitle_uVla3 address")
+            # Extrair o endereço
+            endereco_element = apto.find_element(By.CSS_SELECTOR, "div.HgListingCard_address_JGiFv address")
             endereco = endereco_element.text if endereco_element else 'N/A'
 
+            # Extrair o link do apartamento
+            link_element = apto.find_element(By.CSS_SELECTOR, "a.HgCardElevated_link_EHfr7")
+            link = link_element.get_attribute('href') if link_element else 'N/A'
+
+            # Adicionar os dados ao dicionário
             dados_apartamentos.append({
                 'Título': titulo,
                 'Aluguel': aluguel,
                 'Quartos': quartos,
                 'Espaço': espaco,
-                'Endereço': endereco
+                'Endereço': endereco,
+                'Link': link
             })
+
             # Printando os dados coletados para acompanhar
             print(f"Título: {titulo}")
             print(f"Aluguel: {aluguel}")
             print(f"Quartos: {quartos}")
             print(f"Espaço: {espaco}")
             print(f"Endereço: {endereco}")
+            print(f"Link: {link}")
             print("-" * 40)
 
         except Exception as e:
@@ -89,7 +98,6 @@ def coletar_dados_apartamentos(driver, container, dados_apartamentos):
             continue
 
         time.sleep(1)
-
 
 # Loop para navegar pelas páginas
 def navegar_paginas(driver, scraper, dados_apartamentos):

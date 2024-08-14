@@ -50,13 +50,13 @@ def coletar_dados_apartamentos(driver, container, dados_apartamentos):
 
     for apto in apartamentos:
         try:
-            # Extrair o aluguel
-            aluguel_element = apto.find_element(By.CLASS_NAME, 'HgListingCard_price_JoPAs')
-            aluguel = aluguel_element.text if aluguel_element else 'N/A'
-
             # Extrair o título do apartamento
             titulo_element = apto.find_element(By.CSS_SELECTOR, '.HgListingDescription_title_NAAxy span')
             titulo = titulo_element.text if titulo_element else 'N/A'
+
+            # Extrair o aluguel
+            aluguel_element = apto.find_element(By.CLASS_NAME, 'HgListingCard_price_JoPAs')
+            aluguel = aluguel_element.text if aluguel_element else 'N/A'
 
             # Extrair a quantidade de quartos
             quartos_element = apto.find_element(By.CSS_SELECTOR,
