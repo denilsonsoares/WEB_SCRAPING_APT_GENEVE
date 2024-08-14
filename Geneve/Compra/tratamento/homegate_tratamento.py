@@ -2,13 +2,13 @@ import pandas as pd
 import re
 
 # Carregar a planilha Excel
-file_path = 'rent_homegate_geneve.xlsx'
+file_path = 'buy_homegate_geneve.xlsx'
 df = pd.read_excel(file_path)
 
 # Renomear as colunas para inglês
 df.rename(columns={
     'Título': 'Title',
-    'Aluguel': 'Rent (CHF)',
+    'Aluguel': 'Price (CHF)',
     'Quartos': 'Rooms',
     'Espaço': 'Living Space (m²)',
     'Endereço': 'Address',
@@ -24,7 +24,7 @@ def extract_numeric_rent(rent):
         # Preservar os separadores de milhar e remover o restante
         return re.sub(r'[^\d,]', '', rent)
 
-df['Rent (CHF)'] = df['Rent (CHF)'].apply(extract_numeric_rent)
+df['Price (CHF)'] = df['Price (CHF)'].apply(extract_numeric_rent)
 
 # Função para remover as vírgulas dos valores
 def format_brazilian_rent(rent):
@@ -32,7 +32,7 @@ def format_brazilian_rent(rent):
         return rent.replace(',', '')
     return rent
 
-df['Rent (CHF)'] = df['Rent (CHF)'].apply(format_brazilian_rent)
+df['Price (CHF)'] = df['Price (CHF)'].apply(format_brazilian_rent)
 
 # Função para formatar o campo 'Rooms'
 def format_rooms(rooms):
@@ -53,11 +53,11 @@ df['City'] = 'Genève'
 df['Country'] = 'Switzerland'
 
 # Definir a ordem das colunas
-columns_order = ['Title', 'Rent (CHF)', 'Rooms', 'Living Space (m²)', 'Address', 'City', 'Country', 'Extracted from', 'Data extracted when']
+columns_order = ['Title', 'Price (CHF)', 'Rooms', 'Living Space (m²)', 'Address', 'City', 'Country', 'Extracted from', 'Data extracted when']
 df = df.reindex(columns=columns_order)
 
 # Salvar a nova planilha
-new_file_path = 'rent_homegate_geneve_updated.xlsx'
+new_file_path = 'buy_homegate_geneve_updated.xlsx'
 df.to_excel(new_file_path, index=False)
 
 print(f"Planilha atualizada e salva como '{new_file_path}'.")

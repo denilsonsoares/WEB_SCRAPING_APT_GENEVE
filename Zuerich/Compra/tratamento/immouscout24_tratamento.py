@@ -2,7 +2,7 @@ import pandas as pd
 import re
 
 # Carregar a planilha Excel
-file_path = 'buy_immoscout_geneve.xlsx'
+file_path = 'buy_immoscout24_zurich.xlsx'
 df = pd.read_excel(file_path)
 
 # Renomear as colunas para inglês
@@ -57,7 +57,7 @@ def extract_numeric_space(space):
 df['Living Space (m²)'] = df['Living Space (m²)'].apply(extract_numeric_space)
 
 # Adicionar colunas para cidade e país
-df['City'] = 'Genève'
+df['City'] = 'Zurich'
 df['Country'] = 'Switzerland'
 
 # Definir a ordem das colunas
@@ -65,7 +65,7 @@ columns_order = ['Title', 'Price (CHF)', 'Rooms', 'Living Space (m²)', 'Address
 df = df.reindex(columns=columns_order)
 
 # Salvar a nova planilha
-new_file_path = 'buy_immoscout_geneve_updated.xlsx'
+new_file_path = 'buy_immoscout24_zurich_updated.xlsx'
 df.to_excel(new_file_path, index=False)
 
 print(f"Planilha atualizada e salva como '{new_file_path}'.")
