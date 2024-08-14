@@ -43,7 +43,7 @@ def lidar_com_privacidade(driver):
 
 # Função para coletar dados da lista de apartamentos diretamente
 def coletar_dados_apartamentos(driver, container, dados_apartamentos):
-    wait = WebDriverWait(driver, 20)
+    wait = WebDriverWait(driver, 2)
     wait.until(
         EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")))
     apartamentos = container.find_elements(By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")
@@ -105,7 +105,7 @@ def coletar_dados_apartamentos(driver, container, dados_apartamentos):
 # Loop para navegar pelas páginas
 def navegar_paginas(driver, scraper, dados_apartamentos):
     while True:
-        container = WebDriverWait(driver, 20).until(
+        container = WebDriverWait(driver, 15).until(
             EC.presence_of_element_located((By.CLASS_NAME, "ResultListPage_resultListPage_iq_V2"))
         )
         coletar_dados_apartamentos(driver, container, dados_apartamentos)
