@@ -7,8 +7,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from fake_useragent import UserAgent
 import pandas as pd
 import time
-import random
-
+import pytz
+from datetime import datetime
 
 # Inicializando o cloudscraper com rotação de User-Agent
 def criar_scraper():
@@ -30,7 +30,7 @@ def criar_driver():
 
 def lidar_com_privacidade(driver):
     try:
-        wait = WebDriverWait(driver, 10)  # Aumentado o tempo de espera para 10 segundos
+        wait = WebDriverWait(driver, 10)
         if WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, "onetrust-reject-all-handler"))):
             reject_button = wait.until(EC.element_to_be_clickable((By.ID, "onetrust-reject-all-handler")))
             reject_button.click()
@@ -43,38 +43,43 @@ def lidar_com_privacidade(driver):
 
 # Função para coletar dados da lista de apartamentos diretamente
 def coletar_dados_apartamentos(driver, container, dados_apartamentos):
-    wait = WebDriverWait(driver, 2)
+    # Definir o fuso horário de Genebra, Suíça
+    tz = pytz.timezone('Europe/Zurich')
+
+    wait = WebDriverWait(driver, 20)
     wait.until(
-        EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")))
+        EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']"))
+    )
     apartamentos = container.find_elements(By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")
 
     for apto in apartamentos:
         try:
-            # Extrair o título do apartamento
-            titulo_element = apto.find_element(By.CSS_SELECTOR, '.HgListingDescription_title_NAAxy span')
+            # Extrair o título do apartamento (neste caso, o nome do apartamento)
+            titulo_element = apto.find_element(By.CSS_SELECTOR, ".HgListingDescription_title_NAAxy span")
             titulo = titulo_element.text if titulo_element else 'N/A'
 
             # Extrair o aluguel
-            aluguel_element = apto.find_element(By.CLASS_NAME, 'HgListingCard_price_JoPAs')
+            aluguel_element = apto.find_element(By.CSS_SELECTOR, "HgListingRoomsLivingSpacePrice_price_u9Vee")
             aluguel = aluguel_element.text if aluguel_element else 'N/A'
 
             # Extrair a quantidade de quartos
-            quartos_element = apto.find_element(By.CSS_SELECTOR,
-                                                ".HgListingRoomsLivingSpace_roomsLivingSpace_GyVgq > span:first-child > strong")
-            quartos = quartos_element.text + " room(s)" if quartos_element else 'N/A'
+            quartos_element = apto.find_element(By.CSS_SELECTOR, ".HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp > strong:first-child")
+            quartos = quartos_element.text if quartos_element else 'N/A'
 
             # Extrair o espaço de vida em m²
-            espaco_element = apto.find_element(By.CSS_SELECTOR,
-                                               ".HgListingRoomsLivingSpace_roomsLivingSpace_GyVgq > span:last-child > strong")
-            espaco = espaco_element.text + " m²" if espaco_element else 'N/A'
+            espaco_element = apto.find_element(By.CSS_SELECTOR, ".HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp > strong[title='living space']")
+            espaco = espaco_element.text if espaco_element else 'N/A'
 
             # Extrair o endereço
-            endereco_element = apto.find_element(By.CLASS_NAME, 'HgListingCard_address_JGiFv')
+            endereco_element = apto.find_element(By.CSS_SELECTOR, "div.HgListingCard_address_JGiFv address")
             endereco = endereco_element.text if endereco_element else 'N/A'
 
             # Extrair o link do apartamento
             link_element = apto.find_element(By.CSS_SELECTOR, "a.HgCardElevated_link_EHfr7")
             link = link_element.get_attribute('href') if link_element else 'N/A'
+
+            # Obter a data e hora atuais no fuso horário de Genebra
+            data_extracao = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
 
             # Adicionar os dados ao dicionário
             dados_apartamentos.append({
@@ -83,7 +88,8 @@ def coletar_dados_apartamentos(driver, container, dados_apartamentos):
                 'Quartos': quartos,
                 'Espaço': espaco,
                 'Endereço': endereco,
-                'Link': link
+                'Link': link,
+                'Data': data_extracao
             })
 
             # Printando os dados coletados para acompanhar
@@ -101,12 +107,11 @@ def coletar_dados_apartamentos(driver, container, dados_apartamentos):
 
         time.sleep(1)
 
-
 # Loop para navegar pelas páginas
 def navegar_paginas(driver, scraper, dados_apartamentos):
     while True:
-        container = WebDriverWait(driver, 15).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "ResultListPage_resultListPage_iq_V2"))
+        container = WebDriverWait(driver, 20).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "div[data-test='result-list-container']"))
         )
         coletar_dados_apartamentos(driver, container, dados_apartamentos)
 
@@ -126,7 +131,7 @@ def navegar_paginas(driver, scraper, dados_apartamentos):
                         driver.get(next_button_href)
                         lidar_com_privacidade(driver)
                         WebDriverWait(driver, 20).until(
-                            EC.presence_of_element_located((By.CLASS_NAME, "ResultListPage_resultListPage_iq_V2"))
+                            EC.presence_of_element_located((By.CSS_SELECTOR, "div[data-test='result-list-container']"))
                         )
                         break
                     elif response.status_code == 429:
@@ -149,7 +154,7 @@ driver = criar_driver()
 driver.maximize_window()
 
 try:
-    driver.get("https://www.homegate.ch/rent/apartment/canton-geneva/matching-list")
+    driver.get("https://www.immoscout24.ch/en/real-estate/rent/canton-geneva")
     lidar_com_privacidade(driver)
     dados_apartamentos = []
     navegar_paginas(driver, scraper, dados_apartamentos)
@@ -157,5 +162,5 @@ finally:
     driver.quit()
 
 df = pd.DataFrame(dados_apartamentos)
-df.to_excel("homegate_geneva.xlsx", index=False)
-print("Dados salvos em 'homegate_geneva.xlsx'.")
+df.to_excel("rent_immoscout_geneva.xlsx", index=False)
+print("Dados salvos em 'rent_immoscout_geneva_total.xlsx'.")
