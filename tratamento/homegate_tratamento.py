@@ -2,20 +2,22 @@ import pandas as pd
 import re
 
 # Carregar a planilha Excel
-file_path = 'homegate_geneva_tratamento.xlsx'
+file_path = 'homegate_geneva_total.xlsx'
 df = pd.read_excel(file_path)
 
 # Renomear as colunas para inglês
 df.rename(columns={
+    'Título': 'Title',
     'Aluguel': 'Rent (CHF)',
     'Quartos': 'Rooms',
     'Espaço': 'Living Space (m²)',
-    'Endereço': 'Address'
+    'Endereço': 'Address',
+    'Link': 'Extracted from'
 }, inplace=True)
 
 # Função para extrair valor numérico do aluguel
 def extract_numeric_rent(rent):
-    if isinstance(rent, str) and 'On request' in rent:
+    if isinstance(rent, str) and 'Price on request' in rent:
         return rent
     else:
         # Preservar os separadores de milhar e remover o restante
@@ -42,11 +44,11 @@ df['City'] = 'Genève'
 df['Country'] = 'Switzerland'
 
 # Definir a ordem das colunas
-columns_order = ['Rent (CHF)', 'Rooms', 'Living Space (m²)', 'Address', 'City', 'Country']
+columns_order = ['Title', 'Rent (CHF)', 'Rooms', 'Living Space (m²)', 'Address', 'City', 'Country', 'Extracted from']
 df = df.reindex(columns=columns_order)
 
 # Salvar a nova planilha
-new_file_path = 'homegate_geneva_tratamento_updated.xlsx'
+new_file_path = 'homegate_geneva_total_updated.xlsx'
 df.to_excel(new_file_path, index=False)
 
 print(f"Planilha atualizada e salva como '{new_file_path}'.")
