@@ -25,6 +25,14 @@ def extract_numeric_rent(rent):
 
 df['Rent (CHF)'] = df['Rent (CHF)'].apply(extract_numeric_rent)
 
+# Função para remover as vírgulas dos valores
+def format_brazilian_rent(rent):
+    if isinstance(rent, str):
+        return rent.replace(',', '')
+    return rent
+
+df['Rent (CHF)'] = df['Rent (CHF)'].apply(format_brazilian_rent)
+
 # Função para formatar o campo 'Rooms'
 def format_rooms(rooms):
     # Remove a palavra "room(s)" e mantém apenas o número

@@ -25,6 +25,14 @@ def extract_numeric_rent(rent):
 
 df['Rent (CHF)'] = df['Rent (CHF)'].apply(extract_numeric_rent)
 
+# Função para remover as vírgulas dos valores
+def format_brazilian_rent(rent):
+    if isinstance(rent, str):
+        return rent.replace(',', '')
+    return rent
+
+df['Rent (CHF)'] = df['Rent (CHF)'].apply(format_brazilian_rent)
+
 # Função para formatar o campo 'Rooms'
 def format_rooms(rooms):
     # Remove as palavras "room" ou "rooms" e mantém o número
@@ -39,6 +47,7 @@ def extract_numeric_space(space):
     else:
         return re.sub(r'\D', '', space).strip()
 
+
 df['Living Space (m²)'] = df['Living Space (m²)'].apply(extract_numeric_space)
 
 # Função para corrigir os links na coluna 'Link'
@@ -48,7 +57,7 @@ def correct_link(link):
         return link[len(prefix):]
     return link
 
-df['Link'] = df['Link'].apply(correct_link)
+df['Extracted from'] = df['Extracted from'].apply(correct_link)
 
 # Adicionar colunas para cidade e país
 df['City'] = 'Genève'

@@ -51,19 +51,19 @@ def coletar_dados_apartamentos(driver, container, dados_apartamentos):
     for apto in apartamentos:
         try:
             # Extrair o título do apartamento (neste caso, o nome do apartamento)
-            titulo_element = apto.find_element(By.CSS_SELECTOR, "p.HgListingDescription_title_NAAxy span")
+            titulo_element = apto.find_element(By.CSS_SELECTOR, ".HgListingDescription_title_NAAxy span")
             titulo = titulo_element.text if titulo_element else 'N/A'
 
             # Extrair o aluguel
-            aluguel_element = apto.find_element(By.CSS_SELECTOR, "span.HgListingRoomsLivingSpacePrice_price_u9Vee")
+            aluguel_element = apto.find_element(By.CSS_SELECTOR, "HgListingRoomsLivingSpacePrice_price_u9Vee")
             aluguel = aluguel_element.text if aluguel_element else 'N/A'
 
             # Extrair a quantidade de quartos
-            quartos_element = apto.find_element(By.CSS_SELECTOR, "div.HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp > strong:first-child")
+            quartos_element = apto.find_element(By.CSS_SELECTOR, ".HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp > strong:first-child")
             quartos = quartos_element.text if quartos_element else 'N/A'
 
             # Extrair o espaço de vida em m²
-            espaco_element = apto.find_element(By.CSS_SELECTOR, "div.HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp > strong[title='living space']")
+            espaco_element = apto.find_element(By.CSS_SELECTOR, ".HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp > strong[title='living space']")
             espaco = espaco_element.text if espaco_element else 'N/A'
 
             # Extrair o endereço
