@@ -53,13 +53,11 @@ def coletar_dados_apartamentos(driver, container_selector, titulo_selector, alug
         try:
             titulo = apto.find_element(By.CSS_SELECTOR, titulo_selector).text if titulo_selector else 'N/A'
             aluguel = apto.find_element(By.CSS_SELECTOR, aluguel_selector).text if aluguel_selector else 'N/A'
-            quartos = apto.find_element(By.CSS_SELECTOR, quartos_selector).text if quartos_selector else 'N/A'
+            quartos_element = apto.find_element(By.CSS_SELECTOR, quartos_selector)
+            espaco_elementos = apto.find_elements(By.CSS_SELECTOR, espaco_selector)
 
-            # Verifica se o espaço está presente; se não, define como 'N/A'
-            try:
-                espaco = apto.find_element(By.CSS_SELECTOR, espaco_selector).text
-            except:
-                espaco = 'N/A'
+            quartos = quartos_element.text if quartos_element else 'N/A'
+            espaco = espaco_elementos[1].text if len(espaco_elementos) > 1 else 'N/A'
 
             endereco = apto.find_element(By.CSS_SELECTOR, endereco_selector).text if endereco_selector else 'N/A'
             link = apto.find_element(By.CSS_SELECTOR, link_selector).get_attribute('href') if link_selector else 'N/A'
@@ -76,7 +74,7 @@ def coletar_dados_apartamentos(driver, container_selector, titulo_selector, alug
             })
 
             print(
-                f"Título: {titulo}, Aluguel: {aluguel}, Quartos: {quartos}, Espaço: {espaco}, Endereço: {endereco}, Link: {link}, Data de Extração: {data_extracao}")
+                f"Título: {titulo}, Aluguel: {aluguel}, Quartos: {quartos}, Espaco: {espaco}, Endereço: {endereco}, Link: {link}, Data de Extração: {data_extracao}")
             print("-" * 40)
 
         except Exception as e:
@@ -144,7 +142,7 @@ def raspar_dados(site, tipo, cidade):
         titulo_selector = ".HgListingDescription_title_NAAxy span"
         aluguel_selector = ".HgListingCard_price_JoPAs"
         quartos_selector = ".HgListingRoomsLivingSpace_roomsLivingSpace_GyVgq > span:first-child > strong"
-        espaco_selector = ".HgListingRoomsLivingSpace_roomsLivingSpace_GyVgq > span:last-child > strong"
+        espaco_selector = ".HgListingRoomsLivingSpace_roomsLivingSpace_GyVgq > span"
         endereco_selector = ".HgListingCard_address_JGiFv"
         link_selector = "a.HgCardElevated_link_EHfr7"
 
