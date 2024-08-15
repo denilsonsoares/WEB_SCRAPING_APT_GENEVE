@@ -3,6 +3,7 @@ import os
 import pandas as pd
 from utils_extract import raspar_dados, set_parar_raspagem
 from utils_treat import *
+
 # Título do aplicativo
 st.title("Web Scraping de Apartamentos")
 
@@ -48,9 +49,6 @@ if modo == "Raspagem":
 
 # Modo de Tratamento de Dados
 elif modo == "Tratamento de Dados":
-    # Informa que o tratamento de dados será realizado na pasta especificada
-    st.write("Tratando os dados na pasta 'dados brutos'...")
-
     # Diretórios
     pasta_brutos = "dados_brutos"
     pasta_tratados = "dados_tratados"
@@ -60,15 +58,28 @@ elif modo == "Tratamento de Dados":
         os.makedirs(pasta_tratados)
 
     # Lista os arquivos na pasta 'dados brutos'
-    arquivos = os.listdir(pasta_brutos)
+    arquivos_brutos = os.listdir(pasta_brutos)
+
+    # Lista os arquivos na pasta 'dados tratados'
+    arquivos_tratados = os.listdir(pasta_tratados)
 
     # Exibe os arquivos que serão tratados
     st.write("Arquivos a serem tratados:")
-    st.write(arquivos)
+    if arquivos_brutos:
+        st.write(arquivos_brutos)
+    else:
+        st.write("Nenhum arquivo para tratar.")
+
+    # Exibe os arquivos já tratados
+    st.write("Arquivos já tratados:")
+    if arquivos_tratados:
+        st.write(arquivos_tratados)
+    else:
+        st.write("Nenhum arquivo tratado ainda.")
 
     # Botão para iniciar o tratamento de dados
     if st.button("Iniciar Tratamento"):
-        for arquivo in arquivos:
+        for arquivo in arquivos_brutos:
             caminho_arquivo = os.path.join(pasta_brutos, arquivo)
 
             # Verifica o site e realiza o tratamento específico
@@ -78,3 +89,18 @@ elif modo == "Tratamento de Dados":
                 tratar_dados_immoscout24(caminho_arquivo, pasta_tratados)
 
         st.success("Dados tratados e salvos na pasta 'dados tratados'!")
+
+    # Permitir que o usuário baixe os arquivos já tratados
+    st.write("Selecione os arquivos que deseja baixar:")
+
+    arquivos_selecionados = st.multiselect("Selecione os arquivos", arquivos_tratados)
+
+    for arquivo in arquivos_selecionados:
+        caminho_arquivo = os.path.join(pasta_tratados, arquivo)
+        with open(caminho_arquivo, "rb") as file:
+            btn = st.download_button(
+                label=f"Baixar {arquivo}",
+                data=file,
+                file_name=arquivo,
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
