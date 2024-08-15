@@ -43,7 +43,7 @@ def lidar_com_privacidade(driver):
 # Função para coletar dados de apartamentos no Homegate
 def coletar_dados_apartamentos_homegate(driver, dados_apartamentos):
     tz = pytz.timezone('Europe/Zurich')
-    wait = WebDriverWait(driver, 20)
+    wait = WebDriverWait(driver, 10)
     wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")))
     apartamentos = driver.find_elements(By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")
 
@@ -101,7 +101,7 @@ def coletar_dados_apartamentos_homegate(driver, dados_apartamentos):
 # Função para coletar dados de apartamentos no ImmoScout24
 def coletar_dados_apartamentos_immoscout(driver, dados_apartamentos):
     tz = pytz.timezone('Europe/Zurich')
-    wait = WebDriverWait(driver, 20)
+    wait = WebDriverWait(driver, 10)
     wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")))
     apartamentos = driver.find_elements(By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")
 
@@ -174,7 +174,7 @@ def navegar_paginas(driver, scraper, url, site):
     driver.get(url)
     lidar_com_privacidade(driver)
 
-    while True:
+    while not get_parar_raspagem():
         if site == "homegate":
             coletar_dados_apartamentos_homegate(driver, dados_apartamentos)
         elif site == "immoscout24":
@@ -194,7 +194,7 @@ def navegar_paginas(driver, scraper, url, site):
                         driver = criar_driver()
                         driver.get(next_button_href)
                         lidar_com_privacidade(driver)
-                        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")))
+                        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div[role='listitem'][data-test='result-list-item']")))
                         break
                     elif response.status_code == 429:
                         retry_after = int(response.headers.get("Retry-After", 60))
@@ -255,3 +255,14 @@ def raspar_dados(site, tipo, cidade):
     df.to_excel(caminho_arquivo, index=False)
     print(f"Dados salvos em: {caminho_arquivo}")
     return df
+
+# Variável global para controle da raspagem
+parar_raspagem = False
+
+def set_parar_raspagem(valor):
+    global parar_raspagem
+    parar_raspagem = valor
+
+def get_parar_raspagem():
+    global parar_raspagem
+    return parar_raspagem
