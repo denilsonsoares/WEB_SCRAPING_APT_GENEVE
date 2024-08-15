@@ -167,27 +167,18 @@ def coletar_dados_apartamentos_immoscout(driver, dados_apartamentos):
             continue
 
         time.sleep(1)
-#from app import callback
-import streamlit as st
+
 # Função genérica para navegar pelas páginas e coletar dados
 def navegar_paginas(driver, scraper, url, site):
     dados_apartamentos = []
     driver.get(url)
     lidar_com_privacidade(driver)
 
-    # Espaço reservado no Streamlit para atualizar dinamicamente
-    #placeholder = st.empty()
-
     while True:
         if site == "homegate":
             coletar_dados_apartamentos_homegate(driver, dados_apartamentos)
         elif site == "immoscout24":
             coletar_dados_apartamentos_immoscout(driver, dados_apartamentos)
-        # Converte os dados atuais em DataFrame e chama o callback para atualizar a tela
-        # Atualizar o conteúdo do espaço reservado no Streamlit
-        #df_temp = pd.DataFrame(dados_apartamentos)
-        #placeholder.dataframe(df_temp)
-        #dados_apartamentos.clear()  # Limpar os dados acumulados
         try:
             next_button = driver.find_element(By.CSS_SELECTOR, "a[aria-label='Go to next page']")
             if next_button and next_button.get_attribute('href'):
