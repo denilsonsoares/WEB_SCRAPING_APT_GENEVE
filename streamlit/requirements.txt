@@ -1,0 +1,7 @@
+streamlit
+cloudscraper
+selenium
+fake_useragent
+pandas
+openpyxl
+pytz
