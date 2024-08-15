@@ -54,7 +54,13 @@ def coletar_dados_apartamentos(driver, container_selector, titulo_selector, alug
             titulo = apto.find_element(By.CSS_SELECTOR, titulo_selector).text if titulo_selector else 'N/A'
             aluguel = apto.find_element(By.CSS_SELECTOR, aluguel_selector).text if aluguel_selector else 'N/A'
             quartos = apto.find_element(By.CSS_SELECTOR, quartos_selector).text if quartos_selector else 'N/A'
-            espaco = apto.find_element(By.CSS_SELECTOR, espaco_selector).text if espaco_selector else 'N/A'
+
+            # Verifica se o espaço está presente; se não, define como 'N/A'
+            try:
+                espaco = apto.find_element(By.CSS_SELECTOR, espaco_selector).text
+            except:
+                espaco = 'N/A'
+
             endereco = apto.find_element(By.CSS_SELECTOR, endereco_selector).text if endereco_selector else 'N/A'
             link = apto.find_element(By.CSS_SELECTOR, link_selector).get_attribute('href') if link_selector else 'N/A'
             data_extracao = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
@@ -70,7 +76,7 @@ def coletar_dados_apartamentos(driver, container_selector, titulo_selector, alug
             })
 
             print(
-                f"Título: {titulo}, Aluguel: {aluguel}, Quartos: {quartos}, Espaco: {espaco}, Endereço: {endereco}, Link: {link}, Data de Extração: {data_extracao}")
+                f"Título: {titulo}, Aluguel: {aluguel}, Quartos: {quartos}, Espaço: {espaco}, Endereço: {endereco}, Link: {link}, Data de Extração: {data_extracao}")
             print("-" * 40)
 
         except Exception as e:
@@ -131,7 +137,7 @@ def navegar_paginas(driver, scraper, url, container_selector, titulo_selector, a
 def raspar_dados(site, tipo, cidade):
     if site == "homegate":
         if tipo == "alugar":
-            url = f"https://www.homegate.ch/rent/{'city-' if cidade == 'Zurich' else 'canton-'}{cidade.lower()}/matching-list"
+            url = f"https://www.homegate.ch/rent/apartment/{'city-' if cidade == 'Zurich' else 'canton-'}{cidade.lower()}/matching-list"
         else:
             url = f"https://www.homegate.ch/buy/apartment/{'city-' if cidade == 'Zurich' else 'canton-'}{cidade.lower()}/matching-list"
         container_selector = "div[role='listitem'][data-test='result-list-item']"
