@@ -1,3 +1,4 @@
+#app.py:
 import streamlit as st
 from utils import raspar_dados
 
@@ -18,4 +19,3 @@ if st.button("Iniciar Raspagem"):
     df = raspar_dados(site, tipo, cidade)
     st.write(df)
     st.success("Raspagem concluída!")
-
