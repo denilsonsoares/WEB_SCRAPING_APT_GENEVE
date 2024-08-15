@@ -1,4 +1,3 @@
-# utils_treat.py
 import pandas as pd
 import re
 import os
@@ -17,37 +16,37 @@ def tratar_dados_homegate(file_path, pasta_tratados):
         'Data': 'Data extracted when',
     }, inplace=True)
 
-    # Função para extrair valor numérico do aluguel
+    # Função para extrair valor numérico do aluguel, mantendo "N/A" quando presente
     def extract_numeric_rent(rent):
-        if isinstance(rent, str) and 'Price on request' in rent:
-            return rent
-        else:
-            return re.sub(r'[^\d,]', '', rent)
+        if pd.isna(rent) or isinstance(rent, str) and ('N/A' in rent or 'Price on request' in rent):
+            return 'N/A'
+        return re.sub(r'[^\d,]', '', rent)
 
     df['Rent (CHF)'] = df['Rent (CHF)'].apply(extract_numeric_rent)
 
     # Função para remover as vírgulas dos valores
     def format_brazilian_rent(rent):
-        if isinstance(rent, str):
-            return rent.replace(',', '')
-        return rent
+        if rent == 'N/A':
+            return rent
+        return rent.replace(',', '')
 
     df['Rent (CHF)'] = df['Rent (CHF)'].apply(format_brazilian_rent)
 
     # Função para formatar o campo 'Rooms'
     def format_rooms(rooms):
-        return re.sub(r'\s*room\(s\)', '', rooms).strip()
+        if pd.isna(rooms):
+            return 'N/A'
+        if isinstance(rooms, str) and 'N/A' in rooms:
+            return 'N/A'
+        return re.sub(r'\s*room\(s\)', '', str(rooms)).strip()
 
     df['Rooms'] = df['Rooms'].apply(format_rooms)
 
     # Função para extrair apenas números da área, preservando "N/A"
     def extract_numeric_space(space):
-        if isinstance(space, str):
-            return re.sub(r'\D', '', space).strip()
-        elif pd.isna(space):
+        if pd.isna(space) or isinstance(space, str) and 'N/A' in space:
             return 'N/A'
-        else:
-            return str(space)
+        return re.sub(r'\D', '', str(space)).strip()
 
     df['Living Space (m²)'] = df['Living Space (m²)'].apply(extract_numeric_space)
 
@@ -65,7 +64,7 @@ def tratar_dados_homegate(file_path, pasta_tratados):
 
     # Salvar a nova planilha
     data = file_path.split("_")[-1].split(".")[0]
-    new_file_path = os.path.join(pasta_tratados, f"{os.path.splitext(os.path.basename(file_path))[0]}_updated_{data}.xlsx")
+    new_file_path = os.path.join(pasta_tratados, f"{os.path.splitext(os.path.basename(file_path))[0]}_updated.xlsx")
     df.to_excel(new_file_path, index=False)
 
     print(f"Planilha '{file_path}' tratada e salva como '{new_file_path}'.")
@@ -85,41 +84,37 @@ def tratar_dados_immoscout24(file_path, pasta_tratados):
         'Data': 'Data extracted when',
     }, inplace=True)
 
-    # Função para extrair valor numérico do aluguel, mantendo "On request" quando presente
+    # Função para extrair valor numérico do aluguel, mantendo "N/A" ou "Price on request" quando presente
     def extract_numeric_rent(rent):
-        if isinstance(rent, str) and 'Price on request' in rent:
-            return rent
-        else:
-            return re.sub(r'[^\d,]', '', rent)
+        if pd.isna(rent) or isinstance(rent, str) and ('N/A' in rent or 'Price on request' in rent):
+            return 'N/A'
+        return re.sub(r'[^\d,]', '', rent)
 
     df['Rent (CHF)'] = df['Rent (CHF)'].apply(extract_numeric_rent)
 
     # Função para remover as vírgulas dos valores
     def format_brazilian_rent(rent):
-        if isinstance(rent, str):
-            return rent.replace(',', '')
-        return rent
+        if rent == 'N/A':
+            return rent
+        return rent.replace(',', '')
 
     df['Rent (CHF)'] = df['Rent (CHF)'].apply(format_brazilian_rent)
 
     # Função para formatar o campo 'Rooms'
     def format_rooms(rooms):
-        if isinstance(rooms, str):
-            return re.sub(r'\s*rooms?', '', rooms).strip()
-        elif pd.isna(rooms):
+        if pd.isna(rooms):
             return 'N/A'
-        return str(rooms)
+        if isinstance(rooms, str) and 'N/A' in rooms:
+            return 'N/A'
+        return re.sub(r'\s*rooms?', '', str(rooms)).strip()
 
     df['Rooms'] = df['Rooms'].apply(format_rooms)
 
     # Função para extrair apenas números da área, preservando "N/A"
     def extract_numeric_space(space):
-        if isinstance(space, str) and 'N/A' in space:
-            return space
-        elif pd.isna(space):
+        if pd.isna(space) or isinstance(space, str) and 'N/A' in space:
             return 'N/A'
-        else:
-            return str(re.sub(r'\D', '', space).strip())
+        return re.sub(r'\D', '', str(space)).strip()
 
     df['Living Space (m²)'] = df['Living Space (m²)'].apply(extract_numeric_space)
 
@@ -137,7 +132,7 @@ def tratar_dados_immoscout24(file_path, pasta_tratados):
 
     # Salvar a nova planilha
     data = file_path.split("_")[-1].split(".")[0]
-    new_file_path = os.path.join(pasta_tratados, f"{os.path.splitext(os.path.basename(file_path))[0]}_updated_{data}.xlsx")
+    new_file_path = os.path.join(pasta_tratados, f"{os.path.splitext(os.path.basename(file_path))[0]}_updated.xlsx")
     df.to_excel(new_file_path, index=False)
 
     print(f"Planilha '{file_path}' tratada e salva como '{new_file_path}'.")
