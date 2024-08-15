@@ -1,5 +1,5 @@
 import streamlit as st
-from utils import raspar_dados
+from utils_correto import raspar_dados
 
 st.title("Raspagem de Dados de Apartamentos")
 
