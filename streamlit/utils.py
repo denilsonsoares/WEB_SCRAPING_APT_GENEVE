@@ -9,6 +9,7 @@ import pandas as pd
 import time
 import pytz
 from datetime import datetime
+import os
 
 # Função para criar o scraper com rotação de User-Agent
 def criar_scraper():
@@ -241,7 +242,13 @@ def raspar_dados(site, tipo, cidade):
     df = navegar_paginas(driver, scraper, url, site)
     driver.quit()
 
+    # Criar a pasta 'dados_brutos' se ela não existir
+    pasta_dados_brutos = "dados_brutos"
+    os.makedirs(pasta_dados_brutos, exist_ok=True)
+
+    # Salvar o arquivo na pasta 'dados_brutos'
     nome_arquivo = f"{site}_{tipo}_{cidade.lower()}.xlsx"
-    df.to_excel(nome_arquivo, index=False)
-    print(f"Dados salvos em: {nome_arquivo}")
+    caminho_arquivo = os.path.join(pasta_dados_brutos, nome_arquivo)
+    df.to_excel(caminho_arquivo, index=False)
+    print(f"Dados salvos em: {caminho_arquivo}")
     return df

@@ -1,7 +1,7 @@
 import streamlit as st
-from utils_correto import raspar_dados
+from utils import raspar_dados
 
-st.title("Raspagem de Dados de Apartamentos")
+st.title("Web Scraping of Aparments")
 
 # Seleção do site
 site = st.selectbox("Selecione o site", ["homegate", "immoscout24"])
