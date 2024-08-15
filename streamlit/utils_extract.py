@@ -1,3 +1,4 @@
+#utils_extract
 import cloudscraper
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -22,6 +23,8 @@ def criar_driver():
     chrome_options = Options()
     chrome_options.add_argument(f"--user-agent={user_agent}")
     chrome_options.add_argument("--incognito")
+    chrome_options.add_argument("--headless=new")  # Executar o navegador em modo headless
+    chrome_options.add_argument("--window-size=1920,1080")  # Define um tamanho de janela padrão para o headless
     return webdriver.Chrome(options=chrome_options)
 
 # Função para lidar com o banner de privacidade
