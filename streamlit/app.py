@@ -1,6 +1,8 @@
 import streamlit as st
 import os
 import pandas as pd
+import zipfile
+import io
 from utils_extract import raspar_dados, set_parar_raspagem
 from utils_treat import *
 
@@ -98,9 +100,39 @@ elif modo == "Tratamento de Dados":
     for arquivo in arquivos_selecionados:
         caminho_arquivo = os.path.join(pasta_tratados, arquivo)
         with open(caminho_arquivo, "rb") as file:
-            btn = st.download_button(
+            st.download_button(
                 label=f"Baixar {arquivo}",
                 data=file,
                 file_name=arquivo,
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
+
+    # Botão para baixar todos os arquivos não tratados (em dados_brutos)
+    zip_buffer_brutos = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer_brutos, "w") as zip_file:
+        for arquivo in arquivos_brutos:
+            caminho_arquivo = os.path.join(pasta_brutos, arquivo)
+            zip_file.write(caminho_arquivo, os.path.basename(caminho_arquivo))
+    zip_buffer_brutos.seek(0)
+
+    st.download_button(
+        label="Baixar Todos os Arquivos Não Tratados (.zip)",
+        data=zip_buffer_brutos,
+        file_name="arquivos_nao_tratados.zip",
+        mime="application/zip"
+    )
+
+    # Botão para baixar todos os arquivos tratados (em dados_tratados)
+    zip_buffer_tratados = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer_tratados, "w") as zip_file:
+        for arquivo in arquivos_tratados:
+            caminho_arquivo = os.path.join(pasta_tratados, arquivo)
+            zip_file.write(caminho_arquivo, os.path.basename(caminho_arquivo))
+    zip_buffer_tratados.seek(0)
+
+    st.download_button(
+        label="Baixar Todos os Arquivos Tratados (.zip)",
+        data=zip_buffer_tratados,
+        file_name="arquivos_tratados.zip",
+        mime="application/zip"
+    )
