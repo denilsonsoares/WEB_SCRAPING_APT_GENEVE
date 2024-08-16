@@ -5,7 +5,7 @@ import time
 import pytz
 from datetime import datetime
 import os
-
+from urllib.parse import urljoin
 
 # Função para criar o scraper com rotação de User-Agent
 def criar_scraper():
@@ -105,7 +105,8 @@ def navegar_paginas(scraper, url, site):
 
         next_button = soup.select_one("a[aria-label='Go to next page']")
         if next_button and next_button.get('href'):
-            url = next_button.get('href')
+            # Converter a URL relativa para absoluta
+            url = urljoin(response.url, next_button.get('href'))
             print(f"Mudando para a próxima página: {url}")
             time.sleep(1)  # Aguardar antes de ir para a próxima página
         else:
@@ -156,15 +157,12 @@ def raspar_dados(site, tipo, cidade):
     print(f"Dados salvos em: {caminho_arquivo}")
     return df
 
-
 # Variável global para controle da raspagem
 parar_raspagem = False
-
 
 def set_parar_raspagem(valor):
     global parar_raspagem
     parar_raspagem = valor
-
 
 def get_parar_raspagem():
     global parar_raspagem
