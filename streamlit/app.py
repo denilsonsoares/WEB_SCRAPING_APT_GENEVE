@@ -6,22 +6,6 @@ import io
 from utils_extract import raspar_dados, set_parar_raspagem
 from utils_treat import *
 
-# Caminho relativo para as pastas
-pasta_brutos = os.path.join(os.path.dirname(__file__), 'dados_brutos')
-pasta_tratados = os.path.join(os.path.dirname(__file__), 'dados_tratados')
-
-# Imprime o caminho absoluto para depuração
-st.write(f"Caminho absoluto para dados_brutos: {os.path.abspath(pasta_brutos)}")
-st.write(f"Caminho absoluto para dados_tratados: {os.path.abspath(pasta_tratados)}")
-
-# Verifica se a pasta existe antes de tentar listar arquivos
-if os.path.exists(pasta_brutos):
-    arquivos_brutos = os.listdir(pasta_brutos)
-    st.write(f"Arquivos encontrados em dados_brutos: {arquivos_brutos}")
-else:
-    st.error(f"A pasta '{pasta_brutos}' não foi encontrada.")
-    st.stop()
-
 # Título do aplicativo
 st.title("Web Scraping de Apartamentos")
 
@@ -68,8 +52,8 @@ if modo == "Raspagem":
 # Modo de Tratamento de Dados
 elif modo == "Tratamento de Dados":
     # Diretórios
-    pasta_brutos = "dados_brutos"
-    pasta_tratados = "dados_tratados"
+    pasta_brutos = os.path.join(os.path.dirname(__file__), "dados_brutos")
+    pasta_tratados = os.path.join(os.path.dirname(__file__), "dados_tratados")
 
     # Verifica se a pasta de dados tratados existe; caso contrário, cria a pasta
     if not os.path.exists(pasta_tratados):
