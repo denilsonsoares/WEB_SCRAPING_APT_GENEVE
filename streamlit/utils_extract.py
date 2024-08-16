@@ -24,8 +24,12 @@ def criar_driver():
     chrome_options.add_argument(f"--user-agent={user_agent}")
     chrome_options.add_argument("--incognito")
     chrome_options.add_argument("--headless=new")  # Executar o navegador em modo headless
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-gpu")  # Necessário se você estiver rodando o navegador em servidores que não possuem uma GPU
     chrome_options.add_argument("--window-size=1920,1080")  # Define um tamanho de janela padrão para o headless
     return webdriver.Chrome(options=chrome_options)
+
 
 # Função para lidar com o banner de privacidade
 def lidar_com_privacidade(driver):
