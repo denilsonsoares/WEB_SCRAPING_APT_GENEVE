@@ -6,6 +6,34 @@ import pytz
 from datetime import datetime
 import os
 from urllib.parse import urljoin
+import pandas as pd
+import os
+from openpyxl import Workbook
+
+# Função para salvar dados em formato Excel, linha por linha, ignorando linhas problemáticas
+def salvar_dados(df, pasta_dados_brutos, nome_arquivo):
+    caminho_excel = os.path.join(pasta_dados_brutos, f"{nome_arquivo}")
+
+    # Cria um novo Workbook para salvar os dados
+    wb = Workbook()
+    ws = wb.active
+
+    # Adiciona os cabeçalhos na primeira linha
+    ws.append(df.columns.tolist())
+
+    # Itera sobre as linhas do DataFrame
+    for idx, row in df.iterrows():
+        try:
+            # Adiciona a linha no arquivo Excel
+            ws.append(row.tolist())
+        except Exception as e:
+            # Se ocorrer um erro, imprime a linha problemática e continua
+            print(f"Erro ao salvar linha {idx}: {str(e)} - Linha ignorada.")
+
+    # Salva o arquivo Excel
+    wb.save(caminho_excel)
+    print(f"Dados salvos em formato Excel: {caminho_excel}")
+
 
 # Função para criar o scraper com rotação de User-Agent
 def criar_scraper():
@@ -92,7 +120,7 @@ def coletar_dados_apartamentos_immoscout(soup, dados_apartamentos):
             endereco = endereco_element.get_text(strip=True) if endereco_element else 'N/A'
 
             link_element = apto.select_one("a.HgCardElevated_link_EHfr7")
-            link = ("https://www.immoscout24.ch/"+link_element.get('href')) if link_element else 'N/A'
+            link = ("https://www.immoscout24.ch"+link_element.get('href')) if link_element else 'N/A'
 
             data_extracao = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
 
@@ -179,14 +207,18 @@ def raspar_dados(site, tipo, cidade):
         scraper = criar_scraper()
         df = navegar_paginas(scraper, url, site)
 
-        pasta_dados_brutos = "dados_brutos"
+        pasta_dados_brutos = "streamlit\dados_brutos"
         os.makedirs(pasta_dados_brutos, exist_ok=True)
 
         data_extracao = datetime.now().strftime('%Y%m%d')
         nome_arquivo = f"{site}_{tipo}_{cidade.lower()}_{data_extracao}.xlsx"
-        caminho_arquivo = os.path.join(pasta_dados_brutos, nome_arquivo)
-        df.to_excel(caminho_arquivo, index=False)
-        print(f"Dados salvos em: {caminho_arquivo}")
+        #caminho_arquivo = os.path.join(pasta_dados_brutos, nome_arquivo)
+        #df.to_excel(caminho_arquivo, index=False)
+        #print(f"Dados salvos em: {caminho_arquivo}")
+
+        # Usando a função de salvamento
+        salvar_dados(df, pasta_dados_brutos, nome_arquivo)
+
         return df
 
     except Exception as e:
