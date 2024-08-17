@@ -7,12 +7,13 @@ import zipfile
 import io
 from utils_extract import raspar_dados, set_parar_raspagem, salvar_dados
 from utils_treat import *
+from utils_analytics import analisar_variacao_precos
 
 # Título do aplicativo
 st.title("Web Scraping de Apartamentos")
 
-# Seleção do modo: Raspagem ou Tratamento de Dados
-modo = st.radio("Selecione o modo", ["Raspagem", "Tratamento de Dados"])
+# Seleção do modo: Raspagem, Tratamento de Dados ou Análise de Dados
+modo = st.radio("Selecione o modo", ["Raspagem", "Tratamento de Dados", "Análise de Dados"])
 
 # Modo de Raspagem
 if modo == "Raspagem":
@@ -157,3 +158,22 @@ elif modo == "Tratamento de Dados":
         file_name="arquivos_tratados.zip",
         mime="application/zip"
     )
+
+# Modo de Análise de Dados
+elif modo == "Análise de Dados":
+    st.header("Análise de Variação de Preços dos Apartamentos")
+
+    # Filtros interativos
+    tipo_transacao = st.selectbox("Tipo de Transação", ["Alugar", "Comprar"], index=0)
+    cidade = st.selectbox("Cidade", ["Geneve", "Zurich"], index=0)
+    faixa_preco = st.slider("Faixa de Preço (CHF)", 0, 10000, (500, 5000))
+    num_quartos = st.slider("Número de Quartos", 1, 10, (1, 5))
+
+    # Botão para iniciar a análise
+    if st.button("Analisar"):
+        # Realizar análise e plotar os gráficos
+        df_variacao_precos = analisar_variacao_precos(tipo_transacao, cidade, faixa_preco, num_quartos)
+        if not df_variacao_precos.empty:
+            st.line_chart(df_variacao_precos)
+        else:
+            st.warning("Nenhum dado disponível para os filtros selecionados.")
