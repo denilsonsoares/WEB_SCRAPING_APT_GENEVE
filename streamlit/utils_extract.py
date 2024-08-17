@@ -11,8 +11,12 @@ import os
 from openpyxl import Workbook
 
 # Função para salvar dados em formato Excel, linha por linha, ignorando linhas problemáticas
+from openpyxl import Workbook
+from openpyxl.utils.exceptions import IllegalCharacterError
+import os
+
 def salvar_dados(df, pasta_dados_brutos, nome_arquivo):
-    caminho_excel = os.path.join(pasta_dados_brutos, f"{nome_arquivo}")
+    caminho_excel = os.path.join(pasta_dados_brutos, nome_arquivo)
 
     # Cria um novo Workbook para salvar os dados
     wb = Workbook()
@@ -24,16 +28,29 @@ def salvar_dados(df, pasta_dados_brutos, nome_arquivo):
     # Itera sobre as linhas do DataFrame
     for idx, row in df.iterrows():
         try:
-            # Adiciona a linha no arquivo Excel
-            ws.append(row.tolist())
-        except Exception as e:
-            # Se ocorrer um erro, imprime a linha problemática e continua
+            # Verifica e trata possíveis caracteres ilegais em cada célula
+            cleaned_row = []
+            for cell in row.tolist():
+                if isinstance(cell, str):
+                    # Remove caracteres não imprimíveis
+                    cleaned_cell = ''.join(c for c in cell if c.isprintable())
+                    cleaned_row.append(cleaned_cell)
+                else:
+                    cleaned_row.append(cell)
+
+            # Adiciona a linha tratada no arquivo Excel
+            ws.append(cleaned_row)
+
+        except IllegalCharacterError as e:
+            # Se ocorrer um erro específico de caracteres ilegais, ignora a linha
             print(f"Erro ao salvar linha {idx}: {str(e)} - Linha ignorada.")
+        except Exception as e:
+            # Se ocorrer qualquer outro erro, imprime a linha problemática e continua
+            print(f"Erro inesperado na linha {idx}: {str(e)} - Linha ignorada.")
 
     # Salva o arquivo Excel
     wb.save(caminho_excel)
     print(f"Dados salvos em formato Excel: {caminho_excel}")
-
 
 # Função para criar o scraper com rotação de User-Agent
 def criar_scraper():

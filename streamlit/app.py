@@ -1,9 +1,11 @@
+from datetime import datetime
+
 import streamlit as st
 import os
 import pandas as pd
 import zipfile
 import io
-from utils_extract import raspar_dados, set_parar_raspagem
+from utils_extract import raspar_dados, set_parar_raspagem, salvar_dados
 from utils_treat import *
 
 # Título do aplicativo
@@ -50,9 +52,11 @@ if modo == "Raspagem":
                     st.write(df)
 
                     # Salva os dados raspados em um arquivo Excel
-                    nome_arquivo = f"{site}_{tipo}_{cidade}.xlsx"
-                    caminho_arquivo = os.path.join(os.path.dirname(__file__), "dados_brutos", nome_arquivo)
-                    df.to_excel(caminho_arquivo, index=False)
+                    data_extracao = datetime.now().strftime('%Y%m%d')
+                    nome_arquivo = f"{site}_{tipo}_{cidade.lower()}_{data_extracao}.xlsx"
+                    pasta_dados_brutos = "streamlit\dados_brutos"
+                    os.makedirs(pasta_dados_brutos, exist_ok=True)
+                    salvar_dados(df, pasta_dados_brutos, nome_arquivo)
 
                     st.success(f"Raspagem concluída para {site}, {tipo}, {cidade}!")
 
