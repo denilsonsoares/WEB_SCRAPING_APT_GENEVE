@@ -15,13 +15,13 @@ modo = st.radio("Selecione o modo", ["Raspagem", "Tratamento de Dados"])
 # Modo de Raspagem
 if modo == "Raspagem":
     # Seleção do site
-    site = st.selectbox("Selecione o site", ["homegate", "immoscout24"])
+    sites = st.multiselect("Selecione os sites", ["homegate", "immoscout24"], default=["homegate", "immoscout24"])
 
     # Seleção do tipo de transação
-    tipo = st.radio("Tipo de transação", ["alugar", "comprar"])
+    tipos = st.multiselect("Tipos de transação", ["alugar", "comprar"], default=["alugar", "comprar"])
 
     # Seleção da cidade
-    cidade = st.selectbox("Selecione a cidade", ["Geneve", "Zurich"])
+    cidades = st.multiselect("Selecione as cidades", ["Geneve", "Zurich"], default=["Geneve", "Zurich"])
 
     # Botão para iniciar a raspagem
     iniciar_raspagem = st.button("Iniciar Raspagem")
@@ -33,16 +33,33 @@ if modo == "Raspagem":
         # Reseta a variável global de controle de raspagem
         set_parar_raspagem(False)
 
-        # Informa o usuário sobre o início da raspagem
-        st.write(f"Iniciando a raspagem para {tipo} em {cidade} no site {site}...")
+        # Loop sobre todas as combinações de site, tipo de transação e cidade
+        for site in sites:
+            for tipo in tipos:
+                for cidade in cidades:
+                    if parar_raspagem:
+                        break
 
-        # Realiza a raspagem de dados
-        df = raspar_dados(site, tipo, cidade)
+                    # Informa o usuário sobre o início da raspagem
+                    st.write(f"Iniciando a raspagem para {tipo} em {cidade} no site {site}...")
 
-        # Exibe os dados raspados
-        st.write(df)
+                    # Realiza a raspagem de dados
+                    df = raspar_dados(site, tipo, cidade)
 
-        st.success("Raspagem concluída!")
+                    # Exibe os dados raspados
+                    st.write(df)
+
+                    # Salva os dados raspados em um arquivo Excel
+                    nome_arquivo = f"{site}_{tipo}_{cidade}.xlsx"
+                    caminho_arquivo = os.path.join(os.path.dirname(__file__), "dados_brutos", nome_arquivo)
+                    df.to_excel(caminho_arquivo, index=False)
+
+                    st.success(f"Raspagem concluída para {site}, {tipo}, {cidade}!")
+
+        if parar_raspagem:
+            st.warning("Raspagem interrompida!")
+        else:
+            st.success("Raspagem concluída para todas as combinações!")
 
     if parar_raspagem:
         # Sinaliza para parar a raspagem
