@@ -224,7 +224,7 @@ def raspar_dados(site, tipo, cidade):
         scraper = criar_scraper()
         df = navegar_paginas(scraper, url, site)
 
-        pasta_dados_brutos = "streamlit\dados_brutos"
+        pasta_dados_brutos = "dados_brutos"
         os.makedirs(pasta_dados_brutos, exist_ok=True)
 
         data_extracao = datetime.now().strftime('%Y%m%d')
