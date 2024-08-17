@@ -7,7 +7,7 @@ import zipfile
 import io
 from utils_extract import raspar_dados, set_parar_raspagem, salvar_dados
 from utils_treat import *
-from utils_analytics import analisar_variacao_precos
+from utils_analytics import *
 
 # Título do aplicativo
 st.title("Web Scraping de Apartamentos")
@@ -161,19 +161,68 @@ elif modo == "Tratamento de Dados":
 
 # Modo de Análise de Dados
 elif modo == "Análise de Dados":
-    st.header("Análise de Variação de Preços dos Apartamentos")
+    pasta_tratados = os.path.join(os.path.dirname(__file__), "dados_tratados")
+    arquivo_saida = os.path.join(pasta_tratados, "dados_combinados.xlsx")
 
-    # Filtros interativos
-    tipo_transacao = st.selectbox("Tipo de Transação", ["Alugar", "Comprar"], index=0)
-    cidade = st.selectbox("Cidade", ["Geneve", "Zurich"], index=0)
-    faixa_preco = st.slider("Faixa de Preço (CHF)", 0, 10000, (500, 5000))
-    num_quartos = st.slider("Número de Quartos", 1, 10, (1, 5))
+    if st.button("Combinar Dados"):
+        combinar_planilhas(pasta_tratados, arquivo_saida)
+        st.success(f"Planilha combinada salva como '{arquivo_saida}'.")
 
-    # Botão para iniciar a análise
-    if st.button("Analisar"):
-        # Realizar análise e plotar os gráficos
-        df_variacao_precos = analisar_variacao_precos(tipo_transacao, cidade, faixa_preco, num_quartos)
-        if not df_variacao_precos.empty:
-            st.line_chart(df_variacao_precos)
-        else:
-            st.warning("Nenhum dado disponível para os filtros selecionados.")
+    # Permitir que o usuário baixe o arquivo combinado
+    if os.path.exists(arquivo_saida):
+        with open(arquivo_saida, "rb") as file:
+            st.download_button(
+                label="Baixar Planilha Combinada",
+                data=file,
+                file_name="dados_combinados.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+
+    # Carregar os dados combinados
+    if os.path.exists(arquivo_saida):
+        df_combined = pd.read_excel(arquivo_saida)
+
+        # Seletor de cidade
+        cidades = df_combined['City'].unique()
+        cidade_selecionada = st.selectbox("Selecione a cidade", cidades)
+
+        # Seletor de tipo de transação
+        tipos = df_combined['Type of Transaction'].unique()
+        tipo_selecao = st.selectbox("Selecione o tipo de transação", tipos)
+
+        # Seletor de quantidade de quartos
+        quartos_opcoes = df_combined['Rooms'].unique()
+        quartos_opcoes = [str(q) for q in quartos_opcoes if pd.notna(q)]
+        quartos_opcoes = sorted(set(quartos_opcoes))
+        quartos_opcoes.append("Todos")
+        quartos_selecionados = st.selectbox("Selecione a quantidade de quartos", quartos_opcoes)
+
+        # Intervalo de preço
+        min_preco = df_combined['Price and Date'].apply(lambda x: min([float(p) for p, _ in x] if x else [0])).min()
+        max_preco = df_combined['Price and Date'].apply(lambda x: max([float(p) for p, _ in x] if x else [0])).max()
+        intervalo_preco = st.slider("Intervalo de preço", min_value=float(min_preco), max_value=float(max_preco), value=(float(min_preco), float(max_preco)))
+
+        # Filtrar dados com base nas seleções
+        df_filtrado = df_combined[
+            (df_combined['City'] == cidade_selecionada) &
+            (df_combined['Type of Transaction'] == tipo_selecao)
+        ]
+
+        if quartos_selecionados != "Todos":
+            df_filtrado = df_filtrado[df_filtrado['Rooms'] == float(quartos_selecionados)]
+
+        df_filtrado = df_filtrado[df_filtrado['Price and Date'].apply(lambda x: any(float(p) >= intervalo_preco[0] and float(p) <= intervalo_preco[1] for p, _ in x))]
+
+        # Exibir dados filtrados
+        st.write("Dados Filtrados:")
+        st.write(df_filtrado)
+
+        # Gráficos
+        if not df_filtrado.empty:
+            fig = px.histogram(df_filtrado, x='Price and Date', title="Distribuição de Preços")
+            st.plotly_chart(fig)
+
+            fig2 = px.box(df_filtrado, x='Rooms', y='Price and Date', title="Distribuição de Preços por Quartos")
+            st.plotly_chart(fig2)
+
+            st.write(f"Total de imóveis encontrados: {len(df_filtrado)}")
