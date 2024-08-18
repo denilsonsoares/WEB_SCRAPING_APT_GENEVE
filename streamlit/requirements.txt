@@ -6,3 +6,4 @@ pandas
 openpyxl
 pytz
 beautifulsoup4
+plotly
