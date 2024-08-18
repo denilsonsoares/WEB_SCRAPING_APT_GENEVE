@@ -7,3 +7,4 @@ openpyxl
 pytz
 beautifulsoup4
 plotly
+matplotlib
