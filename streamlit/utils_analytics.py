@@ -1,6 +1,8 @@
 import re
 import os
 import pandas as pd
+import matplotlib.pyplot as plt
+import streamlit as st
 
 def extrair_id(link):
     """Extrai o ID do link fornecido."""
@@ -88,10 +90,6 @@ def filtrar_dados(arquivo_entrada, pasta_saida):
 
     return arquivo_saida
 
-import matplotlib.pyplot as plt
-import streamlit as st
-
-
 def plotar_evolucao_precos(arquivo_entrada, min_quartos, max_quartos, min_area, max_area):
     # Ler o arquivo filtrado em um dataframe
     df = pd.read_excel(arquivo_entrada)
@@ -123,3 +121,14 @@ def plotar_evolucao_precos(arquivo_entrada, min_quartos, max_quartos, min_area, 
 
     # Usar st.pyplot para exibir o gráfico no Streamlit
     st.pyplot(plt)
+
+    # Exibir a tabela de apartamentos abaixo do gráfico
+    # Criar a coluna de links clicáveis
+    df_filtrado['Link'] = df_filtrado['Extracted from'].apply(
+        lambda x: f'<a href="{x}" target="_blank">Visitar Apartamento</a>')
+
+    # Selecionar colunas para exibir
+    colunas_exibir = ['Rooms', 'Living Space (m²)', 'Price and Date', 'Link']
+
+    # Exibir o dataframe como HTML
+    st.markdown(df_filtrado[colunas_exibir].to_html(escape=False, index=False), unsafe_allow_html=True)
