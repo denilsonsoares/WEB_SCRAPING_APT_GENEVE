@@ -1,4 +1,3 @@
-# utils_analytics.py
 import pandas as pd
 import re
 import os
@@ -7,6 +6,19 @@ def extrair_id(link):
     """Extrai o ID do link fornecido."""
     match = re.search(r'/(\d+)$', link)
     return match.group(1) if match else None
+
+def processar_preco_data(lista_precos_datas):
+    """Processa a lista de preços e datas, removendo nan, formatando datas e removendo duplicatas."""
+    lista_processada = [
+        (preco, pd.to_datetime(data).strftime('%Y-%d-%m'))
+        for preco, data in lista_precos_datas
+        if pd.notna(preco) and pd.notna(data)
+    ]
+
+    # Remove duplicatas mantendo o primeiro preço com a data
+    lista_processada = list(dict.fromkeys(lista_processada))
+
+    return lista_processada
 
 def combinar_planilhas(pasta_tratados, arquivo_saida):
     """Combina todas as planilhas na pasta especificada em uma única planilha e agrupa por ID."""
@@ -39,15 +51,16 @@ def combinar_planilhas(pasta_tratados, arquivo_saida):
         'Data extracted when': lambda x: list(x),
         'Rent (CHF)': lambda x: list(x),
         'Price (CHF)': lambda x: list(x),
-        'Rooms': 'first'  # Mantém a coluna 'Rooms'
+        'Rooms': 'first',  # Mantém a coluna 'Rooms'
+        'Living Space (m²)': 'first'  # Mantém a coluna 'Living Space (m²)'
     }).reset_index()
 
-    # Criar coluna com lista de preços e datas
+    # Criar coluna com lista de preços e datas, e processar os dados
     grouped['Price and Date'] = grouped.apply(
-        lambda row: list(zip(row['Price (CHF)'], row['Data extracted when'])), axis=1)
+        lambda row: processar_preco_data(list(zip(row['Price (CHF)'], row['Data extracted when']))), axis=1)
 
-    # Remover colunas desnecessárias
-    grouped = grouped.drop(columns=['Rent (CHF)', 'Price (CHF)'])
+    # Remover colunas desnecessárias, incluindo 'Data extracted when'
+    grouped = grouped.drop(columns=['Rent (CHF)', 'Price (CHF)', 'Data extracted when'])
 
     # Salvar a planilha combinada
     grouped.to_excel(arquivo_saida, index=False)

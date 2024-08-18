@@ -69,11 +69,27 @@ def coletar_dados_apartamentos_homegate(soup, dados_apartamentos):
             aluguel_element = apto.select_one('.HgListingCard_price_JoPAs')
             aluguel = aluguel_element.get_text(strip=True) if aluguel_element else 'N/A'
 
-            quartos_element = apto.select_one(".HgListingRoomsLivingSpace_roomsLivingSpace_GyVgq > span:first-child > strong")
-            quartos = quartos_element.get_text(strip=True) if quartos_element else 'N/A'
+            try:
+                # Tenta encontrar o elemento de quartos (rooms)
+                quartos_element = apto.select_one(
+                    ".HgListingRoomsLivingSpace_roomsLivingSpace_GyVgq > span:first-child > strong")
+                quartos = quartos_element.get_text(
+                    strip=True) if quartos_element and 'rooms' in quartos_element.find_parent(
+                    'span').get_text() else 'N/A'
+            except Exception as e:
+                quartos = 'N/A'
+                print(f"Erro ao extrair quartos: {e}")
 
-            espaco_elements = apto.select(".HgListingRoomsLivingSpace_roomsLivingSpace_GyVgq > span > strong")
-            espaco = espaco_elements[1].get_text(strip=True) if len(espaco_elements) > 1 else 'N/A'
+            try:
+                # Tenta encontrar o elemento de espaço de vida (living space)
+                espaco_element = apto.select_one(
+                    ".HgListingRoomsLivingSpace_roomsLivingSpace_GyVgq > span:last-child > strong")
+                espaco = espaco_element.get_text(
+                    strip=True) if espaco_element and 'living space' in espaco_element.find_parent(
+                    'span').get_text() else 'N/A'
+            except Exception as e:
+                espaco = 'N/A'
+                print(f"Erro ao extrair espaço de vida: {e}")
 
             endereco_element = apto.select_one('.HgListingCard_address_JGiFv')
             endereco = endereco_element.get_text(strip=True) if endereco_element else 'N/A'
@@ -113,6 +129,7 @@ def coletar_dados_apartamentos_immoscout(soup, dados_apartamentos):
             titulo = titulo_element.get_text(strip=True) if titulo_element else 'N/A'
 
             try:
+                # Tenta extrair o preço (aluguel)
                 aluguel_element = apto.select_one(".HgListingRoomsLivingSpacePrice_price_u9Vee")
                 aluguel = aluguel_element.get_text(strip=True) if aluguel_element else 'N/A'
             except Exception as e:
@@ -120,18 +137,24 @@ def coletar_dados_apartamentos_immoscout(soup, dados_apartamentos):
                 print(f"Erro ao extrair o aluguel: {str(e)}")
 
             try:
-                quartos_element = apto.select_one(".HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp > strong:first-child")
-                quartos = quartos_element.get_text(strip=True) if quartos_element else 'N/A'
+                # Tenta extrair a quantidade de quartos
+                quartos_element = apto.select_one(
+                    ".HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp > strong:first-child")
+                quartos = quartos_element.get_text(
+                    strip=True) if quartos_element and 'rooms' in quartos_element.get_text() else 'N/A'
             except Exception as e:
                 quartos = 'N/A'
                 print(f"Erro ao extrair a quantidade de quartos: {str(e)}")
 
             try:
-                espaco_element = apto.select_one(".HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp > strong:nth-child(3)")
+                # Tenta extrair o espaço de vida
+                espaco_element = apto.select_one(
+                    ".HgListingRoomsLivingSpacePrice_roomsLivingSpacePrice_M6Ktp > strong[title='living space']")
                 espaco = espaco_element.get_text(strip=True) if espaco_element else 'N/A'
             except Exception as e:
                 espaco = 'N/A'
                 print(f"Erro ao extrair o espaço de vida: {str(e)}")
+
 
             endereco_element = apto.select_one("div.HgListingCard_address_JGiFv address")
             endereco = endereco_element.get_text(strip=True) if endereco_element else 'N/A'

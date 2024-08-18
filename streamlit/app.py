@@ -1,10 +1,10 @@
 from datetime import datetime
-
 import streamlit as st
 import os
 import pandas as pd
 import zipfile
 import io
+import plotly.express as px
 from utils_extract import raspar_dados, set_parar_raspagem, salvar_dados
 from utils_treat import *
 from utils_analytics import *
@@ -198,8 +198,14 @@ elif modo == "Análise de Dados":
         quartos_selecionados = st.selectbox("Selecione a quantidade de quartos", quartos_opcoes)
 
         # Intervalo de preço
-        min_preco = df_combined['Price and Date'].apply(lambda x: min([float(p) for p, _ in x] if x else [0])).min()
-        max_preco = df_combined['Price and Date'].apply(lambda x: max([float(p) for p, _ in x] if x else [0])).max()
+        min_preco = df_combined['Price and Date'].apply(
+            lambda x: min([float(p[0]) for p in x if isinstance(p, tuple) and len(p) == 2] if x else [0])
+        ).min()
+
+        max_preco = df_combined['Price and Date'].apply(
+            lambda x: max([float(p[0]) for p in x if isinstance(p, tuple) and len(p) == 2] if x else [0])
+        ).max()
+
         intervalo_preco = st.slider("Intervalo de preço", min_value=float(min_preco), max_value=float(max_preco), value=(float(min_preco), float(max_preco)))
 
         # Filtrar dados com base nas seleções
@@ -217,12 +223,24 @@ elif modo == "Análise de Dados":
         st.write("Dados Filtrados:")
         st.write(df_filtrado)
 
-        # Gráficos
+        # Verifica se há dados para plotar
         if not df_filtrado.empty:
-            fig = px.histogram(df_filtrado, x='Price and Date', title="Distribuição de Preços")
+            # Preparar os dados para plotar
+            df_long = df_filtrado.explode('Price and Date')
+            df_long[['Price', 'Date']] = pd.DataFrame(df_long['Price and Date'].tolist(), index=df_long.index)
+
+            # Converter a coluna de datas para o tipo datetime
+            df_long['Date'] = pd.to_datetime(df_long['Date'], format='%d-%m-%Y')
+
+            # Ordenar por data
+            df_long = df_long.sort_values('Date')
+
+            # Gráfico de linha para mostrar a evolução dos preços ao longo do tempo
+            fig = px.line(df_long, x='Date', y='Price', title="Evolução dos Preços ao Longo do Tempo")
             st.plotly_chart(fig)
 
-            fig2 = px.box(df_filtrado, x='Rooms', y='Price and Date', title="Distribuição de Preços por Quartos")
+            # Gráfico de boxplot para distribuição de preços por quantidade de quartos
+            fig2 = px.box(df_long, x='Rooms', y='Price', title="Distribuição de Preços por Quartos")
             st.plotly_chart(fig2)
 
             st.write(f"Total de imóveis encontrados: {len(df_filtrado)}")
