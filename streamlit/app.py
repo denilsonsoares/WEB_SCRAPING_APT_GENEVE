@@ -150,19 +150,19 @@ elif modo == "Tratamento de Dados":
         mime="application/zip"
     )
 
-# Modo de Análise de Dados
 elif modo == "Análise de Dados":
-    pasta_dados = os.path.join(os.path.dirname(__file__), "dados_tratados")
-    arquivo_combinado = os.path.join(pasta_dados, "dados_combinados.xlsx")
+    pasta_tratados = os.path.join(os.path.dirname(__file__), "dados_tratados")
+    arquivo_saida = os.path.join(pasta_tratados, "dados_combinados.xlsx")
+    arquivo_dados_filtrados = os.path.join(pasta_tratados, "dados_filtrados.xlsx")  # Caminho para os dados filtrados
 
+    # Botão para combinar dados
     if st.button("Combinar Dados"):
-        combinar_planilhas(pasta_dados, arquivo_combinado)
-        st.success(f"Planilha combinada salva como '{arquivo_combinado}'.")
+        combinar_planilhas(pasta_tratados, arquivo_saida)
+        st.success(f"Planilha combinada salva como '{arquivo_saida}'.")
 
     # Permitir que o usuário baixe o arquivo combinado
-    if os.path.exists(arquivo_combinado):
-        arquivo_filtrado = os.path.join(pasta_dados, "dados_filtrados.xlsx")
-        with open(arquivo_combinado, "rb") as file:
+    if os.path.exists(arquivo_saida):
+        with open(arquivo_saida, "rb") as file:
             st.download_button(
                 label="Baixar Planilha Combinada",
                 data=file,
@@ -171,8 +171,8 @@ elif modo == "Análise de Dados":
             )
 
     # Carregar os dados combinados
-    if os.path.exists(arquivo_combinado):
-        df_combined = carregar_dados_combinados(arquivo_combinado)
+    if os.path.exists(arquivo_saida):
+        df_combined = carregar_dados_combinados(arquivo_saida)
         if df_combined is not None:
             df_valid = filtrar_apartamentos_validos(df_combined)
 
@@ -183,21 +183,34 @@ elif modo == "Análise de Dados":
             intervalo_preco = calcular_intervalo_preco(df_valid)
             intervalo_data = calcular_intervalo_data(df_valid)
 
-            df_filtered = filtrar_dados(df_valid, cidade_selecionada, tipo_selecao, quartos_selecionados,
-                                        espaco_selecionado, intervalo_preco[0], intervalo_preco[1], intervalo_data)
-            st.write(df_filtered)
+            # Botão para filtrar dados
+            if st.button("Filtrar Dados"):
+                df_filtered = filtrar_dados(
+                    df_valid,
+                    cidade_selecionada,
+                    tipo_selecao,
+                    quartos_selecionados,
+                    espaco_selecionado,
+                    intervalo_preco[0],
+                    intervalo_preco[1],
+                    intervalo_data
+                )
 
-            if st.button("Gerar Planilha com Dados Filtrados"):
-                salvar_planilha_filtrada(df_filtered, arquivo_filtrado)
+                # Salvar os dados filtrados em uma nova planilha
+                caminho_filtrado = salvar_planilha_filtrada(df_filtered, arquivo_dados_filtrados)
 
-            if os.path.exists(arquivo_filtrado):
-                with open(arquivo_filtrado, "rb") as file:
+            # Botão para mostrar gráficos de evolução dos preços
+            if os.path.exists(arquivo_dados_filtrados):
+                df_filtered = pd.read_excel(arquivo_dados_filtrados)
+                if st.button("Mostrar Gráficos de Evolução de Preços"):
+                    exibir_grafico_evolucao_precos(df_filtered)
+
+            # Permitir que o usuário baixe os dados filtrados
+            if os.path.exists(arquivo_dados_filtrados):
+                with open(arquivo_dados_filtrados, "rb") as file:
                     st.download_button(
-                        label="Baixar Planilha Filtrada",
+                        label="Baixar Dados Filtrados",
                         data=file,
                         file_name="dados_filtrados.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     )
-
-                # Exibir gráfico interativo a partir da planilha filtrada
-                exibir_grafico_interativo(df_filtered)

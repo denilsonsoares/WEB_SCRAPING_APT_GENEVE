@@ -51,9 +51,6 @@ def combinar_planilhas(pasta_tratados, arquivo_saida):
         # Adicionar coluna ID extraído do link
         df['ID'] = df['Extracted from'].apply(extrair_id)
 
-        # Unificar as colunas de preço
-        df['Price (CHF)'] = df['Price (CHF)'].combine_first(df['Price (CHF)'])
-
         df_list.append(df)
 
     df_combined = pd.concat(df_list, ignore_index=True)
@@ -137,11 +134,15 @@ def calcular_intervalo_preco(df_valid):
         return (0, 0)
 
 
-
 def calcular_intervalo_data(df_valid):
-    data_min = df_valid['Price and Date'].apply(lambda x: min([datetime.strptime(p[1], '%d-%m-%Y') for p in x if isinstance(p, tuple) and len(p) == 2]) if x else None).dropna().min()
-    data_max = df_valid['Price and Date'].apply(lambda x: max([datetime.strptime(p[1], '%d-%m-%Y') for p in x if isinstance(p, tuple) and len(p) == 2]) if x else None).dropna().max()
-    return st.slider("Intervalo de datas", min_value=data_min, max_value=data_max, value=(data_min, data_max))
+    def extrair_data_min(x):
+        datas = [datetime.strptime(p[1], '%d-%m-%Y') for p in x if isinstance(p, tuple) and len(p) == 2]
+        return min(datas) if datas else None
+
+    data_min = df_valid['Price and Date'].apply(extrair_data_min).dropna().min()
+    data_max = df_valid['Price and Date'].apply(extrair_data_min).dropna().max()
+
+    return data_min, data_max
 
 def filtrar_dados(df_valid, cidade_selecionada, tipo_selecao, quartos_selecionados, espaco_selecionado, preco_min, preco_max, intervalo_data):
     return df_valid[
@@ -154,9 +155,22 @@ def filtrar_dados(df_valid, cidade_selecionada, tipo_selecao, quartos_selecionad
             for p in x if isinstance(p, tuple) and len(p) == 2)))
     ]
 
-def exibir_grafico_interativo(df_filtered):
-    fig = px.scatter(df_filtered, x="Price", y="Rooms", color="City", size="Size",
-                     hover_data=['City', 'Price', 'Rooms', 'Size'])
+
+def exibir_grafico_evolucao_precos(df_filtered):
+    """Exibe gráfico de evolução dos preços ao longo do tempo para apartamentos filtrados."""
+    # Expande a lista de preços e datas em diferentes linhas
+    df_expanded = df_filtered.explode('Price and Date')
+    df_expanded[['Price (CHF)', 'Data extracted when']] = pd.DataFrame(df_expanded['Price and Date'].tolist(),
+                                                                       index=df_expanded.index)
+
+    # Converte a coluna de datas para o formato datetime
+    df_expanded['Data extracted when'] = pd.to_datetime(df_expanded['Data extracted when'], format='%d-%m-%Y')
+
+    # Cria gráfico de linha para evolução dos preços
+    fig = px.line(df_expanded, x='Data extracted when', y='Price (CHF)', color='City',
+                  title="Evolução dos Preços ao Longo do Tempo",
+                  labels={'Data extracted when': 'Data', 'Price (CHF)': 'Preço (CHF)'})
+
     st.plotly_chart(fig)
 
 def salvar_planilha_filtrada(df_filtered, arquivo_saida):
