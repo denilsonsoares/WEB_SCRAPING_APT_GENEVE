@@ -169,22 +169,3 @@ elif modo == "Análise de Dados":
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-    # Carregar os dados combinados
-    if os.path.exists(arquivo_saida):
-        df_combined = carregar_dados_combinados(arquivo_saida)
-        if df_combined is not None:
-            df_valid = filtrar_apartamentos_validos(df_combined)
-
-            cidade_selecionada = selecionar_cidade(df_valid)
-            tipo_selecao = selecionar_tipo_transacao(df_valid)
-            quartos_selecionados = selecionar_intervalo_quartos(df_valid)
-            espaco_selecionado = selecionar_intervalo_espaco(df_valid)
-            intervalo_preco = calcular_intervalo_preco(df_valid)
-            intervalo_data = calcular_intervalo_data(df_valid)
-
-            df_filtered = filtrar_dados(df_valid, cidade_selecionada, tipo_selecao, quartos_selecionados,
-                                        espaco_selecionado, intervalo_preco[0], intervalo_preco[1], intervalo_data)
-            st.write(df_filtered)
-
-            exibir_grafico_interativo(df_filtered)
-
