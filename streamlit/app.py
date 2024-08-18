@@ -5,7 +5,7 @@ import pandas as pd
 import zipfile
 import io
 import plotly.express as px
-from utils_extract import raspar_dados, set_parar_raspagem, salvar_dados
+from utils_extract import raspar_dados, set_parar_raspagem
 from utils_treat import *
 from utils_analytics import *
 
@@ -153,15 +153,23 @@ elif modo == "Tratamento de Dados":
 # Modo de Análise de Dados
 elif modo == "Análise de Dados":
     pasta_tratados = os.path.join(os.path.dirname(__file__), "dados_tratados")
-    arquivo_saida = os.path.join(pasta_tratados, "dados_combinados.xlsx")
+    arquivo_saida_combinado = os.path.join(pasta_tratados, "dados_combinados.xlsx")
+    arquivo_saida_filtrado = os.path.join(pasta_tratados, "dados_filtrados.xlsx")
 
     if st.button("Combinar Dados"):
-        combinar_planilhas(pasta_tratados, arquivo_saida)
-        st.success(f"Planilha combinada salva como '{arquivo_saida}'.")
+        combinar_planilhas(pasta_tratados, arquivo_saida_combinado)
+        st.success(f"Planilha combinada salva como '{arquivo_saida_combinado}'.")
+
+    # Verifica se o arquivo combinado existe
+    if os.path.exists(arquivo_saida_combinado):
+        # Adiciona o botão para filtrar os dados
+        if st.button("Filtrar Dados"):
+            arquivo_filtrado = filtrar_dados(arquivo_saida_combinado, pasta_tratados)
+            st.success(f"Planilha filtrada salva como '{arquivo_filtrado}'.")
 
     # Permitir que o usuário baixe o arquivo combinado
-    if os.path.exists(arquivo_saida):
-        with open(arquivo_saida, "rb") as file:
+    if os.path.exists(arquivo_saida_combinado):
+        with open(arquivo_saida_combinado, "rb") as file:
             st.download_button(
                 label="Baixar Planilha Combinada",
                 data=file,
@@ -169,3 +177,23 @@ elif modo == "Análise de Dados":
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
+    # Permitir que o usuário baixe o arquivo filtrado
+    if os.path.exists(arquivo_saida_filtrado):
+        with open(arquivo_saida_filtrado, "rb") as file:
+            st.download_button(
+                label="Baixar Planilha Filtrada",
+                data=file,
+                file_name="dados_filtrados.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+    if os.path.exists(arquivo_filtrado):
+        st.header("Análise de Preços dos Apartamentos")
+
+        # Seleção de intervalo de quartos e área
+        min_quartos = st.slider('Número mínimo de quartos', 1, 10, 2)
+        max_quartos = st.slider('Número máximo de quartos', 1, 10, 4)
+        min_area = st.slider('Área mínima (m²)', 10, 200, 30)
+        max_area = st.slider('Área máxima (m²)', 10, 200, 50)
+
+        if st.button("Plotar Evolução de Preços"):
+            plotar_evolucao_precos(arquivo_filtrado, min_quartos, max_quartos, min_area, max_area)

@@ -1,10 +1,6 @@
 import re
 import os
 import pandas as pd
-from datetime import datetime
-import streamlit as st
-import plotly.express as px
-import ast
 
 def extrair_id(link):
     """Extrai o ID do link fornecido."""
@@ -75,3 +71,48 @@ def combinar_planilhas(pasta_tratados, arquivo_saida):
     grouped = grouped.drop(columns=['Price (CHF)', 'Data extracted when'])
     grouped.to_excel(arquivo_saida, index=False)
     print(f"Planilha combinada salva como '{arquivo_saida}'.")
+
+def filtrar_dados(arquivo_entrada, pasta_saida):
+    # Ler o arquivo combinado em um dataframe
+    df = pd.read_excel(arquivo_entrada)
+
+    # Remover linhas com qualquer valor N/A ou vazio em qualquer coluna
+    df = df.dropna()
+
+    # Filtrar a coluna "Price and Date" para remover tuplas vazias
+    df = df[df["Price and Date"].apply(lambda x: len(x) > 0)]
+
+    # Salvar o dataframe filtrado em um novo arquivo Excel
+    arquivo_saida = os.path.join(pasta_saida, "dados_filtrados.xlsx")
+    df.to_excel(arquivo_saida, index=False)
+
+    return arquivo_saida
+
+import matplotlib.pyplot as plt
+
+def plotar_evolucao_precos(arquivo_entrada, min_quartos, max_quartos, min_area, max_area):
+    # Ler o arquivo filtrado em um dataframe
+    df = pd.read_excel(arquivo_entrada)
+
+    # Filtrar os dados com base no número de quartos e na área
+    df_filtrado = df[(df['Rooms'].between(min_quartos, max_quartos)) &
+                     (df['Living Space (m²)'].between(min_area, max_area))]
+
+    # Plotar a evolução dos preços
+    plt.figure(figsize=(10, 6))
+
+    for index, row in df_filtrado.iterrows():
+        price_dates = eval(row['Price and Date'])  # Converte a string de volta para uma lista de tuplas
+        prices, dates = zip(*price_dates)
+
+        # Convertendo as datas para o formato datetime para plotagem
+        dates = pd.to_datetime(dates, format='%Y-%d-%m')
+
+        plt.plot(dates, prices, label=f'Apt {index + 1}')
+
+    plt.xlabel('Data')
+    plt.ylabel('Preço')
+    plt.title('Evolução dos Preços dos Apartamentos')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
