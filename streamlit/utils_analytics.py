@@ -20,25 +20,46 @@ def processar_preco_data(lista_precos_datas):
 
     return lista_processada
 
+def obter_primeiro_valor_valido(values):
+    """Retorna o primeiro valor válido (não N/A) de uma série de valores."""
+    for value in values:
+        if pd.notna(value) and value != 'N/A':
+            return value
+    return 'N/A'
+
 def combinar_planilhas(pasta_tratados, arquivo_saida):
     """Combina todas as planilhas na pasta especificada em uma única planilha e agrupa por ID."""
-    arquivos = [f for f in os.listdir(pasta_tratados) if f.endswith('.xlsx')]
+    arquivos = [f for f in os.listdir(pasta_tratados) if f.endswith('_updated.xlsx')]
     df_list = []
 
     for arquivo in arquivos:
         caminho_arquivo = os.path.join(pasta_tratados, arquivo)
         df = pd.read_excel(caminho_arquivo)
 
-        # Adicionar coluna Type of Transaction com base no nome do arquivo
-        tipo_transacao = 'Rent' if 'alugar' in arquivo else 'Buy'
-        df['Type of Transaction'] = tipo_transacao
+        # Adicionar colunas com base no nome do arquivo
+        partes_nome = os.path.splitext(arquivo)[0].split('_')
+        site, tipo_transacao, cidade = partes_nome[0], partes_nome[1], partes_nome[2]
+
+        df['Type of Transaction'] = 'Rent' if 'alugar' in tipo_transacao else 'Buy'
+        df['City'] = cidade.capitalize()
+        df['Country'] = 'Switzerland'
+        df['Source'] = site
 
         # Adicionar coluna ID extraído do link
         df['ID'] = df['Extracted from'].apply(extrair_id)
 
+        # Unificar as colunas de preço
+        df['Price (CHF)'] = df['Price (CHF)'].combine_first(df['Price (CHF)'])
+
         df_list.append(df)
 
     df_combined = pd.concat(df_list, ignore_index=True)
+
+    # Substituir os valores 'N/A' com o primeiro valor válido antes de agrupar por ID
+    df_combined['Title'] = df_combined.groupby('ID')['Title'].transform(obter_primeiro_valor_valido)
+    df_combined['Address'] = df_combined.groupby('ID')['Address'].transform(obter_primeiro_valor_valido)
+    df_combined['Rooms'] = df_combined.groupby('ID')['Rooms'].transform(obter_primeiro_valor_valido)
+    df_combined['Living Space (m²)'] = df_combined.groupby('ID')['Living Space (m²)'].transform(obter_primeiro_valor_valido)
 
     # Agrupar os dados por ID
     grouped = df_combined.groupby('ID').agg({
@@ -47,21 +68,22 @@ def combinar_planilhas(pasta_tratados, arquivo_saida):
         'City': 'first',
         'Country': 'first',
         'Type of Transaction': 'first',
+        'Source': 'first',
         'Extracted from': 'first',
         'Data extracted when': lambda x: list(x),
-        'Rent (CHF)': lambda x: list(x),
         'Price (CHF)': lambda x: list(x),
-        'Rooms': 'first',  # Mantém a coluna 'Rooms'
-        'Living Space (m²)': 'first'  # Mantém a coluna 'Living Space (m²)'
+        'Rooms': 'first',
+        'Living Space (m²)': 'first'
     }).reset_index()
 
     # Criar coluna com lista de preços e datas, e processar os dados
     grouped['Price and Date'] = grouped.apply(
         lambda row: processar_preco_data(list(zip(row['Price (CHF)'], row['Data extracted when']))), axis=1)
 
-    # Remover colunas desnecessárias, incluindo 'Data extracted when'
-    grouped = grouped.drop(columns=['Rent (CHF)', 'Price (CHF)', 'Data extracted when'])
+    # Remover colunas desnecessárias, incluindo 'Price (CHF)' e 'Data extracted when'
+    grouped = grouped.drop(columns=['Price (CHF)', 'Data extracted when'])
 
     # Salvar a planilha combinada
     grouped.to_excel(arquivo_saida, index=False)
     print(f"Planilha combinada salva como '{arquivo_saida}'.")
+

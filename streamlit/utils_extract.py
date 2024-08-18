@@ -66,8 +66,8 @@ def coletar_dados_apartamentos_homegate(soup, dados_apartamentos):
             titulo_element = apto.select_one('.HgListingDescription_title_NAAxy span')
             titulo = titulo_element.get_text(strip=True) if titulo_element else 'N/A'
 
-            aluguel_element = apto.select_one('.HgListingCard_price_JoPAs')
-            aluguel = aluguel_element.get_text(strip=True) if aluguel_element else 'N/A'
+            preco_element = apto.select_one('.HgListingCard_price_JoPAs')
+            preco = preco_element.get_text(strip=True) if preco_element else 'N/A'
 
             try:
                 # Tenta encontrar o elemento de quartos (rooms)
@@ -101,7 +101,7 @@ def coletar_dados_apartamentos_homegate(soup, dados_apartamentos):
 
             dados_apartamentos.append({
                 'Título': titulo,
-                'Aluguel': aluguel,
+                'Preço (CHF)': preco,
                 'Quartos': quartos,
                 'Espaço': espaco,
                 'Endereço': endereco,
@@ -110,13 +110,12 @@ def coletar_dados_apartamentos_homegate(soup, dados_apartamentos):
             })
 
             print(
-                f"Título: {titulo}, Aluguel: {aluguel}, Quartos: {quartos}, Espaço: {espaco}, Endereço: {endereco}, Link: {link}, Data de Extração: {data_extracao}")
+                f"Título: {titulo}, Preço: {preco}, Quartos: {quartos}, Espaço: {espaco}, Endereço: {endereco}, Link: {link}, Data de Extração: {data_extracao}")
             print("-" * 40)
 
         except Exception as e:
             print(f"Erro ao coletar dados do apartamento: {str(e)}")
             continue
-
 
 # Função para coletar dados de apartamentos no ImmoScout24
 def coletar_dados_apartamentos_immoscout(soup, dados_apartamentos):
@@ -129,12 +128,12 @@ def coletar_dados_apartamentos_immoscout(soup, dados_apartamentos):
             titulo = titulo_element.get_text(strip=True) if titulo_element else 'N/A'
 
             try:
-                # Tenta extrair o preço (aluguel)
-                aluguel_element = apto.select_one(".HgListingRoomsLivingSpacePrice_price_u9Vee")
-                aluguel = aluguel_element.get_text(strip=True) if aluguel_element else 'N/A'
+                # Tenta extrair o preço
+                preco_element = apto.select_one(".HgListingRoomsLivingSpacePrice_price_u9Vee")
+                preco = preco_element.get_text(strip=True) if preco_element else 'N/A'
             except Exception as e:
-                aluguel = 'N/A'
-                print(f"Erro ao extrair o aluguel: {str(e)}")
+                preco = 'N/A'
+                print(f"Erro ao extrair o preço: {str(e)}")
 
             try:
                 # Tenta extrair a quantidade de quartos
@@ -166,7 +165,7 @@ def coletar_dados_apartamentos_immoscout(soup, dados_apartamentos):
 
             dados_apartamentos.append({
                 'Título': titulo,
-                'Aluguel': aluguel,
+                'Preço (CHF)': preco,
                 'Quartos': quartos,
                 'Espaço': espaco,
                 'Endereço': endereco,
@@ -175,7 +174,7 @@ def coletar_dados_apartamentos_immoscout(soup, dados_apartamentos):
             })
 
             print(
-                f"Título: {titulo}, Aluguel: {aluguel}, Quartos: {quartos}, Espaço: {espaco}, Endereço: {endereco}, Link: {link}, Data de Extração: {data_extracao}")
+                f"Título: {titulo}, Preço: {preco}, Quartos: {quartos}, Espaço: {espaco}, Endereço: {endereco}, Link: {link}, Data de Extração: {data_extracao}")
             print("-" * 40)
 
         except Exception as e:
