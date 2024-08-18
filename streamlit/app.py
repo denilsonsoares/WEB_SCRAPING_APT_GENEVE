@@ -152,16 +152,17 @@ elif modo == "Tratamento de Dados":
 
 # Modo de Análise de Dados
 elif modo == "Análise de Dados":
-    pasta_tratados = os.path.join(os.path.dirname(__file__), "dados_tratados")
-    arquivo_saida = os.path.join(pasta_tratados, "dados_combinados.xlsx")
+    pasta_dados = os.path.join(os.path.dirname(__file__), "dados_tratados")
+    arquivo_combinado = os.path.join(pasta_dados, "dados_combinados.xlsx")
 
     if st.button("Combinar Dados"):
-        combinar_planilhas(pasta_tratados, arquivo_saida)
-        st.success(f"Planilha combinada salva como '{arquivo_saida}'.")
+        combinar_planilhas(pasta_dados, arquivo_combinado)
+        st.success(f"Planilha combinada salva como '{arquivo_combinado}'.")
 
     # Permitir que o usuário baixe o arquivo combinado
-    if os.path.exists(arquivo_saida):
-        with open(arquivo_saida, "rb") as file:
+    if os.path.exists(arquivo_combinado):
+        arquivo_filtrado = os.path.join(pasta_dados, "dados_filtrados.xlsx")
+        with open(arquivo_combinado, "rb") as file:
             st.download_button(
                 label="Baixar Planilha Combinada",
                 data=file,
@@ -170,8 +171,8 @@ elif modo == "Análise de Dados":
             )
 
     # Carregar os dados combinados
-    if os.path.exists(arquivo_saida):
-        df_combined = carregar_dados_combinados(arquivo_saida)
+    if os.path.exists(arquivo_combinado):
+        df_combined = carregar_dados_combinados(arquivo_combinado)
         if df_combined is not None:
             df_valid = filtrar_apartamentos_validos(df_combined)
 
@@ -186,5 +187,17 @@ elif modo == "Análise de Dados":
                                         espaco_selecionado, intervalo_preco[0], intervalo_preco[1], intervalo_data)
             st.write(df_filtered)
 
-            exibir_grafico_interativo(df_filtered)
+            if st.button("Gerar Planilha com Dados Filtrados"):
+                salvar_planilha_filtrada(df_filtered, arquivo_filtrado)
 
+            if os.path.exists(arquivo_filtrado):
+                with open(arquivo_filtrado, "rb") as file:
+                    st.download_button(
+                        label="Baixar Planilha Filtrada",
+                        data=file,
+                        file_name="dados_filtrados.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
+
+                # Exibir gráfico interativo a partir da planilha filtrada
+                exibir_grafico_interativo(df_filtered)

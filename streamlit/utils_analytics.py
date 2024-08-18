@@ -158,3 +158,10 @@ def exibir_grafico_interativo(df_filtered):
     fig = px.scatter(df_filtered, x="Price", y="Rooms", color="City", size="Size",
                      hover_data=['City', 'Price', 'Rooms', 'Size'])
     st.plotly_chart(fig)
+
+def salvar_planilha_filtrada(df_filtered, arquivo_saida):
+    """Salva os dados filtrados em uma nova planilha Excel."""
+    caminho_saida = os.path.splitext(arquivo_saida)[0] + "_filtrados.xlsx"
+    df_filtered.to_excel(caminho_saida, index=False)
+    st.success(f"Planilha filtrada salva como '{caminho_saida}'.")
+    return caminho_saida
