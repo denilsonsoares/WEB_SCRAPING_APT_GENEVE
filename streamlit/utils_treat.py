@@ -1,7 +1,15 @@
-#utils_treat.py
 import pandas as pd
 import re
 import os
+
+def obter_cidade_do_arquivo(file_path):
+    """Obtém a cidade a partir do nome do arquivo."""
+    if 'geneve' in file_path.lower():
+        return 'Geneve'
+    elif 'zurich' in file_path.lower():
+        return 'Zurich'
+    else:
+        return 'Unknown'
 
 def tratar_dados_homegate(file_path, pasta_tratados):
     df = pd.read_excel(file_path)
@@ -51,8 +59,8 @@ def tratar_dados_homegate(file_path, pasta_tratados):
 
     df['Living Space (m²)'] = df['Living Space (m²)'].apply(extract_numeric_space)
 
-    # Adicionar colunas para cidade e país
-    df['City'] = 'Genève'
+    # Obter cidade a partir do nome do arquivo
+    df['City'] = obter_cidade_do_arquivo(file_path)
     df['Country'] = 'Switzerland'
 
     # Verificar se é aluguel ou compra
@@ -69,7 +77,6 @@ def tratar_dados_homegate(file_path, pasta_tratados):
     df.to_excel(new_file_path, index=False)
 
     print(f"Planilha '{file_path}' tratada e salva como '{new_file_path}'.")
-
 
 def tratar_dados_immoscout24(file_path, pasta_tratados):
     df = pd.read_excel(file_path)
@@ -119,8 +126,8 @@ def tratar_dados_immoscout24(file_path, pasta_tratados):
 
     df['Living Space (m²)'] = df['Living Space (m²)'].apply(extract_numeric_space)
 
-    # Adicionar colunas para cidade e país
-    df['City'] = 'Genève'
+    # Obter cidade a partir do nome do arquivo
+    df['City'] = obter_cidade_do_arquivo(file_path)
     df['Country'] = 'Switzerland'
 
     # Verificar se é aluguel ou compra
