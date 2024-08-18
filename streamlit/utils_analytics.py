@@ -89,6 +89,8 @@ def filtrar_dados(arquivo_entrada, pasta_saida):
     return arquivo_saida
 
 import matplotlib.pyplot as plt
+import streamlit as st
+
 
 def plotar_evolucao_precos(arquivo_entrada, min_quartos, max_quartos, min_area, max_area):
     # Ler o arquivo filtrado em um dataframe
@@ -98,21 +100,26 @@ def plotar_evolucao_precos(arquivo_entrada, min_quartos, max_quartos, min_area, 
     df_filtrado = df[(df['Rooms'].between(min_quartos, max_quartos)) &
                      (df['Living Space (m²)'].between(min_area, max_area))]
 
-    # Plotar a evolução dos preços
-    plt.figure(figsize=(10, 6))
+    # Aumentar a largura da imagem ajustando o figsize
+    plt.figure(figsize=(14, 6))  # Aumentei a largura para 14 polegadas e mantive a altura em 6 polegadas
 
     for index, row in df_filtrado.iterrows():
         price_dates = eval(row['Price and Date'])  # Converte a string de volta para uma lista de tuplas
-        prices, dates = zip(*price_dates)
 
-        # Convertendo as datas para o formato datetime para plotagem
-        dates = pd.to_datetime(dates, format='%Y-%d-%m')
+        if len(price_dates) > 0:  # Verifica se a lista não está vazia
+            prices, dates = zip(*price_dates)
 
-        plt.plot(dates, prices, label=f'Apt {index + 1}')
+            # Convertendo as datas para o formato datetime para plotagem
+            dates = pd.to_datetime(dates, format='%Y-%d-%m')
+
+            # Plotar com pontos maiores
+            plt.plot(dates, prices, marker='o', markersize=8, label=f'Apt {index + 1}')
 
     plt.xlabel('Data')
     plt.ylabel('Preço')
     plt.title('Evolução dos Preços dos Apartamentos')
     plt.legend()
     plt.grid(True)
-    plt.show()
+
+    # Usar st.pyplot para exibir o gráfico no Streamlit
+    st.pyplot(plt)

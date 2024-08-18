@@ -164,8 +164,8 @@ elif modo == "Análise de Dados":
     if os.path.exists(arquivo_saida_combinado):
         # Adiciona o botão para filtrar os dados
         if st.button("Filtrar Dados"):
-            arquivo_filtrado = filtrar_dados(arquivo_saida_combinado, pasta_tratados)
-            st.success(f"Planilha filtrada salva como '{arquivo_filtrado}'.")
+            arquivo_saida_filtrado = filtrar_dados(arquivo_saida_combinado, pasta_tratados)
+            st.success(f"Planilha filtrada salva como '{arquivo_saida_filtrado}'.")
 
     # Permitir que o usuário baixe o arquivo combinado
     if os.path.exists(arquivo_saida_combinado):
@@ -186,7 +186,7 @@ elif modo == "Análise de Dados":
                 file_name="dados_filtrados.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
-    if os.path.exists(arquivo_filtrado):
+    if os.path.exists(arquivo_saida_filtrado):
         st.header("Análise de Preços dos Apartamentos")
 
         # Seleção de intervalo de quartos e área
@@ -196,4 +196,4 @@ elif modo == "Análise de Dados":
         max_area = st.slider('Área máxima (m²)', 10, 200, 50)
 
         if st.button("Plotar Evolução de Preços"):
-            plotar_evolucao_precos(arquivo_filtrado, min_quartos, max_quartos, min_area, max_area)
+            plotar_evolucao_precos(arquivo_saida_filtrado, min_quartos, max_quartos, min_area, max_area)
