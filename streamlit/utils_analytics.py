@@ -1,7 +1,10 @@
-import pandas as pd
+#utils_analytics.py
 import re
 import os
-
+import pandas as pd
+from datetime import datetime
+import streamlit as st
+import plotly.express as px
 def extrair_id(link):
     """Extrai o ID do link fornecido."""
     match = re.search(r'/(\d+)$', link)
@@ -87,3 +90,71 @@ def combinar_planilhas(pasta_tratados, arquivo_saida):
     grouped.to_excel(arquivo_saida, index=False)
     print(f"Planilha combinada salva como '{arquivo_saida}'.")
 
+
+def carregar_dados_combinados(arquivo_saida):
+    if os.path.exists(arquivo_saida):
+        return pd.read_excel(arquivo_saida)
+    return None
+
+def filtrar_apartamentos_validos(df_combined):
+    # Filtra apartamentos com valores válidos para Rooms e Living Space (m²)
+    return df_combined[(df_combined['Rooms'].notna()) & (df_combined['Living Space (m²)'].notna())]
+
+def selecionar_cidade(df_valid):
+    cidades = df_valid['City'].unique()
+    return st.selectbox("Selecione a cidade", cidades)
+
+def selecionar_tipo_transacao(df_valid):
+    tipos = df_valid['Type of Transaction'].unique()
+    return st.selectbox("Selecione o tipo de transação", tipos)
+
+def selecionar_intervalo_quartos(df_valid):
+    quartos_min = int(df_valid['Rooms'].min())
+    quartos_max = int(df_valid['Rooms'].max())
+    return st.slider("Selecione o intervalo de quantidade de quartos", min_value=quartos_min, max_value=quartos_max, value=(quartos_min, quartos_max))
+
+def selecionar_intervalo_espaco(df_valid):
+    espaco_min = int(df_valid['Living Space (m²)'].min())
+    espaco_max = int(df_valid['Living Space (m²)'].max())
+    return st.slider("Selecione o intervalo de Living Space (m²)", min_value=espaco_min, max_value=espaco_max, value=(espaco_min, espaco_max))
+
+def calcular_intervalo_preco(df_valid):
+    # Extrai os preços válidos de cada entrada na coluna 'Price and Date'
+    precos = df_valid['Price and Date'].apply(
+        lambda x: [p[0] for p in eval(x) if isinstance(p, tuple) and len(p) == 2]
+    ).explode()
+
+    # Remove valores NaN e converte para float
+    precos = precos.dropna().astype(float)
+
+    # Verifica se há preços disponíveis para calcular os intervalos
+    if not precos.empty:
+        preco_min = precos.min()
+        preco_max = precos.max()
+        return st.slider("Intervalo de preço", min_value=preco_min, max_value=preco_max, value=(preco_min, preco_max))
+    else:
+        st.warning("Não há preços válidos disponíveis para cálculo.")
+        return (0, 0)
+
+
+
+def calcular_intervalo_data(df_valid):
+    data_min = df_valid['Price and Date'].apply(lambda x: min([datetime.strptime(p[1], '%d-%m-%Y') for p in x if isinstance(p, tuple) and len(p) == 2]) if x else None).dropna().min()
+    data_max = df_valid['Price and Date'].apply(lambda x: max([datetime.strptime(p[1], '%d-%m-%Y') for p in x if isinstance(p, tuple) and len(p) == 2]) if x else None).dropna().max()
+    return st.slider("Intervalo de datas", min_value=data_min, max_value=data_max, value=(data_min, data_max))
+
+def filtrar_dados(df_valid, cidade_selecionada, tipo_selecao, quartos_selecionados, espaco_selecionado, preco_min, preco_max, intervalo_data):
+    return df_valid[
+        (df_valid['City'] == cidade_selecionada) &
+        (df_valid['Type of Transaction'] == tipo_selecao) &
+        (df_valid['Rooms'].between(quartos_selecionados[0], quartos_selecionados[1])) &
+        (df_valid['Living Space (m²)'].between(espaco_selecionado[0], espaco_selecionado[1])) &
+        (df_valid['Price and Date'].apply(lambda x: any(
+            preco_min <= p[0] <= preco_max and intervalo_data[0] <= datetime.strptime(p[1], '%d-%m-%Y') <= intervalo_data[1]
+            for p in x if isinstance(p, tuple) and len(p) == 2)))
+    ]
+
+def exibir_grafico_interativo(df_filtered):
+    fig = px.scatter(df_filtered, x="Price", y="Rooms", color="City", size="Size",
+                     hover_data=['City', 'Price', 'Rooms', 'Size'])
+    st.plotly_chart(fig)

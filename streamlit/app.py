@@ -48,17 +48,8 @@ if modo == "Raspagem":
 
                     # Realiza a raspagem de dados
                     df = raspar_dados(site, tipo, cidade)
-
                     # Exibe os dados raspados
                     st.write(df)
-
-                    # Salva os dados raspados em um arquivo Excel
-                    #data_extracao = datetime.now().strftime('%Y%m%d')
-                    #nome_arquivo = f"{site}_{tipo}_{cidade.lower()}_{data_extracao}.xlsx"
-                    #pasta_dados_brutos = "dados_brutos"
-                    #os.makedirs(pasta_dados_brutos, exist_ok=True)
-                    #salvar_dados(df, pasta_dados_brutos, nome_arquivo)
-
                     st.success(f"Raspagem concluída para {site}, {tipo}, {cidade}!")
 
         if parar_raspagem:
@@ -180,67 +171,20 @@ elif modo == "Análise de Dados":
 
     # Carregar os dados combinados
     if os.path.exists(arquivo_saida):
-        df_combined = pd.read_excel(arquivo_saida)
+        df_combined = carregar_dados_combinados(arquivo_saida)
+        if df_combined is not None:
+            df_valid = filtrar_apartamentos_validos(df_combined)
 
-        # Seletor de cidade
-        cidades = df_combined['City'].unique()
-        cidade_selecionada = st.selectbox("Selecione a cidade", cidades)
+            cidade_selecionada = selecionar_cidade(df_valid)
+            tipo_selecao = selecionar_tipo_transacao(df_valid)
+            quartos_selecionados = selecionar_intervalo_quartos(df_valid)
+            espaco_selecionado = selecionar_intervalo_espaco(df_valid)
+            intervalo_preco = calcular_intervalo_preco(df_valid)
+            intervalo_data = calcular_intervalo_data(df_valid)
 
-        # Seletor de tipo de transação
-        tipos = df_combined['Type of Transaction'].unique()
-        tipo_selecao = st.selectbox("Selecione o tipo de transação", tipos)
+            df_filtered = filtrar_dados(df_valid, cidade_selecionada, tipo_selecao, quartos_selecionados,
+                                        espaco_selecionado, intervalo_preco[0], intervalo_preco[1], intervalo_data)
+            st.write(df_filtered)
 
-        # Seletor de quantidade de quartos
-        quartos_opcoes = df_combined['Rooms'].unique()
-        quartos_opcoes = [str(q) for q in quartos_opcoes if pd.notna(q)]
-        quartos_opcoes = sorted(set(quartos_opcoes))
-        quartos_opcoes.append("Todos")
-        quartos_selecionados = st.selectbox("Selecione a quantidade de quartos", quartos_opcoes)
+            exibir_grafico_interativo(df_filtered)
 
-        # Intervalo de preço
-        min_preco = df_combined['Price and Date'].apply(
-            lambda x: min([float(p[0]) for p in x if isinstance(p, tuple) and len(p) == 2] if x else [0])
-        ).min()
-
-        max_preco = df_combined['Price and Date'].apply(
-            lambda x: max([float(p[0]) for p in x if isinstance(p, tuple) and len(p) == 2] if x else [0])
-        ).max()
-
-        intervalo_preco = st.slider("Intervalo de preço", min_value=float(min_preco), max_value=float(max_preco), value=(float(min_preco), float(max_preco)))
-
-        # Filtrar dados com base nas seleções
-        df_filtrado = df_combined[
-            (df_combined['City'] == cidade_selecionada) &
-            (df_combined['Type of Transaction'] == tipo_selecao)
-        ]
-
-        if quartos_selecionados != "Todos":
-            df_filtrado = df_filtrado[df_filtrado['Rooms'] == float(quartos_selecionados)]
-
-        df_filtrado = df_filtrado[df_filtrado['Price and Date'].apply(lambda x: any(float(p) >= intervalo_preco[0] and float(p) <= intervalo_preco[1] for p, _ in x))]
-
-        # Exibir dados filtrados
-        st.write("Dados Filtrados:")
-        st.write(df_filtrado)
-
-        # Verifica se há dados para plotar
-        if not df_filtrado.empty:
-            # Preparar os dados para plotar
-            df_long = df_filtrado.explode('Price and Date')
-            df_long[['Price', 'Date']] = pd.DataFrame(df_long['Price and Date'].tolist(), index=df_long.index)
-
-            # Converter a coluna de datas para o tipo datetime
-            df_long['Date'] = pd.to_datetime(df_long['Date'], format='%d-%m-%Y')
-
-            # Ordenar por data
-            df_long = df_long.sort_values('Date')
-
-            # Gráfico de linha para mostrar a evolução dos preços ao longo do tempo
-            fig = px.line(df_long, x='Date', y='Price', title="Evolução dos Preços ao Longo do Tempo")
-            st.plotly_chart(fig)
-
-            # Gráfico de boxplot para distribuição de preços por quantidade de quartos
-            fig2 = px.box(df_long, x='Rooms', y='Price', title="Distribuição de Preços por Quartos")
-            st.plotly_chart(fig2)
-
-            st.write(f"Total de imóveis encontrados: {len(df_filtrado)}")
