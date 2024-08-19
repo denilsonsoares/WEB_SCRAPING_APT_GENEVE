@@ -211,48 +211,61 @@ def coletar_dados_apartamentos_zapimoveis(soup, dados_apartamentos):
 # Função de raspagem de dados de ZAP Imóveis
 def extrair_dados_apartamento(card):
     try:
-        bairro = card.find('h2', {'data-cy': 'rp-cardProperty-location-txt'}).text.strip()
-    except:
-        bairro = 'N/A'
+        titulo = apartamento.find('h2',
+                                  class_='l-text l-u-color-neutral-28 l-text--variant-heading-small l-text--weight-medium truncate').get_text(
+            strip=True)
+    except AttributeError:
+        titulo = None
 
     try:
-        endereco = card.find('p', {'data-cy': 'rp-cardProperty-street-txt'}).text.strip()
-    except:
-        endereco = 'N/A'
+        aluguel = apartamento.find('p',
+                                   class_='l-text l-u-color-neutral-28 l-text--variant-heading-small l-text--weight-bold undefined').get_text(
+            strip=True).replace('R$', '').replace('.', '').replace('/mês', '').strip()
+    except AttributeError:
+        aluguel = None
 
     try:
-        descricao = card.find('p', {'class': 'ListingCard_card__description__slBTG'}).text.strip()
-    except:
-        descricao = 'N/A'
+        endereco = apartamento.find('p',
+                                    class_='l-text l-u-color-neutral-28 l-text--variant-body-small l-text--weight-regular truncate').get_text(
+            strip=True)
+    except AttributeError:
+        endereco = None
 
     try:
-        area = card.find('p', {'data-cy': 'rp-cardProperty-propertyArea-txt'}).text.strip()
-    except:
-        area = 'N/A'
+        espaco = apartamento.find('p', itemprop='floorSize').get_text(strip=True).replace('m²', '').strip()
+    except AttributeError:
+        espaco = None
 
     try:
-        banheiros = card.find('p', {'data-cy': 'rp-cardProperty-bathroomQuantity-txt'}).text.strip()
-    except:
-        banheiros = 'N/A'
+        banheiros = apartamento.find('p', itemprop='numberOfBathroomsTotal').get_text(strip=True)
+    except AttributeError:
+        banheiros = None
 
     try:
-        vagas = card.find('p', {'data-cy': 'rp-cardProperty-parkingSpacesQuantity-txt'}).text.strip()
-    except:
-        vagas = 'N/A'
+        vagas_garagem = apartamento.find('p', itemprop='numberOfParkingSpaces').get_text(strip=True)
+    except AttributeError:
+        vagas_garagem = None
 
+    # Captura o link para a página do apartamento
     try:
-        preco = card.find('p', {'data-cy': 'rp-cardProperty-price-txt'}).text.strip()
-    except:
-        preco = 'N/A'
+        link = apartamento.find('a', class_='ListingCard_result-card__wrapper__6osq8')['href']
+    except TypeError:
+        link = None
 
-    return {
-        'Bairro': bairro,
-        'Endereco': endereco,
-        'Descricao': descricao,
-        'Area': area,
+    # Adiciona a data de coleta
+    data_coleta = datetime.now(pytz.timezone('America/Sao_Paulo')).strftime('%Y-%m-%d')
+
+    # Adiciona os dados coletados ao dicionário
+    return{
+        'Título': titulo,
+        'Aluguel': aluguel,
+        'Quartos': None,  # Informação não disponível no exemplo fornecido
+        'Espaço': espaco,
         'Banheiros': banheiros,
-        'Vagas': vagas,
-        'Preco': preco
+        'Vagas de Garagem': vagas_garagem,
+        'Endereço': endereco,
+        'Link': link,
+        'Data': data_coleta
     }
 """-----------------------------------------------------------------------------"""
 # Função genérica para navegar pelas páginas e coletar dados
