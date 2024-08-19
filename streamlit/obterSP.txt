@@ -1,0 +1,186 @@
+site(página inicial):
+https://www.zapimoveis.com.br/aluguel/imoveis/sp+sao-paulo+zona-sul+itaim-bibi/
+
+ao entrar em cada página, é necessário rolar até embaixo para carregar todo o html
+
+container de todos os apartamentos
+<div class="listing-wrapper__content">
+
+div com as informações do apartamento:
+
+<div class="BaseCard_card__content__pL2Vc w-full p-6"><div class="ListingCard_header__wrapper__sI7ZX"><section class="card__location overflow-hidden" data-testid="card-address" itemprop="address"><div><h2 class="l-text
+         l-u-color-neutral-28
+         l-text--variant-heading-small
+         l-text--weight-medium
+         truncate" title="Jardim Paulistano, São Paulo" data-cy="rp-cardProperty-location-txt">Jardim Paulistano, São Paulo</h2></div><p class="l-text
+         l-u-color-neutral-28
+         l-text--variant-body-small
+         l-text--weight-regular
+         truncate" title="Avenida Brigadeiro Faria Lima" data-cy="rp-cardProperty-street-txt">Avenida Brigadeiro Faria Lima</p></section><div class="hidden lg:block"><button data-testid="l-button" aria-checked="false" role="switch" type="button" class="l-button l-button--appearance-iconButton l-button--context-primary l-button--size-small l-button--icon-left"><span data-testid="l-icon" class="l-icon l-u-color-undefined"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.248 5.75c1.018-.96 2.275-1.671 3.543-1.744L16.003 4C19.887 4 22 6.675 22 10.335c0 2.598-1.35 4.905-3.61 6.942-1.56 1.404-3.466 2.594-5.38 3.5-.64.297-1.38.297-2.03-.005-1.904-.901-3.81-2.09-5.37-3.495C3.35 15.24 2 12.933 2 10.335 2 6.63 4.039 4 8 4c1.425 0 2.85.83 3.956 1.943l.045.048.247-.242ZM20 10.334C20 8.052 18.95 6 16.004 6c-2 0-3.84 2.861-4.004 3.766C11.835 8.864 10.005 6 8 6c-3.05 0-4 2.052-4 4.335 0 2.143 1.327 3.994 2.949 5.456 1.622 1.46 3.558 2.544 4.886 3.173a.393.393 0 0 0 .33 0c1.328-.629 3.264-1.712 4.886-3.173C18.673 14.329 20 12.478 20 10.335Z" fill="currentColor"></path></svg></span></button></div></div><div class="" style="margin-bottom:0"><p class="ListingCard_card__description__slBTG" title="Conjunto comercial &quot;TOTALMENTE MOBILIADO&quot; com 187 de área BOMA , sendo 137 m² de área útil, 30 posições, 3 vagas. 2 banheiros. Ar condicionado central, edifício com excelente localização na região da Faria lima e ótima imagem corporativa, funcionamento e segurança 24 horas, controle de acesso catracas. Possui em seu entorno forte infraestrutura com restaurantes, Shopping, transporte publico, metrô e hotéis. SJR IMOVEIS -" data-cy="rp-cardProperty-description-txt">Conjunto comercial "TOTALMENTE MOBILIADO" com 187 de área BOMA , sendo 137 m² de área útil, 30 posições, 3 vagas. 2 banheiros. Ar condicionado central, edifício com excelente localização na região da Faria lima e ótima imagem corporativa, funcionamento e segurança 24 horas, controle de acesso catracas. Possui em seu entorno forte infraestrutura com restaurantes, Shopping, transporte publico, metrô e hotéis. SJR IMOVEIS -</p></div><section class="Amenities_card-amenities__kpLh7  "><p class="l-text
+         l-u-color-neutral-28
+         l-text--variant-body-small
+         l-text--weight-regular
+         undefined" itemprop="floorSize" data-testid="card-amenity" data-cy="rp-cardProperty-propertyArea-txt"><span data-testid="l-icon" class="l-icon l-u-color-undefined mr-1" role="document" aria-label="Tamanho do imóvel"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.75 3A1.75 1.75 0 0 0 7 4.75v10.5c0 .966.784 1.75 1.75 1.75h10.5A1.75 1.75 0 0 0 21 15.25V4.75A1.75 1.75 0 0 0 19.25 3H8.75ZM10 15a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-8Z" fill="currentColor"></path><path d="M6 19a1 1 0 0 1-1-1V6a1 1 0 0 0-2 0v13a2 2 0 0 0 2 2h13a1 1 0 1 0 0-2H6Z" fill="currentColor"></path></svg></span>188 m²</p><p class="l-text
+         l-u-color-neutral-28
+         l-text--variant-body-small
+         l-text--weight-regular
+         undefined" itemprop="numberOfBathroomsTotal" data-testid="card-amenity" data-cy="rp-cardProperty-bathroomQuantity-txt"><span data-testid="l-icon" class="l-icon l-u-color-undefined mr-1" role="document" aria-label="Quantidade de banheiros"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 11h12V9a2 2 0 0 0-2-2h-3V4a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v17a1 1 0 1 0 2 0V4h9v3h-3a2 2 0 0 0-2 2v2Zm1.912 5a.912.912 0 0 1-.912-.912V13h2v2.037a.963.963 0 0 1-.963.963h-.125Zm4 3a.912.912 0 0 1-.912-.912V13h2v5.037a.963.963 0 0 1-.963.963h-.125ZM18 15.088c0 .504.408.912.912.912h.125a.963.963 0 0 0 .963-.963V13h-2v2.088Z" fill="currentColor"></path></svg></span>4</p><p class="l-text
+         l-u-color-neutral-28
+         l-text--variant-body-small
+         l-text--weight-regular
+         undefined" itemprop="numberOfParkingSpaces" data-testid="card-amenity" data-cy="rp-cardProperty-parkingSpacesQuantity-txt"><span data-testid="l-icon" class="l-icon l-u-color-undefined mr-1" role="document" aria-label="Quantidade de vagas de garagem"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.5 15a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3ZM9 13.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" fill="currentColor"></path><path d="M15.843 2H8.157a3 3 0 0 0-2.935 2.38L4.445 8.05A3.001 3.001 0 0 0 2 11v9a2 2 0 0 0 2 2h1a1 1 0 0 0 1-1v-2h12v2a1 1 0 0 0 1 1h1a2 2 0 0 0 2-2v-9a3 3 0 0 0-2.445-2.949l-.777-3.672A3 3 0 0 0 15.843 2ZM19 10a1 1 0 0 1 1 1v6H4v-6a1 1 0 0 1 1-1h14Zm-1.5-2h-11l.678-3.207a1 1 0 0 1 .862-.786L8.157 4h7.686a1 1 0 0 1 .948.68l.03.113L17.5 8Z" fill="currentColor"></path></svg></span>3</p></section><div class="ListingCard_result-card__wrapper__6osq8"><div class="w-full" data-cy="rp-cardProperty-price-txt"><p class="l-text
+         l-u-color-neutral-28
+         l-text--variant-heading-small
+         l-text--weight-bold
+         undefined">R$ 22.000<span class="l-text
+         l-u-color-neutral-44
+         l-text--variant-body-small
+         l-text--weight-regular
+         undefined">/<!-- -->mês</span></p><p class="l-text
+         l-u-color-neutral-44
+         l-text--variant-body-small
+         l-text--weight-regular
+         text-balance">Cond. R$ 4.871 | IPTU R$ 45.824</p></div><div class="result-card__row" data-testid="card-action"><div class="result-card__cta-buttons"><button data-testid="l-button" data-cy="rp-cardProperty-phone-btn" type="button" class="l-button l-button--appearance-borderless l-button--context-secondary l-button--size-small l-button--icon-left"><span class="after:content-['Ligar'] md:after:content-['Telefone']"></span></button><button data-testid="l-button" data-cy="rp-cardProperty-message-btn" type="button" class="l-button l-button--context-secondary l-button--size-small l-button--icon-left">Mensagem</button></div><div class="lg:hidden"><button data-testid="l-button" aria-checked="false" role="switch" type="button" class="l-button l-button--appearance-iconButton l-button--context-primary l-button--size-small l-button--icon-left"><span data-testid="l-icon" class="l-icon l-u-color-undefined"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.248 5.75c1.018-.96 2.275-1.671 3.543-1.744L16.003 4C19.887 4 22 6.675 22 10.335c0 2.598-1.35 4.905-3.61 6.942-1.56 1.404-3.466 2.594-5.38 3.5-.64.297-1.38.297-2.03-.005-1.904-.901-3.81-2.09-5.37-3.495C3.35 15.24 2 12.933 2 10.335 2 6.63 4.039 4 8 4c1.425 0 2.85.83 3.956 1.943l.045.048.247-.242ZM20 10.334C20 8.052 18.95 6 16.004 6c-2 0-3.84 2.861-4.004 3.766C11.835 8.864 10.005 6 8 6c-3.05 0-4 2.052-4 4.335 0 2.143 1.327 3.994 2.949 5.456 1.622 1.46 3.558 2.544 4.886 3.173a.393.393 0 0 0 .33 0c1.328-.629 3.264-1.712 4.886-3.173C18.673 14.329 20 12.478 20 10.335Z" fill="currentColor"></path></svg></span></button></div></div></div></div>
+
+botão para a próxima página:
+<button data-testid="next-page" aria-label="Próxima página" type="button" class="l-button l-button--appearance-iconButton l-button--context-primary l-button--no-label l-button--size-regular"><span data-testid="l-icon" class="l-icon l-u-color-undefined l-button__icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m15.914 12-5.207 5.207a1 1 0 0 1-1.497-1.32l.083-.094L13.085 12 9.293 8.207a1 1 0 0 1-.083-1.32l.083-.094a1 1 0 0 1 1.32-.083l.094.083L15.914 12Z" fill="currentColor"></path></svg></span></button>
+
+
+
+quero obter as seguintes informações:
+Título, Aluguel, Quartos, Espaço, Banheiros, Vagas de garagem,Endereço, Link, Data
+
+Trate os erros caso alguma dessas informações não esteja presente. Espaço, quartos, banheiros, e espaço de garagem
+
+adapte o código abaixo para criar a nova função de coletar_dados_apartamentos_zipimoveis
+
+
+# Função para coletar dados de apartamentos no Zipimoveis(adapte conforme o html acima):
+def coletar_dados_apartamentos_zipimoveis(soup, dados_apartamentos):
+    tz = pytz.timezone('Europe/Zurich')
+    apartamentos = soup.select("div[role=''][']")
+
+    for apto in apartamentos:
+        try:
+            titulo_element = apto.select_one("")
+            titulo = titulo_element.get_text(strip=True) if titulo_element else 'N/A'
+
+            try:
+                # Tenta extrair o preço
+                preco_element = apto.select_one("")
+                preco = preco_element.get_text(strip=True) if preco_element else 'N/A'
+            except Exception as e:
+                preco = 'N/A'
+                print(f"Erro ao extrair o preço: {str(e)}")
+
+            try:
+                # Tenta extrair a quantidade de quartos
+                quartos_element = apto.select_one("")
+                quartos = quartos_element.get_text(
+                    strip=True) if quartos_element and 'rooms' in quartos_element.get_text() else 'N/A'
+            except Exception as e:
+                quartos = 'N/A'
+                print(f"Erro ao extrair a quantidade de quartos: {str(e)}")
+
+            try:
+                # Tenta extrair o espaço de vida
+                espaco_element = apto.select_one(
+                    "")
+                espaco = espaco_element.get_text(strip=True) if espaco_element else 'N/A'
+            except Exception as e:
+                espaco = 'N/A'
+                print(f"Erro ao extrair o espaço de vida: {str(e)}")
+
+
+            endereco_element = apto.select_one("")
+            endereco = endereco_element.get_text(strip=True) if endereco_element else 'N/A'
+
+            link_element = apto.select_one("")
+            link = ("https://www.immoscout24.ch"+link_element.get('href')) if link_element else 'N/A'
+
+            data_extracao = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
+
+            dados_apartamentos.append({
+                'Título': titulo,
+                'Preço (CHF)': preco,
+                'Quartos': quartos,
+                'Espaço': espaco,
+                'Endereço': endereco,
+                'Link': link,
+                'Data': data_extracao
+            })
+
+            print(
+                f"Título: {titulo}, Preço: {preco}, Quartos: {quartos}, Espaço: {espaco}, Endereço: {endereco}, Link: {link}, Data de Extração: {data_extracao}")
+            print("-" * 40)
+
+        except Exception as e:
+            print(f"Erro ao coletar dados do apartamento: {str(e)}")
+            continue
+
+
+aplicativo do streamlit(inclua a cidade de são paulo):
+#app.py:
+from datetime import datetime
+import streamlit as st
+import os
+import pandas as pd
+import zipfile
+import io
+import plotly.express as px
+from utils_extract import raspar_dados, set_parar_raspagem
+from utils_treat import *
+from utils_analytics import *
+
+# Título do aplicativo
+st.title("Web Scraping de Apartamentos")
+
+# Seleção do modo: Raspagem, Tratamento de Dados ou Análise de Dados
+modo = st.radio("Selecione o modo", ["Raspagem", "Tratamento de Dados", "Análise de Dados"])
+
+# Modo de Raspagem
+if modo == "Raspagem":
+    # Seleção do site
+    sites = st.multiselect("Selecione os sites", ["homegate", "immoscout24"], default=["homegate", "immoscout24"])
+
+    # Seleção do tipo de transação
+    tipos = st.multiselect("Tipos de transação", ["alugar", "comprar"], default=["alugar", "comprar"])
+
+    # Seleção da cidade
+    cidades = st.multiselect("Selecione as cidades", ["Geneve", "Zurich"], default=["Geneve", "Zurich"])
+
+    # Botão para iniciar a raspagem
+    iniciar_raspagem = st.button("Iniciar Raspagem")
+
+    # Botão para parar a raspagem
+    parar_raspagem = st.button("Parar Raspagem")
+
+    if iniciar_raspagem:
+        # Reseta a variável global de controle de raspagem
+        set_parar_raspagem(False)
+
+        # Loop sobre todas as combinações de site, tipo de transação e cidade
+        for site in sites:
+            for tipo in tipos:
+                for cidade in cidades:
+                    if parar_raspagem:
+                        break
+
+                    # Informa o usuário sobre o início da raspagem
+                    st.write(f"Iniciando a raspagem para {tipo} em {cidade} no site {site}...")
+
+                    # Realiza a raspagem de dados
+                    df = raspar_dados(site, tipo, cidade)
+                    # Exibe os dados raspados
+                    st.write(df)
+                    st.success(f"Raspagem concluída para {site}, {tipo}, {cidade}!")
+
+        if parar_raspagem:
+            st.warning("Raspagem interrompida!")
+        else:
+            st.success("Raspagem concluída para todas as combinações!")
+
+    if parar_raspagem:
+        # Sinaliza para parar a raspagem
+        set_parar_raspagem(True)
+        st.warning("Raspagem interrompida!")
