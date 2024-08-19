@@ -8,18 +8,26 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+def rolar_pagina_gradualmente(driver, duracao=20, intervalo=0.2):
+    # Rola a página gradualmente por 'duracao' segundos com 'intervalo' segundos entre cada rolagem
+    tempo_final = time.time() + duracao
+    while time.time() < tempo_final:
+        driver.execute_script("window.scrollBy(0, document.body.scrollHeight * 0.1);")
+        time.sleep(intervalo)
 
 def coletar_dados_apartamentos_zapimoveis(driver, dados_apartamentos):
     # Rolar a página para carregar todo o conteúdo
-    while True:
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(2)
-        try:
-            # Verifica se o botão de 'Próxima página' está presente para parar a rolagem
-            driver.find_element(By.XPATH, "//button[@data-testid='next-page']")
-            break
-        except:
-            pass
+    rolar_pagina_gradualmente(driver)
+
+    # Verifica se o botão de 'Próxima página' está presente e clique nele
+    try:
+        next_button = driver.find_element(By.XPATH, "//button[@data-testid='next-page']")
+        if next_button.is_displayed():
+            next_button.click()
+            time.sleep(2)  # Aguarda a página carregar
+            return True  # Indica que há uma próxima página para processar
+    except:
+        pass
 
     # Extrair conteúdo da página após carregar
     soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -91,6 +99,8 @@ def coletar_dados_apartamentos_zapimoveis(driver, dados_apartamentos):
             'Data': data_coleta
         })
 
+    return False  # Indica que não há mais páginas para processar
+
 
 def main():
     # Configurações do Selenium
@@ -101,14 +111,7 @@ def main():
 
     # Loop para percorrer as páginas e coletar dados
     while True:
-        coletar_dados_apartamentos_zapimoveis(driver, dados_apartamentos)
-        try:
-            # Clica no botão de próxima página
-            next_button = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable((By.XPATH, "//button[@data-testid='next-page']")))
-            next_button.click()
-            time.sleep(2)  # Aguarde a página carregar
-        except:
+        if not coletar_dados_apartamentos_zapimoveis(driver, dados_apartamentos):
             break
 
     driver.quit()
