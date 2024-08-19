@@ -4,16 +4,31 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-def rolar_pagina_gradualmente(driver, duracao=20, intervalo=0.2):
+def rolar_pagina_gradualmente(driver, duracao=20, intervalo=0.1):
     # Rola a página gradualmente por 'duracao' segundos com 'intervalo' segundos entre cada rolagem
     tempo_final = time.time() + duracao
+    altura_anterior = 0
+    incremento = 0.05  # Percentual de rolagem para cada passo
+
     while time.time() < tempo_final:
-        driver.execute_script("window.scrollBy(0, document.body.scrollHeight * 0.1);")
+        # Rola suavemente para baixo
+        driver.execute_script(f"window.scrollBy(0, document.body.scrollHeight * {incremento});")
         time.sleep(intervalo)
+
+        # Verifica a altura atual da página
+        altura_atual = driver.execute_script("return window.pageYOffset;")
+
+        # Se a altura atual for igual à altura anterior, significa que não rolou mais
+        if altura_atual == altura_anterior:
+            # Volta suavemente ao topo da página
+            driver.execute_script("window.scrollTo(0, 0);")
+            time.sleep(intervalo * 2)  # Pausa um pouco mais antes de rolar novamente
+        else:
+            # Atualiza a altura anterior
+            altura_anterior = altura_atual
 
 def coletar_dados_apartamentos_zapimoveis(driver, dados_apartamentos):
     # Rolar a página para carregar todo o conteúdo
@@ -90,7 +105,7 @@ def coletar_dados_apartamentos_zapimoveis(driver, dados_apartamentos):
         dados_apartamentos.append({
             'Título': titulo,
             'Aluguel': aluguel,
-            'Quartos': quartos,  # Informação não disponível no exemplo fornecido
+            'Quartos': quartos,
             'Espaço': espaco,
             'Banheiros': banheiros,
             'Vagas de Garagem': vagas_garagem,
@@ -103,8 +118,21 @@ def coletar_dados_apartamentos_zapimoveis(driver, dados_apartamentos):
 
 
 def main():
-    # Configurações do Selenium
-    driver = webdriver.Chrome()  # Altere para o caminho correto do chromedriver se necessário
+    # Configurações do navegador com opções para desativar recursos desnecessários
+    chrome_options = webdriver.ChromeOptions()
+    chrome_prefs = {
+        "profile.managed_default_content_settings.images": 2,  # Desativa imagens
+        "profile.managed_default_content_settings.stylesheets": 2,  # Desativa CSS
+        "profile.managed_default_content_settings.javascript": 1,  # Permite JavaScript, necessário para carregar o HTML
+        "profile.managed_default_content_settings.plugins": 2,  # Desativa plugins
+        "profile.managed_default_content_settings.popups": 2,  # Desativa popups
+        "profile.managed_default_content_settings.geolocation": 2,  # Desativa geolocalização
+        "profile.managed_default_content_settings.notifications": 2  # Desativa notificações
+    }
+    chrome_options.add_experimental_option("prefs", chrome_prefs)
+    #chrome_options.add_argument("--headless")  # Executa o Chrome em modo headless (sem GUI)
+
+    driver = webdriver.Chrome(options=chrome_options)
     driver.get("https://www.zapimoveis.com.br/aluguel/imoveis/sp+sao-paulo+zona-sul+itaim-bibi/")
 
     dados_apartamentos = []
