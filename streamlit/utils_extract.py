@@ -196,19 +196,32 @@ def rolar_ate_final(driver):
         print("Botão de cookies clicado com sucesso!")
     except:
         print("O botão de cookies não foi encontrado ou não está clicável.")
+
+    # Altura visível da janela
+    window_height = driver.execute_script("return window.innerHeight")
     total_height = driver.execute_script("return document.body.scrollHeight")
-    scroll_height = 0
-    time.sleep(4)
-    while scroll_height < total_height:
-        driver.execute_script("window.scrollBy(0, 100);")
-        time.sleep(0.5)  # Pausa para permitir o carregamento dos elementos
+
+    previous_elements = 0
+
+    while True:
+        # Rolar a página para baixo em um incremento baseado na altura da janela
+        driver.execute_script(f"window.scrollBy(0, {window_height});")
+        time.sleep(2)  # Pausa para permitir o carregamento dos elementos
+
+        # Recalcular a altura total da página
         new_height = driver.execute_script("return document.body.scrollHeight")
 
-        if new_height == scroll_height:  # Se a altura não mudou, a rolagem terminou
+        # Contar o número de elementos na página após a rolagem
+        current_elements = len(driver.find_elements(By.CSS_SELECTOR, '.BaseCard_card__content__pL2Vc'))
+
+        # Se a altura da página não mudou ou o número de elementos não mudou, a rolagem terminou
+        if new_height == total_height and current_elements == previous_elements:
             break
 
-        scroll_height = new_height
         total_height = new_height
+        previous_elements = current_elements
+
+    print("Rolagem concluída. Todos os elementos foram carregados.")
 
 
 # Função para coletar dados de apartamentos de ZAP Imóveis
