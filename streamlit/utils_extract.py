@@ -261,29 +261,35 @@ def navegar_paginas(scraper, url, site):
 
     while not get_parar_raspagem():
         try:
-            if site == "zapimoveis":
-                rolar_ate_final(scraper, url, scraper.headers)
+            # Fazendo a requisição HTTP
+            response = scraper.get(url)
+            if response.status_code != 200:
+                print(f"Falha ao acessar a página: Status Code {response.status_code}")
+                break
+
+            # Parseando o conteúdo da página
+            soup = BeautifulSoup(response.content, 'html.parser')
+
+            # Coletando os dados com base no site
+            if site == "homegate":
+                coletar_dados_apartamentos_homegate(soup, dados_apartamentos)
+            elif site == "immoscout24":
+                coletar_dados_apartamentos_immoscout(soup, dados_apartamentos)
+            elif site == "zapimoveis":
                 coletar_dados_apartamentos_zapimoveis(soup, dados_apartamentos)
-            else:
-                response = scraper.get(url)
-                if response.status_code != 200:
-                    print(f"Falha ao acessar a página: Status Code {response.status_code}")
-                    break
-
-                soup = BeautifulSoup(response.content, 'html.parser')
-
-                if site == "homegate":
-                    coletar_dados_apartamentos_homegate(soup, dados_apartamentos)
-                elif site == "immoscout24":
-                    coletar_dados_apartamentos_immoscout(soup, dados_apartamentos)
 
             # Identificação do botão de próxima página
             if site == "zapimoveis":
-                next_button = driver.find_element(By.XPATH, '//button[@aria-label="Próxima página"]')
+                next_button = soup.select_one('button[data-testid="next-page"]')
                 if next_button:
-                    next_button.click()
-                    time.sleep(1)  # Aguarda o carregamento da próxima página
-                    print(f"Mudando para a próxima página: {url}")
+                    # Aqui tentamos simular um clique ou seguir para a próxima página
+                    print("Botão 'Próxima página' encontrado.")
+                    # Neste ponto, sem Selenium, seria necessário verificar se há uma URL a ser extraída.
+                    # Se o botão usa JavaScript para carregar a próxima página, o scraping não vai funcionar
+                    # Se houver um link que o botão aciona, tente capturá-lo e seguir a nova URL
+                    # url = urljoin(response.url, ...)
+                    print("Mudando para a próxima página: Implementação depende de como a navegação é feita.")
+                    time.sleep(1)
                 else:
                     print("Botão 'Próxima página' está desabilitado ou não encontrado.")
                     break
@@ -292,7 +298,7 @@ def navegar_paginas(scraper, url, site):
                 if next_button:
                     url = urljoin(response.url, next_button.get('href'))
                     print(f"Mudando para a próxima página: {url}")
-                    time.sleep(1)
+                    time.sleep(1)  # Aguarda um pouco antes de carregar a próxima página
                 else:
                     print("Botão 'Próxima página' está desabilitado ou não encontrado.")
                     break
