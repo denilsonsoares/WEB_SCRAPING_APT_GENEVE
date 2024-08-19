@@ -18,13 +18,13 @@ modo = st.radio("Selecione o modo", ["Raspagem", "Tratamento de Dados", "Anális
 # Modo de Raspagem
 if modo == "Raspagem":
     # Seleção do site
-    sites = st.multiselect("Selecione os sites", ["homegate", "immoscout24", "zapimoveis"], default=["zapimoveis"])
+    sites = st.multiselect("Selecione os sites", ["homegate", "immoscout24"], default=["homegate", "immoscout24"])
 
     # Seleção do tipo de transação
-    tipos = st.multiselect("Tipos de transação", ["alugar", "comprar"], default=["alugar"])
+    tipos = st.multiselect("Tipos de transação", ["alugar", "comprar"], default=["alugar", "comprar"])
 
     # Seleção da cidade
-    cidades = st.multiselect("Selecione as cidades", ["Geneve", "Zurich", "sao-paulo"], default=["sao-paulo"])
+    cidades = st.multiselect("Selecione as cidades", ["Geneve", "Zurich"], default=["Geneve", "Zurich"])
 
     # Botão para iniciar a raspagem
     iniciar_raspagem = st.button("Iniciar Raspagem")

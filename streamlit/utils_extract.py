@@ -151,7 +151,6 @@ def coletar_dados_apartamentos_immoscout(soup, dados_apartamentos):
                 espaco = 'N/A'
                 print(f"Erro ao extrair o espaço de vida: {str(e)}")
 
-
             endereco_element = apto.select_one("div.HgListingCard_address_JGiFv address")
             endereco = endereco_element.get_text(strip=True) if endereco_element else 'N/A'
 
@@ -178,96 +177,6 @@ def coletar_dados_apartamentos_immoscout(soup, dados_apartamentos):
             print(f"Erro ao coletar dados do apartamento: {str(e)}")
             continue
 
-"""-----------------------------------------------------------------------------"""
-
-
-# Função para simular a rolagem até o final da página
-def rolar_ate_final(scraper, url, headers):
-    while True:
-        response = scraper.get(url, headers=headers)
-        soup = BeautifulSoup(response.content, 'html.parser')
-
-        # Verifica se há um botão para carregar mais conteúdo ou se a página chegou ao final
-        next_button = soup.find('a', {'aria-label': 'Próxima página'})
-
-        if next_button:
-            next_url = next_button['href']
-            url = urljoin(url, next_url)
-            time.sleep(2)  # Aguarda o carregamento da próxima página
-        else:
-            break
-
-        yield soup
-
-# Função para coletar dados de apartamentos de ZAP Imóveis
-def coletar_dados_apartamentos_zapimoveis(soup, dados_apartamentos):
-    container = soup.find('div', class_='listing-wrapper__content')
-    if container:
-        cards = container.find_all('div', class_='BaseCard_card__content__pL2Vc')
-        for card in cards:
-            dados_apartamento = extrair_dados_apartamento(card)
-            dados_apartamentos.append(dados_apartamento)
-
-# Função de raspagem de dados de ZAP Imóveis
-def extrair_dados_apartamento(card):
-    try:
-        titulo = apartamento.find('h2',
-                                  class_='l-text l-u-color-neutral-28 l-text--variant-heading-small l-text--weight-medium truncate').get_text(
-            strip=True)
-    except AttributeError:
-        titulo = None
-
-    try:
-        aluguel = apartamento.find('p',
-                                   class_='l-text l-u-color-neutral-28 l-text--variant-heading-small l-text--weight-bold undefined').get_text(
-            strip=True).replace('R$', '').replace('.', '').replace('/mês', '').strip()
-    except AttributeError:
-        aluguel = None
-
-    try:
-        endereco = apartamento.find('p',
-                                    class_='l-text l-u-color-neutral-28 l-text--variant-body-small l-text--weight-regular truncate').get_text(
-            strip=True)
-    except AttributeError:
-        endereco = None
-
-    try:
-        espaco = apartamento.find('p', itemprop='floorSize').get_text(strip=True).replace('m²', '').strip()
-    except AttributeError:
-        espaco = None
-
-    try:
-        banheiros = apartamento.find('p', itemprop='numberOfBathroomsTotal').get_text(strip=True)
-    except AttributeError:
-        banheiros = None
-
-    try:
-        vagas_garagem = apartamento.find('p', itemprop='numberOfParkingSpaces').get_text(strip=True)
-    except AttributeError:
-        vagas_garagem = None
-
-    # Captura o link para a página do apartamento
-    try:
-        link = apartamento.find('a', class_='ListingCard_result-card__wrapper__6osq8')['href']
-    except TypeError:
-        link = None
-
-    # Adiciona a data de coleta
-    data_coleta = datetime.now(pytz.timezone('America/Sao_Paulo')).strftime('%Y-%m-%d')
-
-    # Adiciona os dados coletados ao dicionário
-    return{
-        'Título': titulo,
-        'Aluguel': aluguel,
-        'Quartos': None,  # Informação não disponível no exemplo fornecido
-        'Espaço': espaco,
-        'Banheiros': banheiros,
-        'Vagas de Garagem': vagas_garagem,
-        'Endereço': endereco,
-        'Link': link,
-        'Data': data_coleta
-    }
-"""-----------------------------------------------------------------------------"""
 # Função genérica para navegar pelas páginas e coletar dados
 def navegar_paginas(scraper, url, site):
     dados_apartamentos = []
@@ -288,24 +197,6 @@ def navegar_paginas(scraper, url, site):
                 coletar_dados_apartamentos_homegate(soup, dados_apartamentos)
             elif site == "immoscout24":
                 coletar_dados_apartamentos_immoscout(soup, dados_apartamentos)
-            elif site == "zapimoveis":
-                coletar_dados_apartamentos_zapimoveis(soup, dados_apartamentos)
-
-            # Identificação do botão de próxima página
-            if site == "zapimoveis":
-                next_button = soup.select_one('button[data-testid="next-page"]')
-                if next_button:
-                    # Aqui tentamos simular um clique ou seguir para a próxima página
-                    print("Botão 'Próxima página' encontrado.")
-                    # Neste ponto, sem Selenium, seria necessário verificar se há uma URL a ser extraída.
-                    # Se o botão usa JavaScript para carregar a próxima página, o scraping não vai funcionar
-                    # Se houver um link que o botão aciona, tente capturá-lo e seguir a nova URL
-                    # url = urljoin(response.url, ...)
-                    print("Mudando para a próxima página: Implementação depende de como a navegação é feita.")
-                    time.sleep(1)
-                else:
-                    print("Botão 'Próxima página' está desabilitado ou não encontrado.")
-                    break
             else:
                 next_button = soup.select_one("a[aria-label='Go to next page']")
                 if next_button:
@@ -349,10 +240,6 @@ def raspar_dados(site, tipo, cidade):
                     url = "https://www.immoscout24.ch/en/real-estate/rent/city-zuerich"
                 elif tipo == "comprar":
                     url = "https://www.immoscout24.ch/en/real-estate/buy/canton-zurich"
-        #RASPAR SÃO PAULO:
-        elif site == "zapimoveis":
-            if cidade == "sao-paulo" and tipo == "alugar":
-                url = "https://www.zapimoveis.com.br/aluguel/imoveis/sp+sao-paulo+zona-sul+itaim-bibi/"
 
         scraper = criar_scraper()
         # Inicialização do WebDriver para Selenium

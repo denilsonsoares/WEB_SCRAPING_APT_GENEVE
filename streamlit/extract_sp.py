@@ -6,12 +6,14 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import pandas as pd  # Importa a biblioteca pandas para salvar os dados em Excel
 
-def rolar_pagina_gradualmente(driver, duracao=20, intervalo=0.1):
+
+def rolar_pagina_gradualmente(driver, duracao=60, intervalo=0.1):
     # Rola a página gradualmente por 'duracao' segundos com 'intervalo' segundos entre cada rolagem
     tempo_final = time.time() + duracao
     altura_anterior = 0
-    incremento = 0.05  # Percentual de rolagem para cada passo
+    incremento = 0.005  # Percentual de rolagem para cada passo
 
     while time.time() < tempo_final:
         # Rola suavemente para baixo
@@ -31,44 +33,24 @@ def rolar_pagina_gradualmente(driver, duracao=20, intervalo=0.1):
             altura_anterior = altura_atual
 
 def coletar_dados_apartamentos_zapimoveis(driver, dados_apartamentos):
-    # Rolar a página para carregar todo o conteúdo
     rolar_pagina_gradualmente(driver)
-
-    # Verifica se o botão de 'Próxima página' está presente e clique nele
-    try:
-        next_button = driver.find_element(By.XPATH, "//button[@data-testid='next-page']")
-        if next_button.is_displayed():
-            next_button.click()
-            time.sleep(2)  # Aguarda a página carregar
-            return True  # Indica que há uma próxima página para processar
-    except:
-        pass
-
-    # Extrair conteúdo da página após carregar
     soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-    # Encontrar todos os contêineres de apartamentos
     container_apartamentos = soup.find_all('div', class_='BaseCard_card__content__pL2Vc w-full p-6')
 
     for apartamento in container_apartamentos:
         try:
-            titulo = apartamento.find('h2',
-                                      class_='l-text l-u-color-neutral-28 l-text--variant-heading-small l-text--weight-medium truncate').get_text(
-                strip=True)
+            titulo = apartamento.find('h2', class_='l-text l-u-color-neutral-28 l-text--variant-heading-small l-text--weight-medium truncate').get_text(strip=True)
         except AttributeError:
             titulo = None
 
         try:
-            aluguel = apartamento.find('p',
-                                       class_='l-text l-u-color-neutral-28 l-text--variant-heading-small l-text--weight-bold undefined').get_text(
-                strip=True).replace('R$', '').replace('.', '').replace('/mês', '').strip()
+            aluguel = apartamento.find('p', class_='l-text l-u-color-neutral-28 l-text--variant-heading-small l-text--weight-bold undefined').get_text(strip=True).replace('R$', '').replace('.', '').replace('/mês', '').strip()
         except AttributeError:
             aluguel = None
 
         try:
-            endereco = apartamento.find('p',
-                                        class_='l-text l-u-color-neutral-28 l-text--variant-body-small l-text--weight-regular truncate').get_text(
-                strip=True)
+            endereco = apartamento.find('p', class_='l-text l-u-color-neutral-28 l-text--variant-body-small l-text--weight-regular truncate').get_text(strip=True)
         except AttributeError:
             endereco = None
 
@@ -92,16 +74,15 @@ def coletar_dados_apartamentos_zapimoveis(driver, dados_apartamentos):
         except AttributeError:
             vagas_garagem = None
 
-        # Captura o link para a página do apartamento
         try:
-            link = apartamento.find('a', class_='ListingCard_result-card__wrapper__6osq8')['href']
+            link = apartamento.find_parent('a')['href']
+            if not link.startswith('http'):
+                link = "https://www.zapimoveis.com.br" + link
         except TypeError:
             link = None
 
-        # Adiciona a data de coleta
-        data_coleta = datetime.now(pytz.timezone('America/Sao_Paulo')).strftime('%Y-%m-%d')
+        data_coleta = datetime.now(pytz.timezone('America/Sao_Paulo')).strftime('%Y-%m-%d %H:%M:%S')
 
-        # Adiciona os dados coletados ao dicionário
         dados_apartamentos.append({
             'Título': titulo,
             'Aluguel': aluguel,
@@ -113,9 +94,9 @@ def coletar_dados_apartamentos_zapimoveis(driver, dados_apartamentos):
             'Link': link,
             'Data': data_coleta
         })
-
-    return False  # Indica que não há mais páginas para processar
-
+    for apto in dados_apartamentos:
+        print(apto)
+    return True
 
 def main():
     # Configurações do navegador com opções para desativar recursos desnecessários
@@ -133,21 +114,32 @@ def main():
     #chrome_options.add_argument("--headless")  # Executa o Chrome em modo headless (sem GUI)
 
     driver = webdriver.Chrome(options=chrome_options)
-    driver.get("https://www.zapimoveis.com.br/aluguel/imoveis/sp+sao-paulo+zona-sul+itaim-bibi/")
+    driver.get("https://www.zapimoveis.com.br/aluguel/imoveis/sp+sao-paulo+zona-sul+itaim-bibi/4-quartos/")
 
     dados_apartamentos = []
 
     # Loop para percorrer as páginas e coletar dados
     while True:
-        if not coletar_dados_apartamentos_zapimoveis(driver, dados_apartamentos):
-            break
+        coleta_realizada = coletar_dados_apartamentos_zapimoveis(driver, dados_apartamentos)
+
+        # Verifica se o botão de 'Próxima página' está presente e clique nele
+        try:
+            next_button = driver.find_element(By.XPATH, "//button[@data-testid='next-page']")
+            if next_button.is_displayed():
+                next_button.click()
+                time.sleep(4)  # Aguarda a página carregar
+            else:
+                break  # Sai do loop se o botão não estiver visível
+        except:
+            break  # Sai do loop se não houver botão de próxima página
 
     driver.quit()
 
-    # Imprimir ou salvar os dados como desejar
-    for dados in dados_apartamentos:
-        print(dados)
+    # Salvar os dados coletados em um arquivo Excel
+    df = pd.DataFrame(dados_apartamentos)
+    df.to_excel('dados_apartamentos.xlsx', index=False)
 
+    print("Dados salvos em 'dados_apartamentos.xlsx'")
 
 if __name__ == "__main__":
     main()
