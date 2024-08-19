@@ -2,7 +2,10 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support import expected_conditions as EC
 import cloudscraper
 from bs4 import BeautifulSoup
 import time
@@ -13,7 +16,6 @@ import pandas as pd
 from openpyxl import Workbook
 from openpyxl.utils.exceptions import IllegalCharacterError
 import os
-
 
 # Função para salvar dados em formato Excel, linha por linha, ignorando linhas problemáticas
 def salvar_dados(df, pasta_dados_brutos, nome_arquivo):
@@ -183,12 +185,20 @@ def coletar_dados_apartamentos_immoscout(soup, dados_apartamentos):
             continue
 
 """-----------------------------------------------------------------------------"""
-
-
 # Função para simular a rolagem incremental até o final da página usando Selenium
 def rolar_ate_final(driver):
+    try:
+        # Esperar até que o botão de cookies esteja presente e clicável, por até 10 segundos
+        wait = WebDriverWait(driver, 10)
+        cookie_button = wait.until(EC.element_to_be_clickable((By.ID, "cookie-notifier-cta")))
+        # Clicar no botão "Entendi"
+        cookie_button.click()
+        print("Botão de cookies clicado com sucesso!")
+    except:
+        print("O botão de cookies não foi encontrado ou não está clicável.")
     total_height = driver.execute_script("return document.body.scrollHeight")
     scroll_height = 0
+    time.sleep(4)
     while scroll_height < total_height:
         driver.execute_script("window.scrollBy(0, 100);")
         time.sleep(0.5)  # Pausa para permitir o carregamento dos elementos
@@ -203,13 +213,8 @@ def rolar_ate_final(driver):
 
 # Função para coletar dados de apartamentos de ZAP Imóveis
 def coletar_dados_apartamentos_zapimoveis(driver, scraper, url, dados_apartamentos):
-    # Usando Selenium para rolar a página
-    driver.get(url)
-    rolar_ate_final(driver)
-
     # Após rolar, obtemos o conteúdo HTML da página carregada
     soup = BeautifulSoup(driver.page_source, 'html.parser')
-
     container = soup.find('div', class_='listing-wrapper__content')
     if container:
         cards = container.find_all('div', class_='BaseCard_card__content__pL2Vc')
@@ -271,6 +276,9 @@ def navegar_paginas(driver, scraper, url, site):
     while not get_parar_raspagem():
         try:
             if site == "zapimoveis":
+                # Usando Selenium para rolar a página
+                driver.get(url)
+                rolar_ate_final(driver)
                 coletar_dados_apartamentos_zapimoveis(driver, scraper, url, dados_apartamentos)
             else:
                 response = scraper.get(url)
@@ -344,9 +352,17 @@ def raspar_dados(site, tipo, cidade):
                 url = "https://www.zapimoveis.com.br/aluguel/imoveis/sp+sao-paulo+zona-sul+itaim-bibi/"
 
         scraper = criar_scraper()
+        # Configuração das opções do Chrome para o modo headless
+        #chrome_options = Options()
+        #chrome_options.add_argument("--headless")  # Ativa o modo headless
+        #chrome_options.add_argument("--disable-gpu")  # Desativa o uso de GPU (opcional, pode melhorar desempenho)
+        #chrome_options.add_argument(
+        #    "--window-size=1920,1080")  # Define um tamanho de janela para garantir que os elementos sejam renderizados corretamente
         # Inicialização do WebDriver para Selenium
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service)
+        # Minimizar a janela do navegador
+        #driver.minimize_window()
         df = navegar_paginas(driver, scraper, url, site)
         # Fechamento do WebDriver
         driver.quit()
