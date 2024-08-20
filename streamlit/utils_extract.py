@@ -1,17 +1,20 @@
-
-from selenium.webdriver.common.by import By
 import cloudscraper
 from bs4 import BeautifulSoup
+import pandas as pd
 import time
 import pytz
 from datetime import datetime
+import os
 from urllib.parse import urljoin
 import pandas as pd
+import os
+from openpyxl import Workbook
+
+# Função para salvar dados em formato Excel, linha por linha, ignorando linhas problemáticas
 from openpyxl import Workbook
 from openpyxl.utils.exceptions import IllegalCharacterError
 import os
 
-# Função para salvar dados em formato Excel, linha por linha, ignorando linhas problemáticas
 def salvar_dados(df, pasta_dados_brutos, nome_arquivo):
     caminho_excel = os.path.join(pasta_dados_brutos, nome_arquivo)
 
@@ -151,6 +154,7 @@ def coletar_dados_apartamentos_immoscout(soup, dados_apartamentos):
                 espaco = 'N/A'
                 print(f"Erro ao extrair o espaço de vida: {str(e)}")
 
+
             endereco_element = apto.select_one("div.HgListingCard_address_JGiFv address")
             endereco = endereco_element.get_text(strip=True) if endereco_element else 'N/A'
 
@@ -177,35 +181,33 @@ def coletar_dados_apartamentos_immoscout(soup, dados_apartamentos):
             print(f"Erro ao coletar dados do apartamento: {str(e)}")
             continue
 
+
 # Função genérica para navegar pelas páginas e coletar dados
 def navegar_paginas(scraper, url, site):
     dados_apartamentos = []
 
     while not get_parar_raspagem():
         try:
-            # Fazendo a requisição HTTP
             response = scraper.get(url)
             if response.status_code != 200:
                 print(f"Falha ao acessar a página: Status Code {response.status_code}")
                 break
 
-            # Parseando o conteúdo da página
             soup = BeautifulSoup(response.content, 'html.parser')
 
-            # Coletando os dados com base no site
             if site == "homegate":
                 coletar_dados_apartamentos_homegate(soup, dados_apartamentos)
             elif site == "immoscout24":
                 coletar_dados_apartamentos_immoscout(soup, dados_apartamentos)
+
+            next_button = soup.select_one("a[aria-label='Go to next page']")
+            if next_button and next_button.get('href'):
+                url = urljoin(response.url, next_button.get('href'))
+                print(f"Mudando para a próxima página: {url}")
+                time.sleep(1)
             else:
-                next_button = soup.select_one("a[aria-label='Go to next page']")
-                if next_button:
-                    url = urljoin(response.url, next_button.get('href'))
-                    print(f"Mudando para a próxima página: {url}")
-                    time.sleep(1)  # Aguarda um pouco antes de carregar a próxima página
-                else:
-                    print("Botão 'Próxima página' está desabilitado ou não encontrado.")
-                    break
+                print("Botão 'Próxima página' está desabilitado ou não encontrado.")
+                break
 
         except Exception as e:
             print(f"Erro durante a navegação das páginas: {str(e)}")
@@ -242,14 +244,16 @@ def raspar_dados(site, tipo, cidade):
                     url = "https://www.immoscout24.ch/en/real-estate/buy/canton-zurich"
 
         scraper = criar_scraper()
-        # Inicialização do WebDriver para Selenium
         df = navegar_paginas(scraper, url, site)
-        # Fechamento do WebDriver
+
         pasta_dados_brutos = "dados_brutos"
         os.makedirs(pasta_dados_brutos, exist_ok=True)
 
         data_extracao = datetime.now().strftime('%Y%m%d')
         nome_arquivo = f"{site}_{tipo}_{cidade.lower()}_{data_extracao}.xlsx"
+        #caminho_arquivo = os.path.join(pasta_dados_brutos, nome_arquivo)
+        #df.to_excel(caminho_arquivo, index=False)
+        #print(f"Dados salvos em: {caminho_arquivo}")
 
         # Usando a função de salvamento
         salvar_dados(df, pasta_dados_brutos, nome_arquivo)
