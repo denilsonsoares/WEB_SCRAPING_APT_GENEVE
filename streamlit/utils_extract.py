@@ -1,14 +1,10 @@
 import cloudscraper
 from bs4 import BeautifulSoup
-import pandas as pd
 import time
 import pytz
 from datetime import datetime
-import os
 from urllib.parse import urljoin
 import pandas as pd
-import os
-from openpyxl import Workbook
 
 # Função para salvar dados em formato Excel, linha por linha, ignorando linhas problemáticas
 from openpyxl import Workbook
@@ -248,12 +244,9 @@ def raspar_dados(site, tipo, cidade):
 
         pasta_dados_brutos = "dados_brutos"
         os.makedirs(pasta_dados_brutos, exist_ok=True)
-
-        data_extracao = datetime.now().strftime('%Y%m%d')
+        tz = pytz.timezone('Europe/Zurich')
+        data_extracao = datetime.now(tz).strftime('%Y-%m-%d')
         nome_arquivo = f"{site}_{tipo}_{cidade.lower()}_{data_extracao}.xlsx"
-        #caminho_arquivo = os.path.join(pasta_dados_brutos, nome_arquivo)
-        #df.to_excel(caminho_arquivo, index=False)
-        #print(f"Dados salvos em: {caminho_arquivo}")
 
         # Usando a função de salvamento
         salvar_dados(df, pasta_dados_brutos, nome_arquivo)
