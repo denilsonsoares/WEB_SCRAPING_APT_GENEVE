@@ -245,7 +245,7 @@ def raspar_dados(site, tipo, cidade):
         pasta_dados_brutos = "dados_brutos"
         os.makedirs(pasta_dados_brutos, exist_ok=True)
         tz = pytz.timezone('Europe/Zurich')
-        data_extracao = datetime.now(tz).strftime('%Y-%m-%d')
+        data_extracao = datetime.now(tz).strftime('%Y%m%d')
         nome_arquivo = f"{site}_{tipo}_{cidade.lower()}_{data_extracao}.xlsx"
 
         # Usando a função de salvamento
