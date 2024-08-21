@@ -90,28 +90,33 @@ def filtrar_dados(arquivo_entrada, pasta_saida):
 
     return arquivo_saida
 
-def plotar_evolucao_precos(arquivo_entrada, min_quartos, max_quartos, min_area, max_area):
+def plotar_evolucao_precos(arquivo_entrada, min_quartos, max_quartos, min_area, max_area, min_preco, max_preco, tipo_selecionado, cidades_selecionadas):
     # Ler o arquivo filtrado em um dataframe
     df = pd.read_excel(arquivo_entrada)
 
-    # Filtrar os dados com base no número de quartos e na área
+    # Filtrar os dados com base no número de quartos, área, preço, tipo de transação e cidades selecionadas
     df_filtrado = df[(df['Rooms'].between(min_quartos, max_quartos)) &
-                     (df['Living Space (m²)'].between(min_area, max_area))]
+                     (df['Living Space (m²)'].between(min_area, max_area)) &
+                     (df['Type of Transaction'] == tipo_selecionado) &
+                     (df['City'].isin(cidades_selecionadas))]
+
+    # Filtrar as propriedades que têm preços dentro do intervalo selecionado
+    df_filtrado = df_filtrado[df_filtrado['Price and Date'].apply(lambda x: any(min_preco <= price <= max_preco for price, _ in eval(x)))]
 
     # Aumentar a largura da imagem ajustando o figsize
-    plt.figure(figsize=(14, 6))  # Aumentei a largura para 14 polegadas e mantive a altura em 6 polegadas
+    plt.figure(figsize=(14, 6))
 
     for index, row in df_filtrado.iterrows():
         price_dates = eval(row['Price and Date'])  # Converte a string de volta para uma lista de tuplas
 
         if len(price_dates) > 0:  # Verifica se a lista não está vazia
-            prices, dates = zip(*price_dates)
+            # Filtra os preços e datas dentro do intervalo de preço selecionado
+            filtered_price_dates = [(price, date) for price, date in price_dates if min_preco <= price <= max_preco]
 
-            # Convertendo as datas para o formato datetime para plotagem
-            dates = pd.to_datetime(dates, format='%Y-%d-%m')
-
-            # Plotar com pontos maiores
-            plt.plot(dates, prices, marker='o', markersize=8, label=f'Apt {index + 1}')
+            if filtered_price_dates:
+                prices, dates = zip(*filtered_price_dates)
+                dates = pd.to_datetime(dates, format='%Y-%d-%m')
+                plt.plot(dates, prices, marker='o', markersize=8, label=f'Apt {index + 1} ({row["City"]})')
 
     plt.xlabel('Data')
     plt.ylabel('Preço')
@@ -119,16 +124,11 @@ def plotar_evolucao_precos(arquivo_entrada, min_quartos, max_quartos, min_area, 
     plt.legend()
     plt.grid(True)
 
-    # Usar st.pyplot para exibir o gráfico no Streamlit
     st.pyplot(plt)
 
     # Exibir a tabela de apartamentos abaixo do gráfico
-    # Criar a coluna de links clicáveis
     df_filtrado['Link'] = df_filtrado['Extracted from'].apply(
         lambda x: f'<a href="{x}" target="_blank">Visitar Apartamento</a>')
 
-    # Selecionar colunas para exibir
-    colunas_exibir = ['Rooms', 'Living Space (m²)', 'Price and Date', 'Link']
-
-    # Exibir o dataframe como HTML
+    colunas_exibir = ['City', 'Rooms', 'Living Space (m²)', 'Price and Date', 'Link']
     st.markdown(df_filtrado[colunas_exibir].to_html(escape=False, index=False), unsafe_allow_html=True)

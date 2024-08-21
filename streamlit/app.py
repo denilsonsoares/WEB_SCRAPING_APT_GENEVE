@@ -160,40 +160,43 @@ elif modo == "Análise de Dados":
         combinar_planilhas(pasta_tratados, arquivo_saida_combinado)
         st.success(f"Planilha combinada salva como '{arquivo_saida_combinado}'.")
 
-    # Verifica se o arquivo combinado existe
     if os.path.exists(arquivo_saida_combinado):
-        # Adiciona o botão para filtrar os dados
         if st.button("Filtrar Dados"):
             arquivo_saida_filtrado = filtrar_dados(arquivo_saida_combinado, pasta_tratados)
             st.success(f"Planilha filtrada salva como '{arquivo_saida_filtrado}'.")
 
-    # Permitir que o usuário baixe o arquivo combinado
-    if os.path.exists(arquivo_saida_combinado):
-        with open(arquivo_saida_combinado, "rb") as file:
-            st.download_button(
-                label="Baixar Planilha Combinada",
-                data=file,
-                file_name="dados_combinados.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
-
-    # Permitir que o usuário baixe o arquivo filtrado
-    if os.path.exists(arquivo_saida_filtrado):
-        with open(arquivo_saida_filtrado, "rb") as file:
-            st.download_button(
-                label="Baixar Planilha Filtrada",
-                data=file,
-                file_name="dados_filtrados.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
     if os.path.exists(arquivo_saida_filtrado):
         st.header("Análise de Preços dos Apartamentos")
 
-        # Seleção de intervalo de quartos e área
-        min_quartos = st.slider('Número mínimo de quartos', 1, 10, 2)
-        max_quartos = st.slider('Número máximo de quartos', 1, 10, 4)
-        min_area = st.slider('Área mínima (m²)', 10, 200, 30)
-        max_area = st.slider('Área máxima (m²)', 10, 200, 50)
+        # Seleção de intervalo de quartos usando um único slider
+        quartos_intervalo = st.slider('Selecione o intervalo de quartos', 1, 10, (2, 4))
+
+        # Seleção de intervalo de área usando um único slider
+        area_intervalo = st.slider('Selecione o intervalo de área (m²)', 10, 200, (30, 50))
+
+        # Seleção de intervalo de preços usando um único slider
+        preco_intervalo = st.slider('Selecione o intervalo de preço (CHF)', 0, 20000, (1000, 5000))
+
+        # Seleção do tipo de transação
+        tipos_transacao = ['Rent', 'Buy']
+        tipo_selecionado = st.selectbox('Selecione o tipo de transação', tipos_transacao)
+
+        # Ler as cidades disponíveis no arquivo filtrado
+        df_filtrado = pd.read_excel(arquivo_saida_filtrado)
+        cidades_disponiveis = df_filtrado['City'].unique().tolist()
+
+        # Adicionar uma seleção de múltiplas cidades
+        cidades_selecionadas = st.multiselect('Selecione a(s) cidade(s)', cidades_disponiveis, default=cidades_disponiveis)
 
         if st.button("Plotar Evolução de Preços"):
-            plotar_evolucao_precos(arquivo_saida_filtrado, min_quartos, max_quartos, min_area, max_area)
+            plotar_evolucao_precos(
+                arquivo_saida_filtrado,
+                quartos_intervalo[0],
+                quartos_intervalo[1],
+                area_intervalo[0],
+                area_intervalo[1],
+                preco_intervalo[0],
+                preco_intervalo[1],
+                tipo_selecionado,
+                cidades_selecionadas
+            )
