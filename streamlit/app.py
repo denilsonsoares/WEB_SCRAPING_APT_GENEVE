@@ -172,10 +172,10 @@ elif modo == "Análise de Dados":
         quartos_intervalo = st.slider('Selecione o intervalo de quartos', 1, 10, (2, 4))
 
         # Seleção de intervalo de área usando um único slider
-        area_intervalo = st.slider('Selecione o intervalo de área (m²)', 10, 200, (30, 50))
+        area_intervalo = st.slider('Selecione o intervalo de área (m²)', 10, 400, (30, 50))
 
         # Seleção de intervalo de preços usando um único slider
-        preco_intervalo = st.slider('Selecione o intervalo de preço (CHF)', 0, 20000, (1000, 5000))
+        preco_intervalo = st.slider('Selecione o intervalo de preço (CHF)', 0, 50000, (1000, 5000))
 
         # Seleção do tipo de transação
         tipos_transacao = ['Rent', 'Buy']
