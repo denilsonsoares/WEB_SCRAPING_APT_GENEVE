@@ -77,7 +77,7 @@ def combinar_planilhas(pasta_tratados, arquivo_saida):
 
     grouped = grouped.drop(columns=['Price (CHF)', 'Data extracted when'])
     grouped.to_excel(arquivo_saida, index=False)
-    print(f"Planilha combinada salva como '{arquivo_saida}'.")
+    print(f"Combined spreadsheet saved as '{arquivo_saida}'.")
 
 def filtrar_dados(arquivo_entrada, pasta_saida):
     # Ler o arquivo combinado em um dataframe
@@ -123,9 +123,9 @@ def plotar_evolucao_precos_e_mapa(arquivo_entrada, min_quartos, max_quartos, min
                 dates = pd.to_datetime(dates, format='%Y-%d-%m')
                 plt.plot(dates, prices, marker='o', markersize=8, label=f'Apt {index + 1} ({row["City"]})')
 
-    plt.xlabel('Data')
-    plt.ylabel('Preço')
-    plt.title('Evolução dos Preços dos Apartamentos')
+    plt.xlabel('Date')
+    plt.ylabel('Price')
+    plt.title('Evolution of Apartment Prices')
     plt.legend()
     plt.grid(True)
 
@@ -133,7 +133,7 @@ def plotar_evolucao_precos_e_mapa(arquivo_entrada, min_quartos, max_quartos, min
 
     # Exibir a tabela de apartamentos abaixo do gráfico
     df_filtrado['Link'] = df_filtrado['Extracted from'].apply(
-        lambda x: f'<a href="{x}" target="_blank">Visitar Apartamento</a>')
+        lambda x: f'<a href="{x}" target="_blank">Visit Apartment</a>')
 
     colunas_exibir = ['City', 'Rooms', 'Living Space (m²)', 'Price and Date', 'Link']
     st.markdown(df_filtrado[colunas_exibir].to_html(escape=False, index=False), unsafe_allow_html=True)
