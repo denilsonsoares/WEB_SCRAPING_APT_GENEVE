@@ -3,6 +3,11 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit as st
+import folium
+from geopy.geocoders import Nominatim
+from folium.plugins import HeatMap
+from streamlit_folium import folium_static
+import time
 
 def extrair_id(link):
     """Extrai o ID do link fornecido."""
@@ -90,7 +95,7 @@ def filtrar_dados(arquivo_entrada, pasta_saida):
 
     return arquivo_saida
 
-def plotar_evolucao_precos(arquivo_entrada, min_quartos, max_quartos, min_area, max_area, min_preco, max_preco, tipo_selecionado, cidades_selecionadas):
+def plotar_evolucao_precos_e_mapa(arquivo_entrada, min_quartos, max_quartos, min_area, max_area, min_preco, max_preco, tipo_selecionado, cidades_selecionadas):
     # Ler o arquivo filtrado em um dataframe
     df = pd.read_excel(arquivo_entrada)
 
@@ -132,3 +137,59 @@ def plotar_evolucao_precos(arquivo_entrada, min_quartos, max_quartos, min_area, 
 
     colunas_exibir = ['City', 'Rooms', 'Living Space (m²)', 'Price and Date', 'Link']
     st.markdown(df_filtrado[colunas_exibir].to_html(escape=False, index=False), unsafe_allow_html=True)
+
+    # Plotar mapa de calor com os 10 apartamentos mais baratos
+    plotar_mapa_calor_apartamentos_baratos(df_filtrado)
+
+def obter_ultimo_preco(precos_datas):
+    """Extrai o último preço da lista de tuplas (preço, data)."""
+    if isinstance(precos_datas, str):
+        precos_datas = eval(precos_datas)  # Converte a string de volta para uma lista de tuplas
+    if len(precos_datas) > 0:
+        return precos_datas[-1][0]  # Retorna o último preço
+    return None
+
+def plotar_mapa_calor_apartamentos_baratos(df, n=3):
+    """Plota um mapa de calor com os n apartamentos mais baratos."""
+    geolocator = Nominatim(user_agent="myGeocoder")
+
+    # Extrair o último preço para cada apartamento
+    df['Ultimo Preço'] = df['Price and Date'].apply(obter_ultimo_preco)
+
+    # Filtrar os dados para remover aqueles sem um preço válido
+    df = df.dropna(subset=['Ultimo Preço'])
+
+    coordenadas = []
+    for index, row in df.iterrows():
+        try:
+            location = geolocator.geocode(f"{row['Address']}, {row['City']}, {row['Country']}")
+            if location:
+                coordenadas.append((location.latitude, location.longitude))
+            else:
+                coordenadas.append((None, None))
+        except Exception as e:
+            print(f"Erro ao geocodificar o endereço: {e}")
+            coordenadas.append((None, None))
+
+        time.sleep(1)  # Delay de 1 segundo entre as requisições
+
+    df['Latitude'] = [lat for lat, lon in coordenadas]
+    df['Longitude'] = [lon for lat, lon in coordenadas]
+
+    # Filtrar os dados para remover aqueles sem coordenadas
+    df = df.dropna(subset=['Latitude', 'Longitude'])
+
+    # Selecionar os n apartamentos mais baratos
+    df_sorted = df.nsmallest(n, 'Ultimo Preço')
+
+    # Configurar o centro do mapa
+    map_center = [df_sorted['Latitude'].mean(), df_sorted['Longitude'].mean()]
+    mapa = folium.Map(location=map_center, zoom_start=12)
+
+    # Adicionar os dados ao HeatMap
+    heat_data = [[row['Latitude'], row['Longitude']] for index, row in df_sorted.iterrows()]
+    HeatMap(heat_data).add_to(mapa)
+
+    # Exibir o mapa no Streamlit
+    folium_static(mapa)
+

@@ -169,13 +169,13 @@ elif modo == "Análise de Dados":
         st.header("Análise de Preços dos Apartamentos")
 
         # Seleção de intervalo de quartos usando um único slider
-        quartos_intervalo = st.slider('Selecione o intervalo de quartos', 1, 10, (2, 4))
+        quartos_intervalo = st.slider('Selecione o intervalo de quartos', 1, 10, (5, 6))
 
         # Seleção de intervalo de área usando um único slider
-        area_intervalo = st.slider('Selecione o intervalo de área (m²)', 10, 400, (30, 50))
+        area_intervalo = st.slider('Selecione o intervalo de área (m²)', 10, 400, (150, 180))
 
         # Seleção de intervalo de preços usando um único slider
-        preco_intervalo = st.slider('Selecione o intervalo de preço (CHF)', 0, 50000, (1000, 5000))
+        preco_intervalo = st.slider('Selecione o intervalo de preço (CHF)', 0, 50000, (6000, 8000))
 
         # Seleção do tipo de transação
         tipos_transacao = ['Rent', 'Buy']
@@ -189,7 +189,7 @@ elif modo == "Análise de Dados":
         cidades_selecionadas = st.multiselect('Selecione a(s) cidade(s)', cidades_disponiveis, default=cidades_disponiveis)
 
         if st.button("Plotar Evolução de Preços"):
-            plotar_evolucao_precos(
+            plotar_evolucao_precos_e_mapa(
                 arquivo_saida_filtrado,
                 quartos_intervalo[0],
                 quartos_intervalo[1],
