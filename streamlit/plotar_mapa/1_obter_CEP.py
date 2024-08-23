@@ -78,8 +78,8 @@ def generate_cep_excel(input_file, output_file, num_apartments, transaction_type
 # Exemplo de uso
 input_file = "enderecos.xlsx"  # Substitua pelo caminho do seu arquivo
 output_file = "enderecos_com_cep.xlsx"  # Nome do arquivo de saída
-num_apartments = 10  # Defina quantos apartamentos deseja processar
-transaction_type = "Buy"  # Escolha entre "Rent" ou "Buy"
+num_apartments = 100  # Defina quantos apartamentos deseja processar
+transaction_type = "Rent"  # Escolha entre "Rent" ou "Buy"
 
 generate_cep_excel(input_file, output_file, num_apartments, transaction_type)
 print(f"Arquivo salvo com sucesso em: {output_file}")
