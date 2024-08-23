@@ -21,7 +21,7 @@ def extract_latest_price(price_date_str):
     latest_price = max(price_date_list, key=lambda x: x[1])
     return latest_price[0]
 
-def plot_heatmap_and_save_excel(input_file, output_html, output_excel):
+def plot_heatmap_and_save_excel(input_file, output_html, output_excel, order_by="Price"):
     df = pd.read_excel(input_file)
 
     if 'CEP' not in df.columns:
@@ -35,6 +35,15 @@ def plot_heatmap_and_save_excel(input_file, output_html, output_excel):
     # Extrair o último preço de cada apartamento
     df['Latest_Price'] = df['Price and Date'].apply(extract_latest_price)
 
+    # Calcular o preço por m²
+    df['Price per m²'] = df['Latest_Price'] / df['Living Space (m²)']
+
+    # Ordenar a tabela conforme a escolha
+    if order_by == "Price per m²":
+        df = df.sort_values(by='Price per m²', ascending=True)
+    else:
+        df = df.sort_values(by='Latest_Price', ascending=True)
+
     # Cria um mapa centrado na média das coordenadas
     m = folium.Map(location=[df['Latitude'].mean(), df['Longitude'].mean()], zoom_start=10)
 
@@ -47,14 +56,16 @@ def plot_heatmap_and_save_excel(input_file, output_html, output_excel):
     colormap.caption = 'Número de Apartamentos por CEP (Verde = Baixo, Vermelho = Alto)'
     colormap.add_to(m)
 
-    # Cria uma tabela com os links e os preços mais recentes
-    table_html = """
+    # Cria uma tabela com os links, preços, preços por m² e o número de quartos
+    table_html = f"""
     <div style='position: fixed; top: 100px; left: 80px; width: 600px; max-height: 300px; z-index:9999; background-color: white; padding: 10px; border: 2px solid grey; overflow-y: auto;'>
         <b>Visit the websites</b><br>
         <table border='1' style='width: 100%; border-collapse: collapse;'>
             <tr>
                 <th>Link</th>
                 <th>Price</th>
+                <th>Price per m²</th>
+                <th>Rooms</th>
             </tr>
     """
 
@@ -63,6 +74,8 @@ def plot_heatmap_and_save_excel(input_file, output_html, output_excel):
             <tr>
                 <td><a href='{row['Extracted from']}' target='_blank'>{row['Extracted from']}</a></td>
                 <td>{row['Latest_Price']}</td>
+                <td>{row['Price per m²']:.2f}</td>
+                <td>{row['Rooms']}</td>
             </tr>
         """
 
@@ -84,4 +97,5 @@ input_file = "enderecos_com_cep.xlsx"
 output_html = "heatmap.html"
 output_excel = "enderecos_com_coordenadas.xlsx"
 
-plot_heatmap_and_save_excel(input_file, output_html, output_excel)
+# Ordenar por "Price" ou "Price per m²"
+plot_heatmap_and_save_excel(input_file, output_html, output_excel, order_by="Price per m²")
