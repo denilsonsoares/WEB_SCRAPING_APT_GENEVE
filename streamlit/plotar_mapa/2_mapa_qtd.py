@@ -21,11 +21,15 @@ def extract_latest_price(price_date_str):
     latest_price = max(price_date_list, key=lambda x: x[1])
     return latest_price[0]
 
-def plot_heatmap_and_save_excel(input_file, output_html, output_excel, order_by="Price"):
+def plot_heatmap_and_save_excel(input_file, output_html, output_excel, order_by="Price", city_filter=None):
     df = pd.read_excel(input_file)
 
     if 'CEP' not in df.columns:
         raise ValueError("A planilha deve conter a coluna 'CEP'.")
+
+    # Filtrar por cidade, se city_filter for fornecido
+    if city_filter:
+        df = df[df['City'] == city_filter]
 
     df['CEP_Frequency'] = df.groupby('CEP')['CEP'].transform('count')
     df['Coordinates'] = df['CEP'].apply(get_coordinates_from_cep)
@@ -63,7 +67,7 @@ def plot_heatmap_and_save_excel(input_file, output_html, output_excel, order_by=
         <table border='1' style='width: 100%; border-collapse: collapse;'>
             <tr>
                 <th>Link</th>
-                <th>Price</th>
+                <th>Price (CHF)</th>
                 <th>Price per m²</th>
                 <th>Rooms</th>
             </tr>
@@ -97,5 +101,5 @@ input_file = "enderecos_com_cep.xlsx"
 output_html = "heatmap.html"
 output_excel = "enderecos_com_coordenadas.xlsx"
 
-# Ordenar por "Price" ou "Price per m²"
-plot_heatmap_and_save_excel(input_file, output_html, output_excel, order_by="Price per m²")
+# Ordenar por "Price" ou "Price per m²" e filtrar por cidade
+plot_heatmap_and_save_excel(input_file, output_html, output_excel, order_by="Price per m²", city_filter="Zurich")

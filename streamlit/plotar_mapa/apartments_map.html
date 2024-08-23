@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_206b9dd25562c8460aecc6cc2228009e {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_206b9dd25562c8460aecc6cc2228009e" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_206b9dd25562c8460aecc6cc2228009e = L.map(
+                "map_206b9dd25562c8460aecc6cc2228009e",
+                {
+                    center: [47.38923997531628, 8.537400432519565],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 10,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_1e05eb8ed3c0a35c7e3f6dcdfbd9e6bf = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors", "detectRetina": false, "maxNativeZoom": 19, "maxZoom": 19, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            );
+        
+    
+            tile_layer_1e05eb8ed3c0a35c7e3f6dcdfbd9e6bf.addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+            var marker_d98cda5a9f56936ee9ddc9b3e6d95872 = L.marker(
+                [47.34339435560345, 8.531125890517242],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_dbc0ccd0c6a7a7b3f589797f407e3aae = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_4aaf66e91231f76f4548e792afe40087 = $(`<div id="html_4aaf66e91231f76f4548e792afe40087" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.immoscout24.ch/rent/4001289661' target='_blank'>https://www.immoscout24.ch/rent/4001289661</a><br>                     <b>Price:</b> 1790.0 CHF<br>                     <b>Price per m²:</b> 27.54 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001351110' target='_blank'>https://www.homegate.ch/rent/4001351110</a><br>                     <b>Price:</b> 1790.0 CHF<br>                     <b>Price per m²:</b> 31.96 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                                      <b>Link:</b> <a href='https://www.immoscout24.ch/rent/4001336915' target='_blank'>https://www.immoscout24.ch/rent/4001336915</a><br>                     <b>Price:</b> 2150.0 CHF<br>                     <b>Price per m²:</b> 34.13 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                                      <b>Link:</b> <a href='https://www.immoscout24.ch/rent/4001385922' target='_blank'>https://www.immoscout24.ch/rent/4001385922</a><br>                     <b>Price:</b> 2150.0 CHF<br>                     <b>Price per m²:</b> 39.09 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                 </div>`)[0];
+                popup_dbc0ccd0c6a7a7b3f589797f407e3aae.setContent(html_4aaf66e91231f76f4548e792afe40087);
+            
+        
+
+        marker_d98cda5a9f56936ee9ddc9b3e6d95872.bindPopup(popup_dbc0ccd0c6a7a7b3f589797f407e3aae)
+        ;
+
+        
+    
+    
+            var marker_95b8288f48457cbd79870c2fff594d2a = L.marker(
+                [47.3537532, 8.560742331897757],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_9a19d41306c9c751baed1e4223110423 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_b697a0c1037f24a0d783869f0a1eadfb = $(`<div id="html_b697a0c1037f24a0d783869f0a1eadfb" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001410710' target='_blank'>https://www.homegate.ch/rent/4001410710</a><br>                     <b>Price:</b> 2110.0 CHF<br>                     <b>Price per m²:</b> 78.15 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001322661' target='_blank'>https://www.homegate.ch/rent/4001322661</a><br>                     <b>Price:</b> 2110.0 CHF<br>                     <b>Price per m²:</b> 78.15 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001410711' target='_blank'>https://www.homegate.ch/rent/4001410711</a><br>                     <b>Price:</b> 1850.0 CHF<br>                     <b>Price per m²:</b> 88.10 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                 </div>`)[0];
+                popup_9a19d41306c9c751baed1e4223110423.setContent(html_b697a0c1037f24a0d783869f0a1eadfb);
+            
+        
+
+        marker_95b8288f48457cbd79870c2fff594d2a.bindPopup(popup_9a19d41306c9c751baed1e4223110423)
+        ;
+
+        
+    
+    
+            var marker_acb5298892122b754e7aeb5a259306ee = L.marker(
+                [47.35846491585127, 8.590339297586432],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_0cd18732bdc77392e52f47a6405ecdae = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_53fbf2ad2f2a1b408a2814022c14254d = $(`<div id="html_53fbf2ad2f2a1b408a2814022c14254d" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001380884' target='_blank'>https://www.homegate.ch/rent/4001380884</a><br>                     <b>Price:</b> 1715.0 CHF<br>                     <b>Price per m²:</b> 26.80 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001275211' target='_blank'>https://www.homegate.ch/rent/4001275211</a><br>                     <b>Price:</b> 1940.0 CHF<br>                     <b>Price per m²:</b> 26.94 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001403304' target='_blank'>https://www.homegate.ch/rent/4001403304</a><br>                     <b>Price:</b> 2082.0 CHF<br>                     <b>Price per m²:</b> 27.39 CHF<br>                     <b>Rooms:</b> 3.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001402922' target='_blank'>https://www.homegate.ch/rent/4001402922</a><br>                     <b>Price:</b> 1650.0 CHF<br>                     <b>Price per m²:</b> 30.00 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001390271' target='_blank'>https://www.homegate.ch/rent/4001390271</a><br>                     <b>Price:</b> 2070.0 CHF<br>                     <b>Price per m²:</b> 32.34 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001207854' target='_blank'>https://www.homegate.ch/rent/4001207854</a><br>                     <b>Price:</b> 1980.0 CHF<br>                     <b>Price per m²:</b> 45.00 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                 </div>`)[0];
+                popup_0cd18732bdc77392e52f47a6405ecdae.setContent(html_53fbf2ad2f2a1b408a2814022c14254d);
+            
+        
+
+        marker_acb5298892122b754e7aeb5a259306ee.bindPopup(popup_0cd18732bdc77392e52f47a6405ecdae)
+        ;
+
+        
+    
+    
+            var marker_51ac3464046a83484336665346141ad1 = L.marker(
+                [47.359304231631135, 8.51290742444224],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_7b1bd22f551a1031979bea56f21faa68 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_ae1c9ec580abd118570281c670abca4f = $(`<div id="html_ae1c9ec580abd118570281c670abca4f" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001410215' target='_blank'>https://www.homegate.ch/rent/4001410215</a><br>                     <b>Price:</b> 1250.0 CHF<br>                     <b>Price per m²:</b> 21.93 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001390533' target='_blank'>https://www.homegate.ch/rent/4001390533</a><br>                     <b>Price:</b> 2014.0 CHF<br>                     <b>Price per m²:</b> 28.77 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001405711' target='_blank'>https://www.homegate.ch/rent/4001405711</a><br>                     <b>Price:</b> 2020.0 CHF<br>                     <b>Price per m²:</b> 33.67 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001385645' target='_blank'>https://www.homegate.ch/rent/4001385645</a><br>                     <b>Price:</b> 1900.0 CHF<br>                     <b>Price per m²:</b> 36.54 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                 </div>`)[0];
+                popup_7b1bd22f551a1031979bea56f21faa68.setContent(html_ae1c9ec580abd118570281c670abca4f);
+            
+        
+
+        marker_51ac3464046a83484336665346141ad1.bindPopup(popup_7b1bd22f551a1031979bea56f21faa68)
+        ;
+
+        
+    
+    
+            var marker_ecbb5a9248d3a6c59549955fd117b204 = L.marker(
+                [47.361771095769235, 8.530453141730769],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_be05bc8c597bf9196d9b60dd6bce1438 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_3d2072fe768034dcd4fee0e3ec67a9be = $(`<div id="html_3d2072fe768034dcd4fee0e3ec67a9be" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4000996884' target='_blank'>https://www.homegate.ch/rent/4000996884</a><br>                     <b>Price:</b> 2000.0 CHF<br>                     <b>Price per m²:</b> 19.80 CHF<br>                     <b>Rooms:</b> 4.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001397903' target='_blank'>https://www.homegate.ch/rent/4001397903</a><br>                     <b>Price:</b> 2154.0 CHF<br>                     <b>Price per m²:</b> 35.31 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                 </div>`)[0];
+                popup_be05bc8c597bf9196d9b60dd6bce1438.setContent(html_3d2072fe768034dcd4fee0e3ec67a9be);
+            
+        
+
+        marker_ecbb5a9248d3a6c59549955fd117b204.bindPopup(popup_be05bc8c597bf9196d9b60dd6bce1438)
+        ;
+
+        
+    
+    
+            var marker_82f1d1112dc72f7458a834426051e0ff = L.marker(
+                [47.366720333062524, 8.561976071105615],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_5314b9ccc1452f94d9e7d5aa74bbadfe = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_1fb00750fbe90353406410d00aab1bd7 = $(`<div id="html_1fb00750fbe90353406410d00aab1bd7" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001187616' target='_blank'>https://www.homegate.ch/rent/4001187616</a><br>                     <b>Price:</b> 2100.0 CHF<br>                     <b>Price per m²:</b> 55.26 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001141576' target='_blank'>https://www.homegate.ch/rent/4001141576</a><br>                     <b>Price:</b> 2050.0 CHF<br>                     <b>Price per m²:</b> 58.57 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001401691' target='_blank'>https://www.homegate.ch/rent/4001401691</a><br>                     <b>Price:</b> 1250.0 CHF<br>                     <b>Price per m²:</b> 83.33 CHF<br>                     <b>Rooms:</b> 4.5<br><br>                 </div>`)[0];
+                popup_5314b9ccc1452f94d9e7d5aa74bbadfe.setContent(html_1fb00750fbe90353406410d00aab1bd7);
+            
+        
+
+        marker_82f1d1112dc72f7458a834426051e0ff.bindPopup(popup_5314b9ccc1452f94d9e7d5aa74bbadfe)
+        ;
+
+        
+    
+    
+            var marker_2dc7d37564553d5d23a04c3c3e71493c = L.marker(
+                [47.3668774384657, 8.506228103619664],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_315864775a0307b9079d4e68023a5b2f = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_7abd37b0e226eaadbd384d870bd3f17f = $(`<div id="html_7abd37b0e226eaadbd384d870bd3f17f" style="width: 100.0%; height: 100.0%;">                 <b>Link:</b> <a href='https://www.immoscout24.ch/rent/4001117336' target='_blank'>https://www.immoscout24.ch/rent/4001117336</a><br>                 <b>Price:</b> 2100.0 CHF<br>                 <b>Price per m²:</b> 35.00 CHF<br>                 <b>Rooms:</b> 2.0             </div>`)[0];
+                popup_315864775a0307b9079d4e68023a5b2f.setContent(html_7abd37b0e226eaadbd384d870bd3f17f);
+            
+        
+
+        marker_2dc7d37564553d5d23a04c3c3e71493c.bindPopup(popup_315864775a0307b9079d4e68023a5b2f)
+        ;
+
+        
+    
+    
+            var marker_49d52ada987fbc858e23a5ca0399a4cf = L.marker(
+                [47.37269446268744, 8.541681887180241],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_aa37dd0e46424bf4f4fa4e88bf6438b4 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_1db110eb895e690d643cada07b8796e4 = $(`<div id="html_1db110eb895e690d643cada07b8796e4" style="width: 100.0%; height: 100.0%;">                 <b>Link:</b> <a href='https://www.immoscout24.ch/rent/4001187621' target='_blank'>https://www.immoscout24.ch/rent/4001187621</a><br>                 <b>Price:</b> 2000.0 CHF<br>                 <b>Price per m²:</b> 66.67 CHF<br>                 <b>Rooms:</b> 1.5             </div>`)[0];
+                popup_aa37dd0e46424bf4f4fa4e88bf6438b4.setContent(html_1db110eb895e690d643cada07b8796e4);
+            
+        
+
+        marker_49d52ada987fbc858e23a5ca0399a4cf.bindPopup(popup_aa37dd0e46424bf4f4fa4e88bf6438b4)
+        ;
+
+        
+    
+    
+            var marker_f952bd747bdd057bf72e06f44f2cf111 = L.marker(
+                [47.37275923394794, 8.515733035032538],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_ca53caa8aeab13fc911f69bd678df2d3 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_5894934b02af971d9f369a25b8d17f72 = $(`<div id="html_5894934b02af971d9f369a25b8d17f72" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001409730' target='_blank'>https://www.homegate.ch/rent/4001409730</a><br>                     <b>Price:</b> 1150.0 CHF<br>                     <b>Price per m²:</b> 18.85 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001408886' target='_blank'>https://www.homegate.ch/rent/4001408886</a><br>                     <b>Price:</b> 1924.0 CHF<br>                     <b>Price per m²:</b> 45.81 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                 </div>`)[0];
+                popup_ca53caa8aeab13fc911f69bd678df2d3.setContent(html_5894934b02af971d9f369a25b8d17f72);
+            
+        
+
+        marker_f952bd747bdd057bf72e06f44f2cf111.bindPopup(popup_ca53caa8aeab13fc911f69bd678df2d3)
+        ;
+
+        
+    
+    
+            var marker_d21a9a854c8405d0b7add6e022c38654 = L.marker(
+                [47.37438331278027, 8.49097973542601],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_247963a4d6802959e1f14bdb21821988 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_526ffb20d884971b003bba9d5fc91759 = $(`<div id="html_526ffb20d884971b003bba9d5fc91759" style="width: 100.0%; height: 100.0%;">                 <b>Link:</b> <a href='https://www.homegate.ch/rent/4001281768' target='_blank'>https://www.homegate.ch/rent/4001281768</a><br>                 <b>Price:</b> 2020.0 CHF<br>                 <b>Price per m²:</b> 51.79 CHF<br>                 <b>Rooms:</b> 1.5             </div>`)[0];
+                popup_247963a4d6802959e1f14bdb21821988.setContent(html_526ffb20d884971b003bba9d5fc91759);
+            
+        
+
+        marker_d21a9a854c8405d0b7add6e022c38654.bindPopup(popup_247963a4d6802959e1f14bdb21821988)
+        ;
+
+        
+    
+    
+            var marker_ee18b8205ff65d4be71db8337723b1f3 = L.marker(
+                [47.3744489, 8.5410422],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_144580cd19aafd2f160c09032d88b897 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_38a1fbbe30c4d31cadbf22127cfac39c = $(`<div id="html_38a1fbbe30c4d31cadbf22127cfac39c" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4000681665' target='_blank'>https://www.homegate.ch/rent/4000681665</a><br>                     <b>Price:</b> 750.0 CHF<br>                     <b>Price per m²:</b> 0.43 CHF<br>                     <b>Rooms:</b> 20.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001400576' target='_blank'>https://www.homegate.ch/rent/4001400576</a><br>                     <b>Price:</b> 1760.0 CHF<br>                     <b>Price per m²:</b> 31.43 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.immoscout24.ch/rent/4001364780' target='_blank'>https://www.immoscout24.ch/rent/4001364780</a><br>                     <b>Price:</b> 1999.0 CHF<br>                     <b>Price per m²:</b> 33.32 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.immoscout24.ch/rent/4001275630' target='_blank'>https://www.immoscout24.ch/rent/4001275630</a><br>                     <b>Price:</b> 2040.0 CHF<br>                     <b>Price per m²:</b> 40.00 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001395062' target='_blank'>https://www.homegate.ch/rent/4001395062</a><br>                     <b>Price:</b> 2000.0 CHF<br>                     <b>Price per m²:</b> 100.00 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                 </div>`)[0];
+                popup_144580cd19aafd2f160c09032d88b897.setContent(html_38a1fbbe30c4d31cadbf22127cfac39c);
+            
+        
+
+        marker_ee18b8205ff65d4be71db8337723b1f3.bindPopup(popup_144580cd19aafd2f160c09032d88b897)
+        ;
+
+        
+    
+    
+            var marker_640232dc155cf7849d371e30a05ef7bf = L.marker(
+                [47.37722915823373, 8.522798633266932],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_bb3240e7aeb3c20bb0ef70e72f34de9d = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_3a9108680f0cf5077265da1660f9fddb = $(`<div id="html_3a9108680f0cf5077265da1660f9fddb" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001393841' target='_blank'>https://www.homegate.ch/rent/4001393841</a><br>                     <b>Price:</b> 1400.0 CHF<br>                     <b>Price per m²:</b> 31.82 CHF<br>                     <b>Rooms:</b> 2.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001386669' target='_blank'>https://www.homegate.ch/rent/4001386669</a><br>                     <b>Price:</b> 2150.0 CHF<br>                     <b>Price per m²:</b> 37.72 CHF<br>                     <b>Rooms:</b> 2.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001133546' target='_blank'>https://www.homegate.ch/rent/4001133546</a><br>                     <b>Price:</b> 1559.0 CHF<br>                     <b>Price per m²:</b> 41.03 CHF<br>                     <b>Rooms:</b> 2.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001391348' target='_blank'>https://www.homegate.ch/rent/4001391348</a><br>                     <b>Price:</b> 2052.0 CHF<br>                     <b>Price per m²:</b> 51.30 CHF<br>                     <b>Rooms:</b> 2.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001372957' target='_blank'>https://www.homegate.ch/rent/4001372957</a><br>                     <b>Price:</b> 1890.0 CHF<br>                     <b>Price per m²:</b> 65.17 CHF<br>                     <b>Rooms:</b> 2.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001363108' target='_blank'>https://www.homegate.ch/rent/4001363108</a><br>                     <b>Price:</b> 2100.0 CHF<br>                     <b>Price per m²:</b> 84.00 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                 </div>`)[0];
+                popup_bb3240e7aeb3c20bb0ef70e72f34de9d.setContent(html_3a9108680f0cf5077265da1660f9fddb);
+            
+        
+
+        marker_640232dc155cf7849d371e30a05ef7bf.bindPopup(popup_bb3240e7aeb3c20bb0ef70e72f34de9d)
+        ;
+
+        
+    
+    
+            var marker_4deb3312ac21609c8fd83398fcc20331 = L.marker(
+                [47.37998814165554, 8.563788946194926],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_a61b98baf5bdd963fbeece4d57733c71 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_ef02fdebe8a948368537b3f00374e4c4 = $(`<div id="html_ef02fdebe8a948368537b3f00374e4c4" style="width: 100.0%; height: 100.0%;">                 <b>Link:</b> <a href='https://www.homegate.ch/rent/4001398870' target='_blank'>https://www.homegate.ch/rent/4001398870</a><br>                 <b>Price:</b> 2120.0 CHF<br>                 <b>Price per m²:</b> 32.62 CHF<br>                 <b>Rooms:</b> 2.5             </div>`)[0];
+                popup_a61b98baf5bdd963fbeece4d57733c71.setContent(html_ef02fdebe8a948368537b3f00374e4c4);
+            
+        
+
+        marker_4deb3312ac21609c8fd83398fcc20331.bindPopup(popup_a61b98baf5bdd963fbeece4d57733c71)
+        ;
+
+        
+    
+    
+            var marker_7ae2f9f208f8b0f2062cb6cf53627048 = L.marker(
+                [47.3840732, 8.5326388],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_f61f2769ea41e357ec11de1e9709365e = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_6f53233a1f1d415113af757dfa9ace25 = $(`<div id="html_6f53233a1f1d415113af757dfa9ace25" style="width: 100.0%; height: 100.0%;">                 <b>Link:</b> <a href='https://www.immoscout24.ch/rent/4001364792' target='_blank'>https://www.immoscout24.ch/rent/4001364792</a><br>                 <b>Price:</b> 1990.0 CHF<br>                 <b>Price per m²:</b> 30.62 CHF<br>                 <b>Rooms:</b> 2.5             </div>`)[0];
+                popup_f61f2769ea41e357ec11de1e9709365e.setContent(html_6f53233a1f1d415113af757dfa9ace25);
+            
+        
+
+        marker_7ae2f9f208f8b0f2062cb6cf53627048.bindPopup(popup_f61f2769ea41e357ec11de1e9709365e)
+        ;
+
+        
+    
+    
+            var marker_6882ebb31bafe15151a1ec683a274d2e = L.marker(
+                [47.386169475845605, 8.545059607361718],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_c39168234e8d4ca2c10a088d6297da67 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_a5e7257e88df41cc9795d9ff5a5b8111 = $(`<div id="html_a5e7257e88df41cc9795d9ff5a5b8111" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001305589' target='_blank'>https://www.homegate.ch/rent/4001305589</a><br>                     <b>Price:</b> 2105.0 CHF<br>                     <b>Price per m²:</b> 36.93 CHF<br>                     <b>Rooms:</b> 2.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001384119' target='_blank'>https://www.homegate.ch/rent/4001384119</a><br>                     <b>Price:</b> 1920.0 CHF<br>                     <b>Price per m²:</b> 53.33 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                 </div>`)[0];
+                popup_c39168234e8d4ca2c10a088d6297da67.setContent(html_a5e7257e88df41cc9795d9ff5a5b8111);
+            
+        
+
+        marker_6882ebb31bafe15151a1ec683a274d2e.bindPopup(popup_c39168234e8d4ca2c10a088d6297da67)
+        ;
+
+        
+    
+    
+            var marker_ba05786c10c43ced72a573335071f62d = L.marker(
+                [47.386330033162615, 8.524630250896287],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_a8575d39fb25850e881fd7abf725d2a6 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_fdffb803faf9354a43671f946cb99bb8 = $(`<div id="html_fdffb803faf9354a43671f946cb99bb8" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001392790' target='_blank'>https://www.homegate.ch/rent/4001392790</a><br>                     <b>Price:</b> 2010.0 CHF<br>                     <b>Price per m²:</b> 23.37 CHF<br>                     <b>Rooms:</b> 2.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001411209' target='_blank'>https://www.homegate.ch/rent/4001411209</a><br>                     <b>Price:</b> 1950.0 CHF<br>                     <b>Price per m²:</b> 36.11 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                 </div>`)[0];
+                popup_a8575d39fb25850e881fd7abf725d2a6.setContent(html_fdffb803faf9354a43671f946cb99bb8);
+            
+        
+
+        marker_ba05786c10c43ced72a573335071f62d.bindPopup(popup_a8575d39fb25850e881fd7abf725d2a6)
+        ;
+
+        
+    
+    
+            var marker_be4c9a7fb54134a298f1bdf7198ae262 = L.marker(
+                [47.38784549991547, 8.48666327578191],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_a48462305a5edae022f2668f23503802 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_5e348787d34515371e601ced1968b452 = $(`<div id="html_5e348787d34515371e601ced1968b452" style="width: 100.0%; height: 100.0%;">                 <b>Link:</b> <a href='https://www.homegate.ch/rent/4001389683' target='_blank'>https://www.homegate.ch/rent/4001389683</a><br>                 <b>Price:</b> 1751.0 CHF<br>                 <b>Price per m²:</b> 30.19 CHF<br>                 <b>Rooms:</b> 2.5             </div>`)[0];
+                popup_a48462305a5edae022f2668f23503802.setContent(html_5e348787d34515371e601ced1968b452);
+            
+        
+
+        marker_be4c9a7fb54134a298f1bdf7198ae262.bindPopup(popup_a48462305a5edae022f2668f23503802)
+        ;
+
+        
+    
+    
+            var marker_fcbb8a0831c94dd85464e21c0be7f315 = L.marker(
+                [47.38784678183972, 8.486769005132254],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_711ef901f56458277ced15ec327d47ae = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_e18385302cbbb1c440245df11c15e00d = $(`<div id="html_e18385302cbbb1c440245df11c15e00d" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001391266' target='_blank'>https://www.homegate.ch/rent/4001391266</a><br>                     <b>Price:</b> 1254.0 CHF<br>                     <b>Price per m²:</b> 18.44 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001369307' target='_blank'>https://www.homegate.ch/rent/4001369307</a><br>                     <b>Price:</b> 1620.0 CHF<br>                     <b>Price per m²:</b> 27.46 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001407331' target='_blank'>https://www.homegate.ch/rent/4001407331</a><br>                     <b>Price:</b> 2026.0 CHF<br>                     <b>Price per m²:</b> 31.66 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001333934' target='_blank'>https://www.homegate.ch/rent/4001333934</a><br>                     <b>Price:</b> 1880.0 CHF<br>                     <b>Price per m²:</b> 31.86 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001386444' target='_blank'>https://www.homegate.ch/rent/4001386444</a><br>                     <b>Price:</b> 2160.0 CHF<br>                     <b>Price per m²:</b> 33.75 CHF<br>                     <b>Rooms:</b> 3.5<br><br>                                      <b>Link:</b> <a href='https://www.immoscout24.ch/rent/4001390113' target='_blank'>https://www.immoscout24.ch/rent/4001390113</a><br>                     <b>Price:</b> 1820.0 CHF<br>                     <b>Price per m²:</b> 47.89 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001333905' target='_blank'>https://www.homegate.ch/rent/4001333905</a><br>                     <b>Price:</b> 1715.0 CHF<br>                     <b>Price per m²:</b> 59.14 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001316783' target='_blank'>https://www.homegate.ch/rent/4001316783</a><br>                     <b>Price:</b> 1997.0 CHF<br>                     <b>Price per m²:</b> 76.81 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                 </div>`)[0];
+                popup_711ef901f56458277ced15ec327d47ae.setContent(html_e18385302cbbb1c440245df11c15e00d);
+            
+        
+
+        marker_fcbb8a0831c94dd85464e21c0be7f315.bindPopup(popup_711ef901f56458277ced15ec327d47ae)
+        ;
+
+        
+    
+    
+            var marker_2c5c93c33d0b9d9cc5d27af86886d0da = L.marker(
+                [47.39401932382049, 8.526534328596087],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_e9c91f9da394f7985b3906a0ac7907fc = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_d240c61c3196604e0c6ae0f7e4ef2334 = $(`<div id="html_d240c61c3196604e0c6ae0f7e4ef2334" style="width: 100.0%; height: 100.0%;">                 <b>Link:</b> <a href='https://www.homegate.ch/rent/4001374444' target='_blank'>https://www.homegate.ch/rent/4001374444</a><br>                 <b>Price:</b> 2045.0 CHF<br>                 <b>Price per m²:</b> 60.15 CHF<br>                 <b>Rooms:</b> 2.0             </div>`)[0];
+                popup_e9c91f9da394f7985b3906a0ac7907fc.setContent(html_d240c61c3196604e0c6ae0f7e4ef2334);
+            
+        
+
+        marker_2c5c93c33d0b9d9cc5d27af86886d0da.bindPopup(popup_e9c91f9da394f7985b3906a0ac7907fc)
+        ;
+
+        
+    
+    
+            var marker_c7e9183202654ea804f8707859660946 = L.marker(
+                [47.39401932974684, 8.52653432301496],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_38bf9a2341ceaa59c06633b3f32f949a = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_e198c7cc850e4b42df24fb5d0939cef4 = $(`<div id="html_e198c7cc850e4b42df24fb5d0939cef4" style="width: 100.0%; height: 100.0%;">                 <b>Link:</b> <a href='https://www.homegate.ch/rent/4001341049' target='_blank'>https://www.homegate.ch/rent/4001341049</a><br>                 <b>Price:</b> 1840.0 CHF<br>                 <b>Price per m²:</b> 51.11 CHF<br>                 <b>Rooms:</b> 1.5             </div>`)[0];
+                popup_38bf9a2341ceaa59c06633b3f32f949a.setContent(html_e198c7cc850e4b42df24fb5d0939cef4);
+            
+        
+
+        marker_c7e9183202654ea804f8707859660946.bindPopup(popup_38bf9a2341ceaa59c06633b3f32f949a)
+        ;
+
+        
+    
+    
+            var marker_54aa4e22eb25b71e6a1864612523c544 = L.marker(
+                [47.39730204229391, 8.48793456702509],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_43c309a7aabe67c1cf22af25c1bd27f2 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_34c3a8c34718e07d3f5d180225dc7d35 = $(`<div id="html_34c3a8c34718e07d3f5d180225dc7d35" style="width: 100.0%; height: 100.0%;">                 <b>Link:</b> <a href='https://www.homegate.ch/rent/3001912432' target='_blank'>https://www.homegate.ch/rent/3001912432</a><br>                 <b>Price:</b> 2035.0 CHF<br>                 <b>Price per m²:</b> 88.48 CHF<br>                 <b>Rooms:</b> 1.5             </div>`)[0];
+                popup_43c309a7aabe67c1cf22af25c1bd27f2.setContent(html_34c3a8c34718e07d3f5d180225dc7d35);
+            
+        
+
+        marker_54aa4e22eb25b71e6a1864612523c544.bindPopup(popup_43c309a7aabe67c1cf22af25c1bd27f2)
+        ;
+
+        
+    
+    
+            var marker_1fc55e88e0ba149e01b8049465220f64 = L.marker(
+                [47.39948119888603, 8.542812898886032],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_af9b48c44ab494541d9576654aa14ce8 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_d60617c4cfae063b197cf5b947ad7612 = $(`<div id="html_d60617c4cfae063b197cf5b947ad7612" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001390534' target='_blank'>https://www.homegate.ch/rent/4001390534</a><br>                     <b>Price:</b> 2160.0 CHF<br>                     <b>Price per m²:</b> 30.42 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001403450' target='_blank'>https://www.homegate.ch/rent/4001403450</a><br>                     <b>Price:</b> 1910.0 CHF<br>                     <b>Price per m²:</b> 35.37 CHF<br>                     <b>Rooms:</b> 2.0<br><br>                                      <b>Link:</b> <a href='https://www.immoscout24.ch/rent/4001385958' target='_blank'>https://www.immoscout24.ch/rent/4001385958</a><br>                     <b>Price:</b> 1700.0 CHF<br>                     <b>Price per m²:</b> 42.50 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001219148' target='_blank'>https://www.homegate.ch/rent/4001219148</a><br>                     <b>Price:</b> 1978.0 CHF<br>                     <b>Price per m²:</b> 50.72 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                                      <b>Link:</b> <a href='https://www.immoscout24.ch/rent/4001371001' target='_blank'>https://www.immoscout24.ch/rent/4001371001</a><br>                     <b>Price:</b> 1953.0 CHF<br>                     <b>Price per m²:</b> 51.39 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                 </div>`)[0];
+                popup_af9b48c44ab494541d9576654aa14ce8.setContent(html_d60617c4cfae063b197cf5b947ad7612);
+            
+        
+
+        marker_1fc55e88e0ba149e01b8049465220f64.bindPopup(popup_af9b48c44ab494541d9576654aa14ce8)
+        ;
+
+        
+    
+    
+            var marker_4889b9798c2385f5fe2745676101ab9a = L.marker(
+                [47.39948499345314, 8.542825984937954],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_bb9d13a2640dce43a038b66fe0be1685 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_f75897c2ee0412f2baa94f20092975c0 = $(`<div id="html_f75897c2ee0412f2baa94f20092975c0" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001403040' target='_blank'>https://www.homegate.ch/rent/4001403040</a><br>                     <b>Price:</b> 1791.0 CHF<br>                     <b>Price per m²:</b> 32.56 CHF<br>                     <b>Rooms:</b> 2.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/3001912350' target='_blank'>https://www.homegate.ch/rent/3001912350</a><br>                     <b>Price:</b> 1600.0 CHF<br>                     <b>Price per m²:</b> 69.57 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                 </div>`)[0];
+                popup_bb9d13a2640dce43a038b66fe0be1685.setContent(html_f75897c2ee0412f2baa94f20092975c0);
+            
+        
+
+        marker_4889b9798c2385f5fe2745676101ab9a.bindPopup(popup_bb9d13a2640dce43a038b66fe0be1685)
+        ;
+
+        
+    
+    
+            var marker_fda1859593cbc9636882de7e8aecf58e = L.marker(
+                [47.40363721573333, 8.496623159199999],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_636c66b4978096f3adbbb77b6cc19355 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_18e03963ff66c20ef20420c1957af42c = $(`<div id="html_18e03963ff66c20ef20420c1957af42c" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001381067' target='_blank'>https://www.homegate.ch/rent/4001381067</a><br>                     <b>Price:</b> 1970.0 CHF<br>                     <b>Price per m²:</b> 26.27 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                                      <b>Link:</b> <a href='https://www.immoscout24.ch/rent/4001394629' target='_blank'>https://www.immoscout24.ch/rent/4001394629</a><br>                     <b>Price:</b> 1970.0 CHF<br>                     <b>Price per m²:</b> 26.27 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001171499' target='_blank'>https://www.homegate.ch/rent/4001171499</a><br>                     <b>Price:</b> 2165.0 CHF<br>                     <b>Price per m²:</b> 48.11 CHF<br>                     <b>Rooms:</b> 2.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001360173' target='_blank'>https://www.homegate.ch/rent/4001360173</a><br>                     <b>Price:</b> 1870.0 CHF<br>                     <b>Price per m²:</b> 66.79 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                 </div>`)[0];
+                popup_636c66b4978096f3adbbb77b6cc19355.setContent(html_18e03963ff66c20ef20420c1957af42c);
+            
+        
+
+        marker_fda1859593cbc9636882de7e8aecf58e.bindPopup(popup_636c66b4978096f3adbbb77b6cc19355)
+        ;
+
+        
+    
+    
+            var marker_4d8bc28707464e7d3570d9d89ac7daaa = L.marker(
+                [47.40365010130662, 8.579578526872822],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_c8a487e0a8f00be091fd16d3347de9f8 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_9659591fc813bc603240fccb11011c76 = $(`<div id="html_9659591fc813bc603240fccb11011c76" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001298128' target='_blank'>https://www.homegate.ch/rent/4001298128</a><br>                     <b>Price:</b> 1870.0 CHF<br>                     <b>Price per m²:</b> 28.33 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001298127' target='_blank'>https://www.homegate.ch/rent/4001298127</a><br>                     <b>Price:</b> 1849.0 CHF<br>                     <b>Price per m²:</b> 28.45 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001400534' target='_blank'>https://www.homegate.ch/rent/4001400534</a><br>                     <b>Price:</b> 1870.0 CHF<br>                     <b>Price per m²:</b> 28.77 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001362025' target='_blank'>https://www.homegate.ch/rent/4001362025</a><br>                     <b>Price:</b> 1780.0 CHF<br>                     <b>Price per m²:</b> 30.69 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001355584' target='_blank'>https://www.homegate.ch/rent/4001355584</a><br>                     <b>Price:</b> 1490.0 CHF<br>                     <b>Price per m²:</b> 31.04 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001267854' target='_blank'>https://www.homegate.ch/rent/4001267854</a><br>                     <b>Price:</b> 1970.0 CHF<br>                     <b>Price per m²:</b> 31.27 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001361662' target='_blank'>https://www.homegate.ch/rent/4001361662</a><br>                     <b>Price:</b> 1643.0 CHF<br>                     <b>Price per m²:</b> 32.22 CHF<br>                     <b>Rooms:</b> 2.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001385233' target='_blank'>https://www.homegate.ch/rent/4001385233</a><br>                     <b>Price:</b> 1690.0 CHF<br>                     <b>Price per m²:</b> 73.48 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                 </div>`)[0];
+                popup_c8a487e0a8f00be091fd16d3347de9f8.setContent(html_9659591fc813bc603240fccb11011c76);
+            
+        
+
+        marker_4d8bc28707464e7d3570d9d89ac7daaa.bindPopup(popup_c8a487e0a8f00be091fd16d3347de9f8)
+        ;
+
+        
+    
+    
+            var marker_1002c809b0dc717747b79fcb587d8dbc = L.marker(
+                [47.40365211404348, 8.579595054782608],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_fa91fdd3bd6619683628b9e4c9c386b0 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_35382353fe5425b58a1b495400b69ec0 = $(`<div id="html_35382353fe5425b58a1b495400b69ec0" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001387079' target='_blank'>https://www.homegate.ch/rent/4001387079</a><br>                     <b>Price:</b> 1980.0 CHF<br>                     <b>Price per m²:</b> 29.12 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001398794' target='_blank'>https://www.homegate.ch/rent/4001398794</a><br>                     <b>Price:</b> 1850.0 CHF<br>                     <b>Price per m²:</b> 37.00 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                 </div>`)[0];
+                popup_fa91fdd3bd6619683628b9e4c9c386b0.setContent(html_35382353fe5425b58a1b495400b69ec0);
+            
+        
+
+        marker_1002c809b0dc717747b79fcb587d8dbc.bindPopup(popup_fa91fdd3bd6619683628b9e4c9c386b0)
+        ;
+
+        
+    
+    
+            var marker_b6ac3e25d43b347a1409d60381e5f2e6 = L.marker(
+                [47.40885941533816, 8.464555297222223],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_21937aea57d7f5737ff537af8fff03f3 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_7e0d9e7992b583b115558229650abdee = $(`<div id="html_7e0d9e7992b583b115558229650abdee" style="width: 100.0%; height: 100.0%;">                 <b>Link:</b> <a href='https://www.homegate.ch/rent/4001386021' target='_blank'>https://www.homegate.ch/rent/4001386021</a><br>                 <b>Price:</b> 1855.0 CHF<br>                 <b>Price per m²:</b> 30.92 CHF<br>                 <b>Rooms:</b> 2.5             </div>`)[0];
+                popup_21937aea57d7f5737ff537af8fff03f3.setContent(html_7e0d9e7992b583b115558229650abdee);
+            
+        
+
+        marker_b6ac3e25d43b347a1409d60381e5f2e6.bindPopup(popup_21937aea57d7f5737ff537af8fff03f3)
+        ;
+
+        
+    
+    
+            var marker_095e9a6f783b6c51fe407d53ea697d4b = L.marker(
+                [47.41188227578912, 8.552227190564137],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_6b7f2be689bff6b8f21c87613dd0810c = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_6a99757bce47c26b0cc3c2b4ce335153 = $(`<div id="html_6a99757bce47c26b0cc3c2b4ce335153" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001406104' target='_blank'>https://www.homegate.ch/rent/4001406104</a><br>                     <b>Price:</b> 1500.0 CHF<br>                     <b>Price per m²:</b> 27.27 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001405908' target='_blank'>https://www.homegate.ch/rent/4001405908</a><br>                     <b>Price:</b> 2020.0 CHF<br>                     <b>Price per m²:</b> 33.67 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001335272' target='_blank'>https://www.homegate.ch/rent/4001335272</a><br>                     <b>Price:</b> 2150.0 CHF<br>                     <b>Price per m²:</b> 38.39 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001221422' target='_blank'>https://www.homegate.ch/rent/4001221422</a><br>                     <b>Price:</b> 1866.0 CHF<br>                     <b>Price per m²:</b> 43.40 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                                      <b>Link:</b> <a href='https://www.immoscout24.ch/rent/3001034692' target='_blank'>https://www.immoscout24.ch/rent/3001034692</a><br>                     <b>Price:</b> 2150.0 CHF<br>                     <b>Price per m²:</b> 61.43 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                                      <b>Link:</b> <a href='https://www.immoscout24.ch/rent/3001034689' target='_blank'>https://www.immoscout24.ch/rent/3001034689</a><br>                     <b>Price:</b> 2080.0 CHF<br>                     <b>Price per m²:</b> 83.20 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                                      <b>Link:</b> <a href='https://www.immoscout24.ch/rent/3001034688' target='_blank'>https://www.immoscout24.ch/rent/3001034688</a><br>                     <b>Price:</b> 2080.0 CHF<br>                     <b>Price per m²:</b> 83.20 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001186674' target='_blank'>https://www.homegate.ch/rent/4001186674</a><br>                     <b>Price:</b> 2122.0 CHF<br>                     <b>Price per m²:</b> 88.42 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                                      <b>Link:</b> <a href='https://www.immoscout24.ch/rent/3001034675' target='_blank'>https://www.immoscout24.ch/rent/3001034675</a><br>                     <b>Price:</b> 1890.0 CHF<br>                     <b>Price per m²:</b> 94.50 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                 </div>`)[0];
+                popup_6b7f2be689bff6b8f21c87613dd0810c.setContent(html_6a99757bce47c26b0cc3c2b4ce335153);
+            
+        
+
+        marker_095e9a6f783b6c51fe407d53ea697d4b.bindPopup(popup_6b7f2be689bff6b8f21c87613dd0810c)
+        ;
+
+        
+    
+    
+            var marker_433aad0ebd75ffeacb2eba368186f02f = L.marker(
+                [47.41189372769953, 8.552246519450033],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_f122ee5bb6f169836909b17226aa28cd = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_087ff72c3443a43c64cf3c1fa713be5c = $(`<div id="html_087ff72c3443a43c64cf3c1fa713be5c" style="width: 100.0%; height: 100.0%;">                 <b>Link:</b> <a href='https://www.homegate.ch/rent/4001400450' target='_blank'>https://www.homegate.ch/rent/4001400450</a><br>                 <b>Price:</b> 1240.0 CHF<br>                 <b>Price per m²:</b> 62.00 CHF<br>                 <b>Rooms:</b> 1.5             </div>`)[0];
+                popup_f122ee5bb6f169836909b17226aa28cd.setContent(html_087ff72c3443a43c64cf3c1fa713be5c);
+            
+        
+
+        marker_433aad0ebd75ffeacb2eba368186f02f.bindPopup(popup_f122ee5bb6f169836909b17226aa28cd)
+        ;
+
+        
+    
+    
+            var marker_bd763237d9d63bce8307eb9b079d1630 = L.marker(
+                [47.419050886211345, 8.512615560824743],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_58b01d2016b9eb6cedb922cc9f2ba409 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_5bcf89e0301634a5a9598349615e2440 = $(`<div id="html_5bcf89e0301634a5a9598349615e2440" style="width: 100.0%; height: 100.0%;">                 <b>Link:</b> <a href='https://www.homegate.ch/rent/4001390278' target='_blank'>https://www.homegate.ch/rent/4001390278</a><br>                 <b>Price:</b> 1590.0 CHF<br>                 <b>Price per m²:</b> 31.18 CHF<br>                 <b>Rooms:</b> 2.0             </div>`)[0];
+                popup_58b01d2016b9eb6cedb922cc9f2ba409.setContent(html_5bcf89e0301634a5a9598349615e2440);
+            
+        
+
+        marker_bd763237d9d63bce8307eb9b079d1630.bindPopup(popup_58b01d2016b9eb6cedb922cc9f2ba409)
+        ;
+
+        
+    
+    
+            var marker_50437b33642afcb198a3717225c32e13 = L.marker(
+                [47.419142437571594, 8.511772920389461],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_db229dbe330e78f80e8aa4672eda1c72 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_8e8cdef3bc16ad5c356b17023f3c30de = $(`<div id="html_8e8cdef3bc16ad5c356b17023f3c30de" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001226511' target='_blank'>https://www.homegate.ch/rent/4001226511</a><br>                     <b>Price:</b> 1940.0 CHF<br>                     <b>Price per m²:</b> 30.31 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001318915' target='_blank'>https://www.homegate.ch/rent/4001318915</a><br>                     <b>Price:</b> 1790.0 CHF<br>                     <b>Price per m²:</b> 48.38 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                 </div>`)[0];
+                popup_db229dbe330e78f80e8aa4672eda1c72.setContent(html_8e8cdef3bc16ad5c356b17023f3c30de);
+            
+        
+
+        marker_50437b33642afcb198a3717225c32e13.bindPopup(popup_db229dbe330e78f80e8aa4672eda1c72)
+        ;
+
+        
+    
+    
+            var marker_5f42cbb090a63afbdcdff980b53d5e58 = L.marker(
+                [47.4221204082906, 8.544776565470086],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_4bd96269626dfe82581f38bf99b30293 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_92d64123e19ac30dcc9813b5f5ce158f = $(`<div id="html_92d64123e19ac30dcc9813b5f5ce158f" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001379375' target='_blank'>https://www.homegate.ch/rent/4001379375</a><br>                     <b>Price:</b> 1985.0 CHF<br>                     <b>Price per m²:</b> 31.51 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001386498' target='_blank'>https://www.homegate.ch/rent/4001386498</a><br>                     <b>Price:</b> 1654.0 CHF<br>                     <b>Price per m²:</b> 48.65 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                 </div>`)[0];
+                popup_4bd96269626dfe82581f38bf99b30293.setContent(html_92d64123e19ac30dcc9813b5f5ce158f);
+            
+        
+
+        marker_5f42cbb090a63afbdcdff980b53d5e58.bindPopup(popup_4bd96269626dfe82581f38bf99b30293)
+        ;
+
+        
+    
+    
+            var marker_33e3231e3152704d2b5579f961248fc7 = L.marker(
+                [47.422124091133846, 8.544782277237852],
+                {}
+            ).addTo(map_206b9dd25562c8460aecc6cc2228009e);
+        
+    
+        var popup_99f9ca9f930bfdfe8b7aba34ddf0d450 = L.popup({"maxWidth": 450});
+
+        
+            
+                var html_8afa903945d7269af176ba4484e43862 = $(`<div id="html_8afa903945d7269af176ba4484e43862" style="width: 100.0%; height: 100.0%;"><b>Multiple Apartments:</b><br>                     <b>Link:</b> <a href='https://www.homegate.ch/rent/4001217934' target='_blank'>https://www.homegate.ch/rent/4001217934</a><br>                     <b>Price:</b> 2145.0 CHF<br>                     <b>Price per m²:</b> 25.84 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001390013' target='_blank'>https://www.homegate.ch/rent/4001390013</a><br>                     <b>Price:</b> 1940.0 CHF<br>                     <b>Price per m²:</b> 25.87 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001410351' target='_blank'>https://www.homegate.ch/rent/4001410351</a><br>                     <b>Price:</b> 2080.0 CHF<br>                     <b>Price per m²:</b> 31.04 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001287219' target='_blank'>https://www.homegate.ch/rent/4001287219</a><br>                     <b>Price:</b> 2009.0 CHF<br>                     <b>Price per m²:</b> 34.05 CHF<br>                     <b>Rooms:</b> 3.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001383533' target='_blank'>https://www.homegate.ch/rent/4001383533</a><br>                     <b>Price:</b> 1663.0 CHF<br>                     <b>Price per m²:</b> 34.65 CHF<br>                     <b>Rooms:</b> 2.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001390213' target='_blank'>https://www.homegate.ch/rent/4001390213</a><br>                     <b>Price:</b> 1999.0 CHF<br>                     <b>Price per m²:</b> 38.44 CHF<br>                     <b>Rooms:</b> 2.0<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001410284' target='_blank'>https://www.homegate.ch/rent/4001410284</a><br>                     <b>Price:</b> 2050.0 CHF<br>                     <b>Price per m²:</b> 40.20 CHF<br>                     <b>Rooms:</b> 2.5<br><br>                                      <b>Link:</b> <a href='https://www.immoscout24.ch/rent/4001364577' target='_blank'>https://www.immoscout24.ch/rent/4001364577</a><br>                     <b>Price:</b> 1678.0 CHF<br>                     <b>Price per m²:</b> 49.35 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                                      <b>Link:</b> <a href='https://www.homegate.ch/rent/4001390016' target='_blank'>https://www.homegate.ch/rent/4001390016</a><br>                     <b>Price:</b> 1760.0 CHF<br>                     <b>Price per m²:</b> 51.76 CHF<br>                     <b>Rooms:</b> 1.5<br><br>                 </div>`)[0];
+                popup_99f9ca9f930bfdfe8b7aba34ddf0d450.setContent(html_8afa903945d7269af176ba4484e43862);
+            
+        
+
+        marker_33e3231e3152704d2b5579f961248fc7.bindPopup(popup_99f9ca9f930bfdfe8b7aba34ddf0d450)
+        ;
+
+        
+    
+</script>
+</html>
