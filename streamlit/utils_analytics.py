@@ -149,7 +149,7 @@ def obter_ultimo_preco(precos_datas):
         return precos_datas[-1][0]  # Retorna o último preço
     return None
 
-def plotar_mapa_calor_apartamentos_baratos(df, n=3):
+def plotar_mapa_calor_apartamentos_baratos(df, n=10):
     """Plota um mapa de calor com os n apartamentos mais baratos."""
     geolocator = Nominatim(user_agent="myGeocoder")
 
@@ -184,7 +184,7 @@ def plotar_mapa_calor_apartamentos_baratos(df, n=3):
 
     # Configurar o centro do mapa
     map_center = [df_sorted['Latitude'].mean(), df_sorted['Longitude'].mean()]
-    mapa = folium.Map(location=map_center, zoom_start=12)
+    mapa = folium.Map(location=map_center, zoom_start=5)
 
     # Adicionar os dados ao HeatMap
     heat_data = [[row['Latitude'], row['Longitude']] for index, row in df_sorted.iterrows()]
