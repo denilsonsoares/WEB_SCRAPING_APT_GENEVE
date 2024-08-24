@@ -1,3 +1,5 @@
+import json
+import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -7,42 +9,45 @@ from datetime import datetime
 import pytz
 import time
 
+
 def coletar_dados_apartamentos_bayut(soup, dados_apartamentos):
     tz = pytz.timezone('Asia/Dubai')
-    apartamentos = soup.select("ul.e20beb46 > div._475e888a._5d46b9fb")
+    apartamentos = soup.select("ul.e20beb46 > li.a37d52f0")  # Ajuste no seletor para corresponder aos elementos 'li'
 
     for apto in apartamentos:
         try:
             # Tenta extrair o título
-            titulo_element = apto.select_one("h2.f0f13906")
-            titulo = titulo_element.get_text(strip=True) if titulo_element else 'N/A'
+            titulo_element = apto.select_one("article .d40f2294[title]")
+            titulo = titulo_element['title'] if titulo_element else 'N/A'
 
-            # Tenta extrair o preço
-            preco_element = apto.select_one("span[aria-label='Price']")
-            preco = preco_element.get_text(strip=True) if preco_element else 'N/A'
+            # Tenta extrair o preço (ajustando conforme a estrutura do site)
+            preco_element = apto.find("script", type="application/ld+json")
+            preco = 'N/A'
+            if preco_element:
+                json_data = json.loads(preco_element.string)
+                preco = json_data.get('floorSize', {}).get('value', 'N/A') + " " + json_data.get('floorSize', {}).get('unitText', 'N/A')
 
-            # Tenta extrair o tipo de transação
-            tipo_transacao = "Aluguel"  # Como a página é de aluguel, este valor será fixo
+            # Tipo de transação
+            tipo_transacao = "Aluguel"  # Valor fixo, como antes
 
             # Tenta extrair a quantidade de quartos
-            quartos_element = apto.select_one("span[aria-label='Beds']")
-            quartos = quartos_element.get_text(strip=True) if quartos_element else 'N/A'
+            quartos = json_data.get('numberOfRooms', {}).get('value', 'N/A')
+            if quartos == 'N/A':  # Verifica se o valor não foi encontrado e tenta achar um Studio
+                studio_element = apto.select_one("span[aria-label='Studio']")
+                if studio_element:
+                    quartos = "Studio"
 
             # Tenta extrair o número de banheiros
-            banheiros_element = apto.select_one("span[aria-label='Baths']")
-            banheiros = banheiros_element.get_text(strip=True) if banheiros_element else 'N/A'
+            banheiros = json_data.get('numberOfBathroomsTotal', 'N/A')
 
             # Tenta extrair o espaço (área)
-            espaco_element = apto.select_one("span[aria-label='Area'] h4")
-            espaco = espaco_element.get_text(strip=True) if espaco_element else 'N/A'
+            espaco = json_data.get('floorSize', {}).get('value', 'N/A') + " " + json_data.get('floorSize', {}).get('unitText', 'N/A')
 
             # Tenta extrair o endereço
-            endereco_element = apto.select_one("h3._4402bd70")
-            endereco = endereco_element.get_text(strip=True) if endereco_element else 'N/A'
+            endereco = json_data.get('address', {}).get('addressLocality', 'N/A') + ", " + json_data.get('address', {}).get('addressRegion', 'N/A')
 
             # Link para o site do imóvel
-            link_element = apto.select_one("a")
-            link = "https://www.bayut.com" + link_element['href'] if link_element else 'N/A'
+            link = json_data.get('url', 'N/A')
 
             # Data de extração
             data_extracao = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
@@ -58,13 +63,13 @@ def coletar_dados_apartamentos_bayut(soup, dados_apartamentos):
                 'Link': link,
                 'Data': data_extracao
             })
-
             print(f"Título: {titulo}, Preço: {preco}, Tipo de Transação: {tipo_transacao}, Quartos: {quartos}, Espaço: {espaco}, Banheiros: {banheiros}, Endereço: {endereco}, Link: {link}, Data de Extração: {data_extracao}")
             print("-" * 40)
 
         except Exception as e:
             print(f"Erro ao coletar dados do apartamento: {str(e)}")
             continue
+
 
 def raspar_apartamentos_com_selenium(url_inicial):
     # Configurar o WebDriver (no caso, utilizando o Chrome)
@@ -98,13 +103,23 @@ def raspar_apartamentos_com_selenium(url_inicial):
             break
 
     driver.quit()
-    return dados_apartamentos
+
+    # Convertendo para DataFrame ao final da coleta
+    df_apartamentos = pd.DataFrame(dados_apartamentos)
+    return df_apartamentos
+
 
 # URL inicial da página
 url_inicial = "https://www.bayut.com/to-rent/apartments/dubai/business-bay/aykon-city/"
 
-# Executa a raspagem
-dados_apartamentos = raspar_apartamentos_com_selenium(url_inicial)
+# Executa a raspagem e armazena os dados em um DataFrame
+df_apartamentos = raspar_apartamentos_com_selenium(url_inicial)
 
-# Aqui você pode salvar os dados ou fazer outras operações
-print(dados_apartamentos)
+# Imprime o DataFrame final
+print(df_apartamentos)
+
+# Salva o DataFrame em um arquivo Excel
+df_apartamentos.to_excel("dados_dubai.xlsx", index=False)
+
+print("Dados salvos em 'dados_dubai.xlsx'")
+
