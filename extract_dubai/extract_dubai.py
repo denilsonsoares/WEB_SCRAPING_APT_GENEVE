@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 from datetime import datetime
 import pytz
@@ -12,59 +13,67 @@ import time
 
 def coletar_dados_apartamentos_bayut(soup, dados_apartamentos):
     tz = pytz.timezone('Asia/Dubai')
-    apartamentos = soup.select("ul.e20beb46 > li.a37d52f0")  # Ajuste no seletor para corresponder aos elementos 'li'
+    apartamentos = soup.select("ul.e20beb46 > li.a37d52f0")  # Seletor ajustado
 
     for apto in apartamentos:
         try:
-            # Tenta extrair o título
-            titulo_element = apto.select_one("article .d40f2294[title]")
-            titulo = titulo_element['title'] if titulo_element else 'N/A'
+            # Extrair o JSON com as informações do imóvel
+            json_script = apto.select_one("script[type='application/ld+json']")
+            if json_script:
+                json_data = json.loads(json_script.string)
 
-            # Tenta extrair o preço (ajustando conforme a estrutura do site)
-            preco_element = apto.find("script", type="application/ld+json")
-            preco = 'N/A'
-            if preco_element:
-                json_data = json.loads(preco_element.string)
-                preco = json_data.get('floorSize', {}).get('value', 'N/A') + " " + json_data.get('floorSize', {}).get('unitText', 'N/A')
+                # Extrair título
+                titulo = json_data.get('name', 'N/A')
 
-            # Tipo de transação
-            tipo_transacao = "Aluguel"  # Valor fixo, como antes
+                # Extrair o preço
+                preco_element = apto.select_one("h4._0e3d05b8._5d2c9c26 > div._2923a568")
+                if preco_element:
+                    currency = preco_element.select_one("span._06f65f02").text.strip()
+                    valor = preco_element.select_one("span.dc381b54").text.strip()
+                    frequencia = apto.select_one("span.fc7b94b8").text.strip()
+                    preco = f"{currency} {valor} ({frequencia})"
+                else:
+                    preco = 'N/A'
 
-            # Tenta extrair a quantidade de quartos
-            quartos = json_data.get('numberOfRooms', {}).get('value', 'N/A')
-            if quartos == 'N/A':  # Verifica se o valor não foi encontrado e tenta achar um Studio
-                studio_element = apto.select_one("span[aria-label='Studio']")
-                if studio_element:
-                    quartos = "Studio"
+                # Tipo de transação
+                tipo_transacao = "Aluguel"  # Valor fixo, como antes
 
-            # Tenta extrair o número de banheiros
-            banheiros = json_data.get('numberOfBathroomsTotal', 'N/A')
+                # Extrair a quantidade de quartos ou verificar se é um estúdio
+                quartos = json_data.get('numberOfRooms', {}).get('value', 'N/A')
+                if quartos == '0':
+                    if 'Studio' in apto.text:
+                        quartos = 'Studio'
+                    else:
+                        quartos = 'N/A'
 
-            # Tenta extrair o espaço (área)
-            espaco = json_data.get('floorSize', {}).get('value', 'N/A') + " " + json_data.get('floorSize', {}).get('unitText', 'N/A')
+                # Extrair o número de banheiros
+                banheiros = json_data.get('numberOfBathroomsTotal', 'N/A')
 
-            # Tenta extrair o endereço
-            endereco = json_data.get('address', {}).get('addressLocality', 'N/A') + ", " + json_data.get('address', {}).get('addressRegion', 'N/A')
+                # Extrair o espaço (área)
+                espaco = json_data.get('floorSize', {}).get('value', 'N/A') + " " + json_data.get('floorSize', {}).get('unitText', 'N/A')
 
-            # Link para o site do imóvel
-            link = json_data.get('url', 'N/A')
+                # Extrair o endereço
+                endereco = json_data.get('address', {}).get('addressLocality', 'N/A') + ", " + json_data.get('address', {}).get('addressRegion', 'N/A')
 
-            # Data de extração
-            data_extracao = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
+                # Link para o site do imóvel
+                link = json_data.get('url', 'N/A')
 
-            dados_apartamentos.append({
-                'Título': titulo,
-                'Preço': preco,
-                'Tipo de Transação': tipo_transacao,
-                'Quartos': quartos,
-                'Espaço': espaco,
-                'Banheiros': banheiros,
-                'Endereço': endereco,
-                'Link': link,
-                'Data': data_extracao
-            })
-            print(f"Título: {titulo}, Preço: {preco}, Tipo de Transação: {tipo_transacao}, Quartos: {quartos}, Espaço: {espaco}, Banheiros: {banheiros}, Endereço: {endereco}, Link: {link}, Data de Extração: {data_extracao}")
-            print("-" * 40)
+                # Data de extração
+                data_extracao = datetime.now(tz).strftime('%Y-%m-%d %H:%M:%S')
+
+                dados_apartamentos.append({
+                    'Título': titulo,
+                    'Preço': preco,
+                    'Tipo de Transação': tipo_transacao,
+                    'Quartos': quartos,
+                    'Espaço': espaco,
+                    'Banheiros': banheiros,
+                    'Endereço': endereco,
+                    'Link': link,
+                    'Data': data_extracao
+                })
+                print(f"Título: {titulo}, Preço: {preco}, Tipo de Transação: {tipo_transacao}, Quartos: {quartos}, Espaço: {espaco}, Banheiros: {banheiros}, Endereço: {endereco}, Link: {link}, Data de Extração: {data_extracao}")
+                print("-" * 40)
 
         except Exception as e:
             print(f"Erro ao coletar dados do apartamento: {str(e)}")
@@ -72,8 +81,36 @@ def coletar_dados_apartamentos_bayut(soup, dados_apartamentos):
 
 
 def raspar_apartamentos_com_selenium(url_inicial):
-    # Configurar o WebDriver (no caso, utilizando o Chrome)
-    driver = webdriver.Chrome()  # Verifique se o chromedriver está no PATH ou forneça o caminho completo
+    # Configurar o WebDriver para rodar em modo headless e desabilitar imagens
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Executar em modo invisível
+    chrome_options.add_argument("--disable-gpu")  # Necessário para alguns sistemas operacionais
+    chrome_options.add_argument("--window-size=1920x1080")  # Define o tamanho da janela (opcional)
+    chrome_options.add_argument("--no-sandbox")  # Bypass OS security model
+    chrome_options.add_argument("--disable-extensions")  # Desabilitar extensões
+    chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
+
+    # Desabilitar imagens, CSS, fontes e outros recursos para acelerar o carregamento
+    prefs = {
+        "profile.managed_default_content_settings.images": 2,
+        "profile.managed_default_content_settings.stylesheets": 2,
+        "profile.managed_default_content_settings.cookies": 2,
+        "profile.managed_default_content_settings.javascript": 1,  # Habilitar JavaScript (necessário para Selenium)
+        "profile.managed_default_content_settings.plugins": 2,
+        "profile.managed_default_content_settings.popups": 2,
+        "profile.managed_default_content_settings.geolocation": 2,
+        "profile.managed_default_content_settings.notifications": 2,
+        "profile.managed_default_content_settings.auto_select_certificate": 2,
+        "profile.managed_default_content_settings.media_stream": 2,
+        "profile.managed_default_content_settings.site_engagement": 2,
+        "profile.managed_default_content_settings.sound": 2,
+        "profile.managed_default_content_settings.automatic_downloads": 2
+    }
+    chrome_options.add_experimental_option("prefs", prefs)
+
+    # Inicializa o WebDriver com as opções configuradas
+    driver = webdriver.Chrome(options=chrome_options)
+
     driver.get(url_inicial)
 
     dados_apartamentos = []
@@ -122,4 +159,3 @@ print(df_apartamentos)
 df_apartamentos.to_excel("dados_dubai.xlsx", index=False)
 
 print("Dados salvos em 'dados_dubai.xlsx'")
-
