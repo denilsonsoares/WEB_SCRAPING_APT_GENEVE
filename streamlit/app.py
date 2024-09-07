@@ -97,11 +97,8 @@ elif modo == "Data Processing":
         for arquivo in arquivos_brutos:
             caminho_arquivo = os.path.join(pasta_brutos, arquivo)
 
-            # Verifica o site e realiza o tratamento específico
-            if "homegate" in arquivo:
-                tratar_dados_homegate(caminho_arquivo, pasta_tratados)
-            elif "immoscout24" in arquivo:
-                tratar_dados_immoscout24(caminho_arquivo, pasta_tratados)
+            # Realiza o tratamento dos dados
+            tratar_dados(caminho_arquivo, pasta_tratados)
 
         st.success("Data processed and saved in the 'processed data' folder!")
 
